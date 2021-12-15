@@ -38,3 +38,4 @@
     * [Security](./docs/AWS/security.md)    
     * [VPC](./docs/AWS/vpc.md)  
     * [Migration](./docs/AWS/migration.md)  
+    * [Disaster Recovery](./docs/AWS/dr.md)  
