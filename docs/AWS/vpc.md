@@ -17,6 +17,10 @@
 - 인터넷 망 (보안성 떨어짐)
 - 서비스도입에 많은 시간이 필요하지 않음
 
+### How to increase Site-to-Site VPN connections 
+- [Using transit gateway](https://aws.amazon.com/blogs/networking-and-content-delivery/scaling-vpn-throughput-using-aws-transit-gateway/)
+- **Use a transit gateway** with equal cost multipath routing and add additional VPN tunnels.
+
 ### Using redundant Site-to-Site VPN connections to provide failover
 ![Site to Site VPN](https://docs.aws.amazon.com/vpn/latest/s2svpn/images/Multiple_Gateways_diagram.png)
 

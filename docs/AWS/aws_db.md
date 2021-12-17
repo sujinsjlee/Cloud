@@ -1,5 +1,7 @@
 # AWS Database
 > [RDS](#RDS)  
+> [DynamoDB](#DynamoDB)  
+> [Database Types](#types)  
 
 
 ## RDS
@@ -18,3 +20,15 @@
 - [RDS Read Replica](https://aws.amazon.com/rds/features/read-replicas)
     - You can reduce the load on your source DB instance by routing read queries from your applications to the read replica. Read replicas allow you to elastically scale out beyond the capacity constraints of a single DB instance for read-heavy database workloads. Because read replicas can be promoted to master status, they are useful as part of a sharding implementation.
     - To further maximize read performance, Amazon RDS for MySQL allows you to add table indexes directly to Read Replicas, without those indexes being present on the master.
+
+## DynamoDB
+- Dynamo DB does not perform joins
+- ~JSON
+
+## types
+- **RDBMS (= SQL / OLTP)**: RDS, Aurora – great for joins
+- **NoSQL database**: DynamoDB (~JSON), ElastiCache (key / value pairs), Neptune (graphs) – no joins, no SQL
+- **Object Store**: S3 (for big objects) / Glacier (for backups / archives)
+- **Data Warehouse (= SQL Analytics / BI)**: Redshift (OLAP), Athena
+- **Search**: ElasticSearch (JSON) – free text, unstructured searches
+- **Graphs**: Neptune – displays relationships between data
