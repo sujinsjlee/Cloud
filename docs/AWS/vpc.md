@@ -4,6 +4,9 @@
 > [Cloud Hub](#Cloud_Hub)  
 > [VPC Peering](#VPC_Peering)  
 > [Direct Connect](#Direct_Connect)  
+> [VPC Endpoint](#VPC_Endpoint)  
+> [NAT Gateway](#NAT_Gateway)   
+> [NAT Instance](#NAT_Instance)  
 
 
 ## Site_to_Site_VPN
@@ -50,3 +53,23 @@
     - [#Maximum Resiliency](https://aws.amazon.com/ko/directconnect/resiliency-recommendation/)
 - 전용망 (보안성 높음)
 - 도입에 비교적 시간이 소요됨
+
+## VPC_Endpoint
+- Every AWS service is publicly exposed (public URL)
+- VPC Endpoints (powered by AWS PrivateLink) **allows you to connect to AWS services using a private network** instead of using the public Internet
+
+## NAT_Gateway
+- **NAT Gateway**는 Newtwork Address Transition 네트워크 주소변환서비스
+  - NAT 게이트웨이: 프라이빗 서브넷에 있는 리소스가 인터넷에 액세스할 수 있게 해주는 고가용성 관리형 네트워크 주소 변환 (NAT) 서비스입니다.
+  -  Subnet 을 Public 과 Private 으로 구분하여, Public subnet은 Internet Gateway 를 이용하여 외부와 통신이 가능하도록 설정하였다. 하지만, Private Subnet 의 경우는 외부와의 통신이 단절된 환경이다.
+    - Private Subnet에 위치한 instance가 다른 AWS 서비스에 연결해야 하는 경우. 
+    - 인터넷에서 Private instance 에 접근 불가 조건은 유지하면서 반대로 instance 에서 외부 인터넷으로 연결이 필요한 경우. 
+  -  위와 같은 이유로 Private Subnet에 배포된 instance 라도 외부와의 통신이 필요한 경우가 있다. 이런 경우 가장 간단히 해결 할 수 있는 방법은 NAT 서버를 구축하는 것이다.
+  - *NAT Gateway : managed by AWS, provides scalable Internet access to private EC2 instances, IPv4 only*
+
+
+## NAT_Instance
+  - *NAT Instances : gives Internet access to EC2 instances in private subnets. Old, must be setup in a public subnet, disable Source / Destination check flag*
+  - *You must manage Security Groups*
+  - *Use as Bastion Host*
+  - *Support port fowarding*

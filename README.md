@@ -40,4 +40,5 @@
     * [Migration](./docs/AWS/migration.md)  
     * [Disaster Recovery](./docs/AWS/dr.md)  
     * [AWS Snow Family](./docs/AWS/snow.md)  
+    * [AWS Elastic Beanstalk](./docs/AWS/beanstalk.md)
     
