@@ -1,0 +1,2 @@
+- **AWS Storage Gateway**
+    - Before you create an SMB file share, make sure that you configure SMB security settings for your file gateway. You also configure either Microsoft `Active Directory (AD)` or guest access for authentication.

@@ -17,8 +17,10 @@
     - Software application or physical device on customer side of the VPN connection
 - You can attach **one virtual private gateway to a VPC at a time**. To connect the same Site-to-Site VPN connection to multiple VPCs, we recommend that you explore using a *transit gateway* instead. 
 - IPSec 지원
-- 인터넷 망 (보안성 떨어짐)
+- **인터넷 망 (보안성 떨어짐)** 
+  - *--> 'constant throughput' is not possible over the internet, so site to site VPN is out for the case.*
 - 서비스도입에 많은 시간이 필요하지 않음
+  - *The connection set up quickly / immediately*
 
 ### How to increase Site-to-Site VPN connections 
 - [Using transit gateway](https://aws.amazon.com/blogs/networking-and-content-delivery/scaling-vpn-throughput-using-aws-transit-gateway/)
@@ -58,7 +60,17 @@
 - Every AWS service is publicly exposed (public URL)
 - VPC Endpoints (powered by AWS PrivateLink) **allows you to connect to AWS services using a private network** instead of using the public Internet
 
+## NAT_Instance
+  - **NAT Instances** 
+      - gives Internet access to EC2 instances in private subnets. Old, must be setup in a public subnet, disable Source / Destination check flag
+  - **Managed by you**
+  - **You must manage Security Groups**
+  - **Use as Bastion Host**
+  - *Support port fowarding*
+  - **Must be launched in a public subnet**
+
 ## NAT_Gateway
+- **Managed by AWS**
 - **NAT Gateway**는 Newtwork Address Transition 네트워크 주소변환서비스
   - NAT 게이트웨이: 프라이빗 서브넷에 있는 리소스가 인터넷에 액세스할 수 있게 해주는 고가용성 관리형 네트워크 주소 변환 (NAT) 서비스입니다.
   -  Subnet 을 Public 과 Private 으로 구분하여, Public subnet은 Internet Gateway 를 이용하여 외부와 통신이 가능하도록 설정하였다. 하지만, Private Subnet 의 경우는 외부와의 통신이 단절된 환경이다.
@@ -66,10 +78,5 @@
     - 인터넷에서 Private instance 에 접근 불가 조건은 유지하면서 반대로 instance 에서 외부 인터넷으로 연결이 필요한 경우. 
   -  위와 같은 이유로 Private Subnet에 배포된 instance 라도 외부와의 통신이 필요한 경우가 있다. 이런 경우 가장 간단히 해결 할 수 있는 방법은 NAT 서버를 구축하는 것이다.
   - *NAT Gateway : managed by AWS, provides scalable Internet access to private EC2 instances, IPv4 only*
+  - **No Security Groups to manage / required**
 
-
-## NAT_Instance
-  - *NAT Instances : gives Internet access to EC2 instances in private subnets. Old, must be setup in a public subnet, disable Source / Destination check flag*
-  - *You must manage Security Groups*
-  - *Use as Bastion Host*
-  - *Support port fowarding*
