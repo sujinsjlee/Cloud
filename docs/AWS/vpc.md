@@ -80,3 +80,11 @@
   - *NAT Gateway : managed by AWS, provides scalable Internet access to private EC2 instances, IPv4 only*
   - **No Security Groups to manage / required**
 
+## NAT - VPC with public and private subnets (NAT)
+> [NAT](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html)
+- The configuration for this scenario includes a virtual private cloud **(VPC) with a public subnet and a private subnet.** We recommend this scenario if you want to run a public-facing web application, while maintaining back-end servers that aren't publicly accessible. 
+
+- A common example is a multi- tier website, with the web servers in a public subnet and the database servers in a private subnet. You can set up security and routing so that the web servers can communicate with the database servers.
+The instances in the public subnet can send outbound traffic directly to the Internet, whereas the instances in the private subnet can't. 
+- Instead, **the instances in the private subnet can access the Internet by using a network address translation (NAT) gateway that resides in the public subnet.**
+- The database servers can connect to the Internet for software updates using the NAT gateway, but the Internet cannot establish connections to the database servers.

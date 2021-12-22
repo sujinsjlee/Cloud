@@ -21,6 +21,7 @@
 - [RDS Read Replica](https://aws.amazon.com/rds/features/read-replicas)
     - You can reduce the load on your source DB instance by routing read queries from your applications to the read replica. Read replicas allow you to elastically scale out beyond the capacity constraints of a single DB instance for read-heavy database workloads. Because read replicas can be promoted to master status, they are useful as part of a sharding implementation.
     - To further maximize read performance, Amazon RDS for MySQL allows you to add table indexes directly to Read Replicas, without those indexes being present on the master.
+
 ### RDS Security - Encryption
 > At rest encryption  
 
@@ -29,6 +30,7 @@
 - Encryption has to be defined at launch time
 - If the master is not encrypted, the read replicas cannot be encrypted
 - Transparent Data Encryption (TDE) available for Oracle and SQL Server
+
 > In-flight encryption  
 
 
@@ -58,3 +60,8 @@
 - **Data Warehouse (= SQL Analytics / BI)**: Redshift (OLAP), Athena
 - **Search**: ElasticSearch (JSON) – free text, unstructured searches
 - **Graphs**: Neptune – displays relationships between data
+
+## Redshift
+- Q Does Amazon Redshift support Multi-AZ Deployments?
+    - Currently, Amazon Redshift only supports Single-Region deployments
+- [Amazon Redshift Improves Performance of Inter-Region Snapshot Transfers : Enable cross-Region snapshots](https://aws.amazon.com/about-aws/whats-new/2019/10/amazon-redshift-improves-performance-of-inter-region-snapshot-transfers/)

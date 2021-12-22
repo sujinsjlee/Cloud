@@ -43,3 +43,6 @@
 - Q: AWS Lambda@Edge는 Amazon API Gateway 뒤에서 AWS Lambda를 사용하는 것과 어떻게 다릅니까?
 
 - 다른 점은 API Gateway와 Lambda가 리전별 서비스라는 것입니다. Lambda@Edge 및 Amazon CloudFront를 사용하면 최종 사용자의 위치에 따라 여러 AWS 위치에서 로직을 실행할 수 있습니다.
+
+## Test Tips
+- "scalable and elastic" -> serverless
