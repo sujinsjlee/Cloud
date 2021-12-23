@@ -13,3 +13,12 @@
 
 - **AWS Storage Gateway file gateway** : Configured S3 buckets are accessible using the NFS and SMB protocol
 - Amazon FSx for Windows File Server : support SMB, but scenario should contain Windows or AD
+
+### SMB
+- **Server Message Block** 
+  - SMB는 네트워크 상 존재하는 노드들 간에 자원을 공유할 수 있도록 설계된 프로토콜
+- SMB —> storage gateway or FSx
+
+### FsX
+- [FsX](https://aws.amazon.com/fsx/windows/)
+  - Fully managed file storage built on Windows Server

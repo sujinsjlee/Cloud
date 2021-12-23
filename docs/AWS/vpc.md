@@ -88,3 +88,10 @@
 The instances in the public subnet can send outbound traffic directly to the Internet, whereas the instances in the private subnet can't. 
 - Instead, **the instances in the private subnet can access the Internet by using a network address translation (NAT) gateway that resides in the public subnet.**
 - The database servers can connect to the Internet for software updates using the NAT gateway, but the Internet cannot establish connections to the database servers.
+
+## Test Tips
+- NAT instance/GW is used to give internet access to EC2 in private subnets.
+- NAT instance/GW is always in Public Subnet.
+- RT of private subnet contains a route to NAT GW/NAT instance.
+
+  - Choose NAT GW (AWS Managed)over NAT instance if above is satisfied.

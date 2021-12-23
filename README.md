@@ -16,7 +16,7 @@
     * [EC2](./docs/AWS/ec2.md)  
     * [IAM](./docs/AWS/iam.md)  
     * [EC2 Instance Storage - EBS, EFS](./docs/AWS/ec2_storage.md)  
-    * [AWS Storage - FSx](./docs/AWS/storage.md)  
+    * [AWS Storage](./docs/AWS/storage.md)  
     * [ELB NLB](./docs/AWS/lb.md)  
     * [ASG](./docs/AWS/asg.md)  
     * [AWS DB](./docs/AWS/aws_db.md)  
@@ -41,5 +41,6 @@
     * [Disaster Recovery](./docs/AWS/dr.md)  
     * [AWS Snow Family](./docs/AWS/snow.md)  
     * [AWS Elastic Beanstalk](./docs/AWS/beanstalk.md)  
-    * [Glue](./docs/AWS/glue.md)
+    * [Glue](./docs/AWS/glue.md)  
+    * [Other Services](./docs/AWS/other.md)
     
