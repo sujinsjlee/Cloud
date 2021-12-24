@@ -42,3 +42,8 @@
 - Secrets are encrypted using KMS
 - Mostly meant for RDS integration
 - [Secrets Manager](https://aws.amazon.com/blogs/security/rotate-amazon-rds-database-credentials-automatically-with-aws-secrets-manager/)
+
+
+## Security Groups
+- Only ACL supports DENY rules, and it has to be setup on web tier subnet.
+- SG don't have deny rules
