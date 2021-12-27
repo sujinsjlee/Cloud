@@ -50,3 +50,10 @@
 
 ## Test Tips
 - "scalable and elastic" -> serverless
+
+## Lambda Features
+- Virtual functions – no servers to manage!
+- Limited by time - **short executions**
+- Run **on-demand**
+- Scaling is **automated!**(in lambda, scaling is not to enable/disable)
+    - cf) known in advance environmant --> doesn't need AutoScale

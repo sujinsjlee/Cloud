@@ -2,7 +2,8 @@
 > [Decouple application](#Decouple_application)  
 > [Visibility timeout](#Visibility_Timeout)  
 > [DLQ](#DLQ)  
-> [Temporary Queue](#Temporary_Queue)
+> [Temporary Queue](#Temporary_Queue)  
+> [Priority](#Priority)
 
 ## Decouple_application
 - In that case, it’s better to decouple your applications,
@@ -23,6 +24,12 @@
 - SQS – Request-Response Systems
 - To implement this pattern: use the SQS Temporary Queue Client
     - The most common use case for temporary queues is the request-response messaging pattern, where a requester creates a temporary queue for receiving each response message. To avoid creating an Amazon SQS queue for each response message, the Temporary Queue Client lets you create and delete multiple temporary queues without making any Amazon SQS API calls.
+
+## Priority
+> **Priority: Use separate queues to provide prioritization of work.**  
+    - [Amazon SQS features](https://aws.amazon.com/sqs/features)
+
+
 ## Attributes
 - Default retention of messages: 4 days, maximum of 14 days
 - Low latency (<10 ms on publish and receive)

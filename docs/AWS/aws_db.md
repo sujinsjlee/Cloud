@@ -62,6 +62,9 @@
 - **Graphs**: Neptune – displays relationships between data
 
 ## Redshift
+> It’s OLAP – online **analytical processing** (analytics and data warehousing)  
+
 - Q Does Amazon Redshift support Multi-AZ Deployments?
+    - **Redshift has no “Multi-AZ” mode**
     - Currently, Amazon Redshift only supports Single-Region deployments
 - [Amazon Redshift Improves Performance of Inter-Region Snapshot Transfers : Enable cross-Region snapshots](https://aws.amazon.com/about-aws/whats-new/2019/10/amazon-redshift-improves-performance-of-inter-region-snapshot-transfers/)

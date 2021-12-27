@@ -1,6 +1,8 @@
 # CloudFront
 > [CloudFront georestriction](#GeoRestrictions)  
 > [Global Accelerator](#Global_Accelerator)  
+> [CloudFront Features](#Features)  
+> [S3 Cross Region Replication](#S3-Cross-Region-Replication)
 
 ## GeoRestriction
 - [CloudFront georestriction](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/georestrictions.html) : *You can use geo restriction, also known as geo blocking, to prevent users in specific geographic locations from accessing content that you're distributing through a CloudFront web distribution.*
@@ -13,11 +15,26 @@
 - **AWS Global Accelerator** 
   - Improves performance for a wide range of applications over TCP or UDP
   - Proxying packets at the edge to applications running in one or more AWS Regions.
-  - Good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP
+  - `Good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP`
   - Good for HTTP use cases that require static IP addresses
   - Good for HTTP use cases that required deterministic, fast regional failover
 - **Amazon CloudFront**
   - Improves performance for both cacheable content (such as images and videos)
-  - Dynamic content (such as API acceleration and dynamic site delivery)
   - Content is served at the edge
-  - CloudFront is better for improving application resiliency to handle spikes in traffic
+  - CloudFront is better for improving application resiliency to `handle spikes in traffic`
+
+## Features
+- [On-Demand & Real-Time](https://docs.aws.amazon.com/ko_kr/AmazonCloudFront/latest/DeveloperGuide/on-demand-streaming-video.html)
+  - You can use CloudFront to deliver video on demand (VOD) or live streaming video using any HTTP origin. 
+
+## S3-Cross-Region-Replication
+- **CloudFront vs S3 Cross Region Replication**
+- CloudFront:
+  - Global Edge network
+  - Files are cached for a TTL (maybe a day)
+  - **Great for static content that must be available everywhere**
+- S3 Cross Region Replication:
+  - Must be setup for each region you want replication to happen
+  - Files are updated in near real-time
+  - Read only
+  - **Great for dynamic content that needs to be available at low-latency in few regions**

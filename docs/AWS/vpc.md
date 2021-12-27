@@ -94,4 +94,4 @@ The instances in the public subnet can send outbound traffic directly to the Int
 - NAT instance/GW is always in Public Subnet.
 - RT of private subnet contains a route to NAT GW/NAT instance.
 
-  - Choose NAT GW (AWS Managed)over NAT instance if above is satisfied.
+  - **Choose NAT GW (AWS Managed)over NAT instance if above is satisfied.**
