@@ -3,7 +3,8 @@
 > [Visibility timeout](#Visibility_Timeout)  
 > [DLQ](#DLQ)  
 > [Temporary Queue](#Temporary_Queue)  
-> [Priority](#Priority)
+> [Priority](#Priority)  
+> [FIFO](#FIFO)  
 
 ## Decouple_application
 - In that case, it’s better to decouple your applications,
@@ -29,6 +30,8 @@
 > **Priority: Use separate queues to provide prioritization of work.**  
     - [Amazon SQS features](https://aws.amazon.com/sqs/features)
 
+## FIFO
+- Use Amazon Simple Queue Service (Amazon SQS) FIFO queues for capturing the action and **draining the queue**
 
 ## Attributes
 - Default retention of messages: 4 days, maximum of 14 days

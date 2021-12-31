@@ -14,7 +14,7 @@
     - **RDS Multi-AZ**, ElastiCache Multi-AZ, EFS, S3
     - Site to Site VPN as a recovery from Direct Connect
 - Replication
-    - RDS Replication (Cross Region), AWS Aurora + Global Databases
+    - RDS Replication (Cross Region), **AWS Aurora** + Global Databases
     - Database replication from on-premise to RDS
     - Storage Gateway
 - Automation

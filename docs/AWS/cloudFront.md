@@ -2,7 +2,8 @@
 > [CloudFront georestriction](#GeoRestrictions)  
 > [Global Accelerator](#Global_Accelerator)  
 > [CloudFront Features](#Features)  
-> [S3 Cross Region Replication](#S3-Cross-Region-Replication)
+> [S3 Cross Region Replication](#S3-Cross-Region-Replication)  
+> [origin](#origin)  
 
 ## GeoRestriction
 - [CloudFront georestriction](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/georestrictions.html) : *You can use geo restriction, also known as geo blocking, to prevent users in specific geographic locations from accessing content that you're distributing through a CloudFront web distribution.*
@@ -25,7 +26,7 @@
 
 ## Features
 - [On-Demand & Real-Time](https://docs.aws.amazon.com/ko_kr/AmazonCloudFront/latest/DeveloperGuide/on-demand-streaming-video.html)
-  - You can use CloudFront to deliver video on demand (VOD) or live streaming video using any HTTP origin. 
+  - **You can use CloudFront to deliver video on demand (VOD) or live streaming video using any HTTP origin.** 
 
 ## S3-Cross-Region-Replication
 - **CloudFront vs S3 Cross Region Replication**
@@ -38,3 +39,10 @@
   - Files are updated in near real-time
   - Read only
   - **Great for dynamic content that needs to be available at low-latency in few regions**
+
+## origin
+- CloudFront – Origin Groups
+  - To **increase high-availability and do failover**
+  - Origin Group: one primary and one secondary origin
+  - If the primary origin fails, the second one is used
+  

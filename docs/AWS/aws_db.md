@@ -3,7 +3,8 @@
 > [DynamoDB](#DynamoDB)  
 > [Aurora](#Aurora)  
 > [Database Types](#types)  
-
+> [Redshift](#Redshift)  
+   
 
 ## RDS
 - [RDS snapshot](https://aws.amazon.com/ko/premiumsupport/knowledge-center/encrypt-rds-snapshots/)
@@ -51,7 +52,14 @@
 ## Aurora
 - **Aurora Serverless** – for unpredictable / intermittent workloads
 - **Aurora Multi-Master** – for continuous writes failover
-
+- **Aurora – Custom Endpoints** : 
+    - Define a subset of Aurora Instances as a Custom Endpoint
+    - The Reader Endpoint is generally not used after defining Custom Endpoints
+    - Aurora uses single reader endpoint for all replica nodes.
+    - We can create new custom endpoint for the workload.
+- Aurora **storage automatically grows** in increments of 10GB, up to 128 TB.
+- Aurora can have 15 replicas while MySQL has 5, and **the replication process is faster** (sub 10 ms replica lag)
+- **Failover in Aurora is instantaneous**. It’s HA (High Availability) native.
 
 ## types
 - **RDBMS (= SQL / OLTP)**: RDS, Aurora – great for joins
@@ -68,3 +76,5 @@
     - **Redshift has no “Multi-AZ” mode**
     - Currently, Amazon Redshift only supports Single-Region deployments
 - [Amazon Redshift Improves Performance of Inter-Region Snapshot Transfers : Enable cross-Region snapshots](https://aws.amazon.com/about-aws/whats-new/2019/10/amazon-redshift-improves-performance-of-inter-region-snapshot-transfers/)
+
+> Redshift Spectrum: perform queries directly against S3 (no need to load)  

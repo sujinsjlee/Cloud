@@ -44,7 +44,7 @@
 
 ## VPC_Peering
 ![vp](https://docs.aws.amazon.com/vpc/latest/peering/images/peering-intro-diagram.png)
-- A VPC peering connection is a networking connection between *two VPCs* that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses.
+- A VPC peering connection is a networking connection between **two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses.
 
 ## Direct_Connect
 ![dc](https://docs.aws.amazon.com/directconnect/latest/UserGuide/images/direct-connect-overview.png)

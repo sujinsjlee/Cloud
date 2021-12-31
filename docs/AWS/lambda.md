@@ -44,6 +44,8 @@
 
 - 다른 점은 API Gateway와 Lambda가 리전별 서비스라는 것입니다. Lambda@Edge 및 Amazon CloudFront를 사용하면 최종 사용자의 위치에 따라 여러 AWS 위치에서 로직을 실행할 수 있습니다.
 
+- Lambda@Edge is optimized for **latency-sensitive use cases** where your end viewers are distributed globally. All the information you need to make a decision should be available at the CloudFront edge, within the function and the request. This means that use cases where you are looking to make decisions on how to serve content based on user characteristics (e.g., location, client device, etc.) can now be executed and served close to your users without having to be routed back to a centralized server.
+
 ## EventBridge
 - [Schedule AWS Lambda functions using EventBridge](https://docs.aws.amazon.com/ko_kr/eventbridge/latest/userguide/eb-run-lambda-schedule.html)  
 

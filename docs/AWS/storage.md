@@ -22,3 +22,13 @@
 ### FsX
 - [FsX](https://aws.amazon.com/fsx/windows/)
   - Fully managed file storage built on Windows Server
+
+### AWS Storage Gateway Summary
+> Exam tip: Read the question well, it will hint at which gateway to use
+
+
+- **On-premises data to the cloud** => **Storage Gateway**
+- **File access / NFS – user auth with Active Directory** => **File Gateway**(backed by S3)
+- **Volumes / Block Storage / iSCSI** => **Volume gateway**(backed by S3 with EBS snapshots)
+- **VTL Tape solution / Backup with iSCSI** = > **Tape Gateway**(backed by S3 and Glacier)
+- No on-premises virtualization => Hardware Appliance
