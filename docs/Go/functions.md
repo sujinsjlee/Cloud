@@ -25,7 +25,7 @@ func lenAndUpper
 func lenAndUpper(name string) (int, string) { 
     // argument "name" is string type
     // (int, string) is return type
-	return len(name), strings.ToUpper(name)
+    return len(name), strings.ToUpper(name)
 }
 
 func repeatMe(words ...string) {
@@ -39,13 +39,13 @@ func main() {
     fmt.Println(multiply(2,2))
 	
     totalLen, upperName := lenAndUpper("mogi") 
-	fmt.Println(totalLen, upperName)
+    fmt.Println(totalLen, upperName)
 
     // totalLen := lenAndUpper("mogi")
-	// fmt.Println(totalLen) -> compiler cannnot initialize 1 variable with 2 values
+    // fmt.Println(totalLen) -> compiler cannnot initialize 1 variable with 2 values
 
-	totalLength, _ := lenAndUpper("mogi") // _ underscore will ignore value 
-	fmt.Println(totalLength)
+    totalLength, _ := lenAndUpper("mogi") // _ underscore will ignore value 
+    fmt.Println(totalLength)
 
     repeatMe("Mon", "Tue", "Wed", "Thu", "Fri")
 }
@@ -81,7 +81,7 @@ func swap(x, y string) (string, string) {
 
 func main() {
 	a, b := swap("hello", "world")
-	fmt.Println(a, b)
+    fmt.Println(a, b)
 }
 ```
 
@@ -109,6 +109,7 @@ func repeatMe(words ...string) {
 # Function2
 > [naked return function](#naked-return-function)  
 > [defer](#defer)  
+> [stacking defer](#staking-defer)
 
 
 ```go
@@ -184,3 +185,40 @@ world
 - The deferred call's arguments are evaluated immediately, but the function call is not executed until the surrounding function returns.
 
 - 예를들어, 시스템 디자인할 때 이미지오픈하고 파일생성하고, **defer**문으로 function이 끝났을 때, 이미지를 닫던가, 파일을 닫거나 혹은 삭제하거나 API요청을하거나..등의 행동을 할 수 있음
+
+
+### stacking defer
+
+- Deferred function calls are pushed onto a stack. When a function returns, its deferred calls are executed in last-in-first-out order.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("counting")
+
+	for i := 0; i < 10; i++ {
+		defer fmt.Println(i)
+	}
+
+	fmt.Println("done")
+}
+
+```
+
+```console
+counting
+done
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+```

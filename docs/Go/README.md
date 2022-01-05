@@ -1,10 +1,10 @@
 
 ## Go for Beginners
+
+###### © The Study Content is available as Tutorial Video under the terms of the [NomadCoder](https://nomadcoders.co/go-for-beginners/lobby) 
+
 - [A Tour of Go (Go official document)](https://go.dev/tour/basics/1)
 - [Standard Library](https://pkg.go.dev/std)
-
-###### The Study Content is available as Tutorial Video under the terms of the [NomadCoder](https://nomadcoders.co/go-for-beginners/lobby) ©
-
 - Programming in `replit.com`
     - [Go programming in "replit.com"](https://replit.com/)
 - Programming in VSCode
@@ -17,6 +17,9 @@
 > [Packages and Imports](./pi.md)  
 > [Variables and Constants](./vc.md)  
 > [Functions](./functions.md)    
+> [for, range, ...args](./for.md)  
+> [If with a Twist](./if.md)  
+> [Switch](./switch.md)  
 
 
 <!--
