@@ -47,7 +47,9 @@
 - ~JSON
 ### DynamoDB – Time To Live (TTL)
 - Automatically delete items after an expiry timestamp
-
+### DynamoDB - Usecase
+- [Deliver seamless retail experiences](https://aws.amazon.com/dynamodb/)
+    - Use design patterns for deploying shopping carts, workflow engines, inventory tracking, and customer profiles. DynamoDB supports high-traffic, extreme-scaled events and can handle millions of queries per second.
 
 ## Aurora
 - **Aurora Serverless** – for unpredictable / intermittent workloads
