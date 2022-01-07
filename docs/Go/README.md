@@ -20,6 +20,9 @@
 > [for, range, ...args](./for.md)  
 > [If with a Twist](./if.md)  
 > [Switch](./switch.md)  
+> [Pointers](./pointers.md)  
+> [Arrays and Slices](./as.md)  
+
 
 
 <!--

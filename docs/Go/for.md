@@ -13,16 +13,16 @@ package main
 import "fmt"
 
 func main() {
-	sum := 1
+    sum := 1
     for ; sum < 1000 ; {
         sum += sum
-	}
+    }
     fmt.Println(sum) //1024
 
     idx := 1
     for idx < 1000 {
         idx += idx
-	}
+    }
     fmt.Println(idx) //1024
 }
 ```
@@ -34,12 +34,12 @@ import "fmt"
 
 func superAdd(numbers ...int) {
     for i := 0; i < len(numbers); i++ {
-	    fmt.Println(i) 
-	}
+        fmt.Println(i) 
+    }
 }
 
 func main() {
-	superAdd(1, 2, 3, 4, 5, 6)
+    superAdd(1, 2, 3, 4, 5, 6)
 }
 ``` 
 
@@ -62,13 +62,13 @@ package main
 import "fmt"
 
 func superAdd(numbers ...int) {
-	for number := range numbers {
-	    fmt.Println(number) 
-	}
+    for number := range numbers {
+        fmt.Println(number) 
+    }
 }
 
 func main() {
-	superAdd(1, 2, 3, 4, 5, 6)
+    superAdd(1, 2, 3, 4, 5, 6)
     // 0 1 2 3 4 5 (o)
     // 1 2 3 4 5 6 (x)
 }
@@ -84,7 +84,7 @@ func main() {
 5
 ```
 - `range` returns **index**
-- [Go Document - Ragne](https://go.dev/tour/moretypes/16)
+- [Go Document - Range](https://go.dev/tour/moretypes/16)
     - The range form of the for loop iterates over a slice or map.
     - When ranging over a slice, two values are returned for each iteration. 
         - The first is **the index**
@@ -118,13 +118,13 @@ package main
 import "fmt"
 
 func superAdd(numbers ...int) {
-	for index, number := range numbers {
-	    fmt.Println(index, number) 
-	}
+    for index, number := range numbers {
+        fmt.Println(index, number) 
+    }
 }
 
 func main() {
-	superAdd(1, 2, 3, 4, 5, 6)
+    superAdd(1, 2, 3, 4, 5, 6)
 }
 ``` 
 
@@ -145,16 +145,16 @@ package main
 import "fmt"
 
 func superAdd(numbers ...int) int {
-	total := 0
-	for _, number := range numbers {
-		total += number
-	}
-	return total
+    total := 0
+    for _, number := range numbers {
+        total += number
+    }
+    return total
 }
 
 func main() {
-	result := superAdd(1, 2, 3, 4, 5, 6)
-	fmt.Println(result)
+    result := superAdd(1, 2, 3, 4, 5, 6)
+    fmt.Println(result)
 }
 ```
 

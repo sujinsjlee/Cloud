@@ -31,7 +31,7 @@ func lenAndUpper(name string) (int, string) {
 func repeatMe(words ...string) {
     // repeatMe function is void type (return type is not needed)
     // ...string ->  Recieve as many as argument you want
-	fmt.Println(words)
+    fmt.Println(words)
 }
 
 func main() {
@@ -76,11 +76,11 @@ package main
 import "fmt"
 
 func swap(x, y string) (string, string) {
-	return y, x
+    return y, x
 }
 
 func main() {
-	a, b := swap("hello", "world")
+    a, b := swap("hello", "world")
     fmt.Println(a, b)
 }
 ```
@@ -102,7 +102,7 @@ fmt.Println(totalLength)
 func repeatMe(words ...string) {
     // repeatMe function is void type (return type is not needed)
     // ...string ->  Recieve as many as argument you want
-	fmt.Println(words)
+    fmt.Println(words)
 }
 ```
 
@@ -120,16 +120,16 @@ import (
 )
 
 func lenAndUpper(name string) (length int, uppercase string) {
-	defer fmt.Println("I'm done")
-	length = len(name) // length := len(name) (x) -> length is already declared on the top of the function
-	uppercase = strings.ToUpper(name)
+    defer fmt.Println("I'm done")
+    length = len(name) // length := len(name) (x) -> length is already declared on the top of the function
+    uppercase = strings.ToUpper(name)
     // return length, uppercase
-	return 
+    return 
 }
 
 func main() {
-	totalLength, up := lenAndUpper("nico")
-	fmt.Println(totalLength, up)
+    totalLength, up := lenAndUpper("nico")
+    fmt.Println(totalLength, up)
 }
 ```
 

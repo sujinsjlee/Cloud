@@ -44,7 +44,7 @@ var isName bool = false
 
 func main() {
 	name := "mogi"
-    // name = false -> cannot change the variable type after := declaration
+	// name = false -> cannot change the variable type after := declaration
 	name = "sujin"
 	fmt.Println(name)
 }
