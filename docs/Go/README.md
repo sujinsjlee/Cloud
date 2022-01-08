@@ -22,10 +22,16 @@
 > [Switch](./switch.md)  
 > [Pointers](./pointers.md)  
 > [Arrays and Slices](./as.md)  
+> [Maps](./maps.md)  
+> [Structs](./structs.md)  
 
 
 
 <!--
+* IMPORTANT CONCEPT
+    * channels
+    * go routines
+
 ### 2 Bank & Dictionary Projects
 
 ### 3 URL Checker & Go Routines
