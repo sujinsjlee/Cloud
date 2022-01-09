@@ -26,13 +26,13 @@
 > [Structs](./structs.md)  
 
 
+### 2 Bank & Dictionary Projects
+> [Account + NewAccount](./ac.md)
 
 <!--
-* IMPORTANT CONCEPT
+* I)MPORTANT CONCEPT
     * channels
     * go routines
-
-### 2 Bank & Dictionary Projects
 
 ### 3 URL Checker & Go Routines
 
