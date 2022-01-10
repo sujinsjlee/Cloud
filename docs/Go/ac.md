@@ -52,8 +52,8 @@ func NewAccount(owner string) *Account {
 }
 ```
 
-- newAccount (ERROR) , to export func should be declared as Upper case
-- NewAccount returns **an address of the object** : `*Account` (point to Account)
+- *newAccount* (ERROR) , to export func should be declared as Upper case
+- *NewAccount* returns **an address of the object** : `*Account` (point to Account)
 
 > main.go
 
@@ -69,3 +69,6 @@ func main() {
 	account := accounts.NewAccount("mogi")
 }
 ```
+
+### constructor-like factory functions
+- [constructor-like factory functions Pattern](http://www.golangpatterns.info/object-oriented/constructors)  

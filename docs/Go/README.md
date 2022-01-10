@@ -27,7 +27,8 @@
 
 
 ### 2 Bank & Dictionary Projects
-> [Account + NewAccount](./ac.md)
+> [Struct - Func as a constructor](./ac.md)  
+> [Methods](./methods.md)  
 
 <!--
 * I)MPORTANT CONCEPT
