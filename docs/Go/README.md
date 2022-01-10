@@ -29,6 +29,8 @@
 ### 2 Bank & Dictionary Projects
 > [Struct - Func as a constructor](./ac.md)  
 > [Methods](./methods.md)  
+> [type](./dictionary.md)  
+
 
 <!--
 * I)MPORTANT CONCEPT

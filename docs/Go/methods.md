@@ -139,7 +139,7 @@ func (a Account) Balance() int {
 // Withdraw x amount from your account
 func (a *Account) Withdraw(amount int) error { // return error
 	if a.balance < amount {
-        // return errors.New("Can't withdraw") -> also possible way to print error
+		// return errors.New("Can't withdraw") -> also possible way to print error
 		return errNoMoney
 	}
 	a.balance -= amount
