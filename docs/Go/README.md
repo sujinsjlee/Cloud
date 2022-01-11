@@ -32,13 +32,13 @@
 > [type](./dictionary.md)  
 
 
+### 3 URL Checker & GO ROUTINES
+> [Goroutines](./checker.md)  
+> [Channels](./channels.md)  
+
+
+
 <!--
-* I)MPORTANT CONCEPT
-    * channels
-    * go routines
-
-### 3 URL Checker & Go Routines
-
 ### 4 Job Scrapper
 
 ### 5 Web Server With ECHO
