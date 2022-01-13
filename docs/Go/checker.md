@@ -3,7 +3,6 @@
 > main.go
 
 
-{ % highlight go linenos % }
 ```go
 package main
 
@@ -51,9 +50,6 @@ func hitURL(url string) error {
 	return nil
 }
 ```
-{ % endhighlight % }
-
-
 
 ```console
 > go run main.go
