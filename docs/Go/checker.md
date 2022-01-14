@@ -255,3 +255,18 @@ BBB is good 4
 
 - In the second example, the main GoRoutine is forced to sleep for a second before the main function exits.
 -  In this example, you can treat the **time.Sleep()** function as a "blocker" which **blocks the main GoRoutine for one second.** 
+
+## Memory Usage and Gorutines
+> goroutine은 같은 주소 공간을 쓰기 때문에, shared memory에 접근할 때는 동기화해줘야 합니다.  
+> **Don’t communicate by sharing memory, share memory by communicating.**
+
+- [memory usage](https://www.huskyhoochu.com/go-concurrency/)
+- 그니까 주소공간이 같다는게 변수나 함수등이 메모리에 차지하는 주소값이 같으므로 메모리 공유 sharing memory를 권장하지 않는 것으로 보임
+
+- 메모리 0x00에 여러 개의 쓰레드가 동시에 접근해 값을 증가시킨다면 어떤 일이 벌어질까? 쓰레드 1은 쓰레드 2가 증가시킨 값을 확인하지 못한 채 원본 메모리의 값을 증가시키는 행위를 반복할 것이다. 그 사이에 쓰레드 2가 자신이 증가시킨 값을 다시 메모리에 덮어씌우면 쓰레드 1이 했던 작업은 지워져버리고 말 것이다. 그래서 우리가 원하는 만큼 값이 증가되지 않는 일이 벌어질 것이다.
+
+- mutex를 사용하면 그 순간의 실행흐름을 “잠금”할 수 있어 다른 고루틴이 작업이 실행 중인 메모리에 동시에 접근하는 것을 막을 수 있다.
+
+- 실무 코드에서는 **채널**이라는 방법을 사용할 것이다. 채널은 고루틴이 메모리를 공유하는 용도로 만들어진 일종의 큐이다. 따라서 고루틴이 각기 다른 실행흐름 가운데 값을 만들어낸다 하여도 채널을 통해 밀어넣은 값은 **동기화가 보장된다.**
+
+- 채널은 디폴트로 상대방이 준비된 후 값을 주고받기 때문에, 별도의 동기화 과정이나 condition variable 설정 없이 goroutine을 쓸 수 있습니다.
