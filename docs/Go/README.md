@@ -40,11 +40,8 @@
 > [Go Example](./job.md)  
 
 ### ETC
-> [Interface](./interface.md) 
-
-<!-- 
-> [Garbage Collection](./gc.md)
-> [Buffer Channel](./bc.md)  
-> [Range and Close](./rc.md)  
-> [Select](./select.md)  
--->
+> [Interface](./interface.md)  
+> [Garbage Collection](./gc.md)  
+> [Buffer Channel](./bc.md)    
+> [Range and Close](./rc.md)    
+> [Select](./select.md)    

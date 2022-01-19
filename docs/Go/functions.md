@@ -280,7 +280,7 @@ hello! 5
 
 - **Call the function**
     - `x()` 
-- **Referenct the function**
+- **Reference the function**
     - if you type `x` function without `()`, `x` indicates pointer to the function
 
 ```go

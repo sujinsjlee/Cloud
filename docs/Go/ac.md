@@ -52,8 +52,10 @@ func NewAccount(owner string) *Account {
 }
 ```
 
-- *newAccount* (ERROR) , to export func should be declared as Upper case
-- *NewAccount* returns **an address of the object** : `*Account` (point to Account)
+- **n**ewAccount -->(ERROR)
+	- to export func should be declared as Upper case
+- **N**ewAccount 
+	- returns **an address of the object** : `*Account` (point to Account)
 
 > main.go
 
