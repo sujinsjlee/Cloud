@@ -14,6 +14,7 @@
 - [Introduction of Go](https://mg729.github.io/TIL/go/Go_Introduction/)  
 - [Go for Begineers - Nomadcoders Study Note](./docs/Go/README.md)  
 - [Effective Go](https://go.dev/doc/effective_go)  
+- [30minutes Go](https://programmers.co.kr/learn/courses/13)  
 
 - **Go Reference**
     - Start with basics first:

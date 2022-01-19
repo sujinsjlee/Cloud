@@ -36,9 +36,15 @@
 > [Goroutines](./checker.md)  
 > [Channels](./channels.md)  
 
-
-<!--
 ### 4 Job Scrapper
+> [Go Example](./job.md)  
 
-### 5 Web Server With ECHO
+### ETC
+> [Interface](./interface.md) 
+
+<!-- 
+> [Garbage Collection](./gc.md)
+> [Buffer Channel](./bc.md)  
+> [Range and Close](./rc.md)  
+> [Select](./select.md)  
 -->
