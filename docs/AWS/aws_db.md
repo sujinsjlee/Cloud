@@ -8,6 +8,7 @@
 
 ## RDS
 - [RDS snapshot](https://aws.amazon.com/ko/premiumsupport/knowledge-center/encrypt-rds-snapshots/)
+    - Relational Database Service (Amazon RDS) 
     - **You can't take an encrypted snapshot of an unencrypted DB instance.** However, you can perform a workaround that achieves the same results. The following steps are applicable to Amazon RDS for MySQL, Oracle, SQL Server, PostgreSQL, or MariaDB.
 
     - Important: If you use Amazon Aurora, you can restore an unencrypted Aurora DB cluster snapshot to an encrypted Aurora DB cluster. However, you must specify an AWS Key Management Service (AWS KMS) encryption key when you restore from the unencrypted DB cluster snapshot. 

@@ -3,8 +3,8 @@
 > [GuardDuty](#GuardDuty)  
 > [Macie](#Macie)    
 > [WAF](#WAF)  
-> [Amazon Inspector](#Amazon_Inspector)  
-> [AWS Secrets Manager](#AWS_Secrets_Manager)  
+> [Amazon Inspector](#Amazon-Inspector)  
+> [AWS Secrets Manager](#AWS-Secrets-Manager)  
 > [KMS](#KMS)  
   
 ## GuardDuty
@@ -35,7 +35,7 @@
 
 - cf) **AWS Trusted Advisors** provides recommendations that help you follow AWS best practices. Trusted Advisor evaluates your account by using checks. These checks identify ways to optimize your AWS infrastructure, improve security and performance, reduce costs, and monitor service quotas.
 
-## AWS_Secrets_Manager
+## AWS Secrets Manager
 - Newer service, meant for storing secrets
 - Capability to force **rotation of secrets** every X days
 - Automate generation of secrets on rotation (uses Lambda)

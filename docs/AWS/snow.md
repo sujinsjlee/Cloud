@@ -1,6 +1,6 @@
 # AWS Snow Family
 > [Snowcone](#Snowcone)  
-> [Snowball Edge](#Snowball_Edge)
+> [Snowball Edge](#Snowball-Edge)
 
 ## Snowcone
 - Small, portable computing, anywhere, rugged & secure, **withstands harsh environments**
@@ -8,6 +8,6 @@
 - Must provide your own battery / cables
 - Can be sent back to AWS offline, or connect it to internet and use AWS DataSync to send data
 
-## Snowball_Edge
+## Snowball Edge
 - Physical data transport solution: move TBs or PBs of data in or out of AWS
 - Use cases: large data cloud migrations, DC decommission, disaster recovery

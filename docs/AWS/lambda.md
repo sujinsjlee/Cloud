@@ -1,11 +1,11 @@
 # AWS Lambda
-> [AWS Lambda permission](#AWS_Lambda_permission)  
-> [Lambda max 15min](#max_15)  
-> [AWS Step Function](#AWS_Step_Function)  
+> [AWS Lambda permission](#AWS-Lambda-permission)  
+> [Lambda max 15min](#max-15)  
+> [AWS Step Function](#AWS-Step-Function)  
 > [Lambda@Edge](#Lambda@Edge)  
 > [EventBridge](#EventBridge)  
 
-## AWS_Lambda_permission
+## AWS Lambda permission
 - [Using resource-based policies for Amazon EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-use-resource-based.html#lambda-permissions)
 - To invoke your AWS Lambda function by using **a EventBridge rule**, add the following permission to the policy of your **Lambda function**.
 
@@ -26,12 +26,12 @@
     }
     ```
 
-## max_15
+## max 15
 - [15min](https://aws.amazon.com/lambda/faqs/#:~:text=AWS%20Lambda%20functions%20can%20be,1%20second%20and%2015%20minutes.)
     - *Q: How long can an AWS Lambda function execute?*
     - AWS Lambda functions can be configured to run up to **15 minutes** per execution. You can set the timeout to any value between 1 second and 15 minutes.
 
-## AWS_Step_Function
+## AWS Step Function
 - Build serverless visual workflow to orchestrate your Lambda functions
 
 - Q: How do I coordinate calls between multiple AWS Lambda functions?
