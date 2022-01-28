@@ -5,6 +5,13 @@
 > [S3 Cross Region Replication](#S3-Cross-Region-Replication)  
 > [origin](#origin)  
 
+## CloudFront
+- **Content Delivery Network (CDN)**
+- **Improves read performance, content is cached at the edge**
+- S3 bucket
+  - For distributing files and caching them at the edge
+  - Enhanced security with CloudFront Origin Access Identity (OAI)
+
 ## GeoRestriction
 - [CloudFront georestriction](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/georestrictions.html) : *You can use geo restriction, also known as geo blocking, to prevent users in specific geographic locations from accessing content that you're distributing through a CloudFront web distribution.*
 
