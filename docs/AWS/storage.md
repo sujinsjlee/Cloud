@@ -1,3 +1,8 @@
+# Storage Gateway
+- **On-premises data to the cloud** => **Storage Gateway**
+- Bridge between on-premises data and cloud data in S3, EBS, Glacier
+- Use cases: disaster recovery, backup & restore, tiered storage
+
 ### 3 types of AWS Storage Gateway:
   - **File Gateway**
     - Configured S3 buckets are accessible using the NFS and SMB protocol
@@ -32,3 +37,7 @@
 - **Volumes / Block Storage / iSCSI** => **Volume gateway**(backed by S3 with EBS snapshots)
 - **VTL Tape solution / Backup with iSCSI** = > **Tape Gateway**(backed by S3 and Glacier)
 - No on-premises virtualization => Hardware Appliance
+
+### Tips
+- File gateway -> S3
+- Volume gateway -> EBS
