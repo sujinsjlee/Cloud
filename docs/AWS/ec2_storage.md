@@ -13,3 +13,6 @@
 ## EBS Encryption
 - When you create an encrypted EBS volume, you get the following:
     - `Data at rest` is encrypted inside the volume
+
+### Tip
+- EBS data is persistent, while **Instance store** provides *temporary* block-level storage for your instance
