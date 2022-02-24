@@ -1,3 +1,9 @@
+### Region
+- Pricing: pricing varies region to region and is transparent in the service pricing page
+
+### AZ
+- Data transfer within the same Availability Zone is free
+
 ### Amazon EMR
 - EMR stands for “Elastic MapReduce”
 - EMR helps creating Hadoop clusters (Big Data) to analyze and process vast amount of data
