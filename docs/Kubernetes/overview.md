@@ -38,6 +38,7 @@
     >  OS (OS Kernel + set of Software)  
     
     
+    - 커널 (알맹이, 핵심)
     - 커널은 “운영체제의 핵심부로 컴퓨터 자원(CPU, memeroy, file systems, i/o system)들을 관리하는 역할”을 수행
     - 쉘(Shell) : 사용자가 컴퓨터에게 전달하는 명령을 해석하는 프로그램. 즉, 커널과 사용자간의 다리 역할을 수행
     - 쉘을 통해 커널에게 사용자가 명령을 내릴 수 있음
@@ -66,3 +67,23 @@
 - Kubernetes is thus a container orchestration technology. 
 
 ## Kubernetes Architecture  
+- Node
+- Cluster (a set of nodes)
+- Master Node (responsible for managing cluster)
+    - When a node fails how do you move the workload of the failed node to another worker node? 
+- Worker Node
+
+- Components
+    - API Server
+        - acts as the front-end for kubernetes. The users, management devices, Command line interfaces all talk to the API server to interact with the kubernetes cluster.
+    - etcd
+        - the ETCD key store. ETCD is a distributed reliable key-value store used by kubernetes to store all data used to manage the cluster.
+        - when you have multiple nodes and multiple masters in your cluster, etcd stores all that information on all the nodes in the cluster in a distributed manner. ETCD is responsible for implementing locks within the cluster to ensure there are no conflicts between the Masters.
+    - kubelet
+        -  kubelet is the agent that runs on each node in the cluster. The agent is responsible for making sure that the containers are running on the nodes as expected.
+    - Container Runtime
+        - The container runtime is the underlying software that is used to run containers. In our case it happens to be **Docker**.
+    - Controller
+        - They are responsible for noticing and responding when nodes, containers or endpoints goes down. The controllers makes decisions to bring up new containers in such cases.
+    - Scheduler
+        - is responsible for distributing work or containers across multiple nodes. It looks for newly created containers and assigns them to Nodes.
