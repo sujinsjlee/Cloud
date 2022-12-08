@@ -21,6 +21,8 @@
     > kubectl describe pod nginx // get detail information of the POD  
 
     > kubectl get pods -o wide // see the list of available PODs with ip information 
+
+    > kubectl delet pod nginx // delete the POD
     ```
 
     - cf) AGE shown for a pod when using kubectl get pod , shows the time that the pod has been running since the last restart.

@@ -75,3 +75,19 @@ spec:
 ```
 
 - you can use the **OUTLINE** function on the left side of VC to check the tree hierarchy
+
+
+## Command
+
+- if you're not sure about the K8s command
+
+```console
+> kubectl run --help
+```
+
+- if you want to know which nodes are the pods placed on
+
+
+```shell
+> kubectl get pods -o wide // see the list of available PODs with node information 
+```
