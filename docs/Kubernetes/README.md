@@ -9,3 +9,5 @@
 - [YAML](./yaml.md)  
 - [Pods with YAML](./podsWithYaml.md)  
 - [Controller](./controller.md)  
+- [Deployment](./deployment.md)  
+
