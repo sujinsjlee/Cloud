@@ -3,7 +3,7 @@
 
 ###### © The Study Content is available as Mumshad Mannambeth's Tutorial Video under the terms of the [Udemy - Kubernetes for the Absolute Beginners - Hands-on](https://www.udemy.com/course/learn-kubernetes/)  
 
-### Introduction
+### Content
 - [Kubernetes Overview](./overview.md)  
 - [PODS](./pods.md)  
 - [YAML](./yaml.md)  
@@ -11,3 +11,8 @@
 - [Controller](./controller.md)  
 - [Deployment](./deployment.md)  
 
+## CKA
+###### © The Study Content is available as Mumshad Mannambeth's Tutorial Video under the terms of the [Udemy - Certified Kubernetes Administrator (CKA) with Practice Tests](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/)  
+
+### Content
+- [Section2](./section2.md)  
