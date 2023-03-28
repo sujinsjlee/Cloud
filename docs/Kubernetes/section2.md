@@ -55,7 +55,7 @@
 ## ETCD
 > The etcd data store stores information regarding the cluster such as the nodes, pods, Configs, secrets, accounts, roles, role bindings, and others. Every information you see when you run the kube control get command is from the etcd server. Every change you make to your cluster such as adding additional nodes, deploying pods or replica sets are updated in the etcd server.
 
-## Kublet
+## Kubelet
 
 - Register Node
     - The kubelet in the Kubernetes worker node **registers the node** with a Kubernetes cluster.
@@ -69,7 +69,7 @@
 
 - View kubelet options
 
-    ```shell
+    ```console
     $ ps -aus | grep kubelet
     ```
 
@@ -96,19 +96,19 @@
 
     - Get the application image
     
-    ```shell
+    ```console
     $ kubectl run nginx --image nginx
     ```
 
     - See the list of PODs
     
-    ```shell
+    ```console
     $ kubectl get pods
     ```
 
     - Detail information of PODs
     
-    ```shell
+    ```console
     $ kubectl describe pod [pod-name]
     ```
 
@@ -117,7 +117,7 @@
 ### Practice
 
 - Create a new pod with the `nginx` image.
-    ```shell
+    ```console
     $ kubectl run --help
     $ kubectl run nginx --image=nginx
     pod/nginx created
@@ -125,7 +125,7 @@
 
 - Check pods details
 
-    ```shell
+    ```console
     $ kubectl get pods
     NAME            READY   STATUS    RESTARTS   AGE
     nginx           1/1     Running   0          59s
@@ -283,9 +283,11 @@
 - `--dry-run=client` option 
     - You can use the `--dry-run=client` flag to preview the object that would be sent to your cluster, without really submitting it.
 
-- kubectl run & create Difference
-    - kubectl create : create resource from a file
+
+- kubectl create
+    - Create resource from a file
     - `$ kubectl create -f FILENAME`
 
-    - kubectl run : Create and run a particular image in a pod
+- kubectl run
+    - Create and run a particular image in a pod
     - `$ kubectl run NAME --image=image [--env="key=value"] [--port=port] [--dry-run=server|client] [--overrides=inline-json] [--command] -- [COMMAND] [args...]`
