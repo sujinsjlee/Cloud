@@ -4,15 +4,15 @@
 - K8s uses YAML file as an input of creation of an object such as PODs, deployments..
 
 - YAML in Kubernetes
-- Most of the yaml files have the following format
-- it's recommended to not use a tab, please use two spaces when you need a space
+    - Most of the yaml files have the following format
+    - it's recommended to not use a `tab`, please use `two spaces` when you need a space
 
 
 ```yaml
 # pod-definition.yaml
 apiVersion: v1
 kind: Pod
-metadata:
+metadata: # Dictionary
     name: myapp-pod
     labels:
         app: myapp

@@ -1,5 +1,5 @@
 
-## Kubernetes for Beginners
+## Kubernetes
 
 ###### © The Study Content is available as Mumshad Mannambeth's Tutorial Video under the terms of the [Udemy - Kubernetes for the Absolute Beginners - Hands-on](https://www.udemy.com/course/learn-kubernetes/)  
 
@@ -15,4 +15,4 @@
 ###### © The Study Content is available as Mumshad Mannambeth's Tutorial Video under the terms of the [Udemy - Certified Kubernetes Administrator (CKA) with Practice Tests](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/)  
 
 ### Content
-- [Section2](./section2.md)  
+- [Section2 - Core Concept](./section2.md)   

@@ -2,7 +2,7 @@
 > Knowledge for Cloud Engineer
 
 ## Kubernetes
-- [Kubernetes for the Beginners](./docs/Kubernetes/README.md)  
+- [Kubernetes](./docs/Kubernetes/README.md)  
 
 ## Go
 - [Introduction of Go](https://mg729.github.io/TIL/go/Go_Introduction/)  
@@ -23,6 +23,6 @@
         - [Go spec](https://golang.org/ref/spec)
 
 ## AWS
-- [AWS Solutions Architect Associate](./docs/AWS/README.md)  
+- [AWS](./docs/AWS/README.md)  
 
 
