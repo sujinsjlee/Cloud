@@ -5,6 +5,9 @@
 - [Kubelet](#Kubelet)  
 - [Kube Proxy](#Kube-Proxy)  
 - [POD](#POD)  
+- [ReplicaSets](#ReplicaSets)  
+- [Deployments](#Deployments)  
+- [Services](#Services)
 
 ## Cluster-Architecture
 - **The purpose of Kubernetes** 
@@ -55,7 +58,7 @@
 ## ETCD
 > The etcd data store stores information regarding the cluster such as the nodes, pods, Configs, secrets, accounts, roles, role bindings, and others. Every information you see when you run the kube control get command is from the etcd server. Every change you make to your cluster such as adding additional nodes, deploying pods or replica sets are updated in the etcd server.
 
-## Kubelet
+## Kublet
 
 - Register Node
     - The kubelet in the Kubernetes worker node **registers the node** with a Kubernetes cluster.
@@ -69,7 +72,7 @@
 
 - View kubelet options
 
-    ```console
+    ```shell
     $ ps -aus | grep kubelet
     ```
 
@@ -96,19 +99,19 @@
 
     - Get the application image
     
-    ```console
+    ```shell
     $ kubectl run nginx --image nginx
     ```
 
     - See the list of PODs
     
-    ```console
+    ```shell
     $ kubectl get pods
     ```
 
     - Detail information of PODs
     
-    ```console
+    ```shell
     $ kubectl describe pod [pod-name]
     ```
 
@@ -117,7 +120,7 @@
 ### Practice
 
 - Create a new pod with the `nginx` image.
-    ```console
+    ```shell
     $ kubectl run --help
     $ kubectl run nginx --image=nginx
     pod/nginx created
@@ -125,7 +128,7 @@
 
 - Check pods details
 
-    ```console
+    ```shell
     $ kubectl get pods
     NAME            READY   STATUS    RESTARTS   AGE
     nginx           1/1     Running   0          59s
@@ -280,14 +283,175 @@
 - What does the `READY` column in the output of the kubectl get pods command indicate?
     - Running Containers in POD / Total Conatiners in POD
 
-- `--dry-run=client` option 
+- `--dry-run` option 
     - You can use the `--dry-run=client` flag to preview the object that would be sent to your cluster, without really submitting it.
 
-
-- kubectl create
-    - Create resource from a file
+- kubectl run & create Difference
+    - kubectl create : create resource from a file
     - `$ kubectl create -f FILENAME`
 
-- kubectl run
-    - Create and run a particular image in a pod
+    - kubectl run : Create and run a particular image in a pod
     - `$ kubectl run NAME --image=image [--env="key=value"] [--port=port] [--dry-run=server|client] [--overrides=inline-json] [--command] -- [COMMAND] [args...]`
+
+- `apiVersion` - Which version of the Kubernetes API you're using to create this object
+- `kind` - What kind of object you want to create
+- `metadata` - Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+    - `label` - Labels are key/value pairs that are attached to objects, such as pods. Labels are intended to be used to specify identifying attributes of objects that are meaningful and relevant to users
+    - `annotation` - You can use Kubernetes annotations to attach arbitrary non-identifying metadata to objects. Clients such as tools and libraries can retrieve this metadata. The metadata in an annotation can be small or large, structured or unstructured, and can include characters not permitted by labels.
+- `spec` - What state you desire for the object
+
+<!--
+Q. Pod yaml create 할때, meta 에 기재되는 name 과 Container 에 기재되는 name 이 동일 해야 하나요?
+
+A. Pod YAML 파일에서 metadata 필드에 기재되는 name과 spec.containers 필드에 기재되는 name은 서로 다른 값이 될 수 있습니다.
+
+metadata.name은 Pod 리소스의 고유한 이름을 지정하는 것이며, spec.containers.name은 Pod에 포함된 컨테이너의 이름을 지정하는 것입니다. 
+하나의 Pod에 여러 개의 컨테이너가 포함될 수 있으며, 각 컨테이너는 고유한 이름을 가져야 합니다.
+
+예를 들어, 하나의 Pod에 nginx와 mysql 두 개의 컨테이너가 포함된다고 가정해보겠습니다. 
+이 경우, Pod의 metadata.name은 "web-server"일 수 있고, nginx 컨테이너의 name은 "nginx"이며, mysql 컨테이너의 name은 "mysql"이 될 수 있습니다.
+
+따라서, metadata.name과 spec.containers.name은 서로 다른 값을 가질 수 있으며, 이는 Pod의 이름과 컨테이너의 이름이 각각 다르게 지정될 수 있다는 것을 의미합니다.
+
+-->
+
+## ReplicaSets
+<!--우왕 재밌다-->
+> **High Availability**  
+> *The Replication Controller helps us run multiple instances of a single pod in the Kubernetes cluster, thus providing high availability.*  
+
+
+> **Load Balancing & Slicing**  
+> *Another reason we need Replication Controller is to create multiple pods to share the load across them.*  
+
+- Replication Controller is the older technology that is replaced by Replica Set
+- Replica Set is the new recommended way to set up replication
+
+#### ReplicaSet Definition file
+
+```yaml
+    apiVersion: apps/v1
+    kind: ReplicaSet
+    metadata: # ReplicaSet
+      name: myapp-replicaset
+      labels:
+        app: myapp
+        type: front-end
+    spec: # ReplicaSet
+     template: #Under spec>template, we add pod information to replicate
+        metadata: # POD
+          name: myapp-pod
+          labels:
+            app: myapp
+            type: front-end
+        spec: # POD
+         containers:
+         - name: nginx-container
+           image: nginx
+     replicas: 3 # How many replicas are expected
+     selector: # helps ReplicaSets identify what pods fall under it
+       matchLabels: # !!! It should be matched with label in template !!!
+        type: front-end # labels of the POD 
+ ```
+    
+- To Create the replicaset
+```console
+$ kubectl create -f replicaset-definition.yaml
+```
+- To list all the replicaset
+```console
+$ kubectl get replicaset
+$ kubectl get rs
+$ k get rs
+```
+- To list pods that are launch by the replicaset
+```console
+$ kubectl get pods
+```
+- To get the details of the replicaSet
+```console
+$ kubectl describe replicaset [replicaset-Name]
+```
+- Delete replicasets
+```console
+$ kubectl delete replicaset myapp-replicaset # Also deletes all underlying PODs
+```
+- Edit replicaset configuration
+```console
+$ kubectl edit replicaset [Replicaset-Name]
+$ kubectl edit rs [Replicaset-Name]
+```
+- Command for replicaset help
+```console
+$ kubectl explain replicaset
+```
+- Command for help functionality of each command
+```console
+$ kubectl scale -h
+$ kubectl create deployment --help
+```
+- ReplicaSet requires a selector definition
+    - It's because Replica Set can also manage pods that were not created as part of the Replica Set creation.
+    - Say for example, there were pods created before the creation of the Replica Set that match labels specified in the selector, the Replica Set will also take those pods into consideration when creating the replicas.
+
+- Scale
+    - Update the replicas value and apply with the following command
+    ```console
+    $ kubectl apply -f replicaset-definition.yaml   
+    ```
+
+## Deployments
+
+![Deployment](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/deployment.PNG)
+
+```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: myapp-deployment
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+     template: # POD definition
+        metadata:
+          name: myapp-pod
+          labels:
+            app: myapp
+            type: front-end
+        spec:
+         containers:
+         - name: nginx-container
+           image: nginx
+     replicas: 3
+     selector:
+       matchLabels:
+        type: front-end
+ ```
+- Once the file is ready, create the deployment using deployment definition file
+  ```
+  $ kubectl create -f deployment-definition.yaml
+  ```
+- To see the created deployment
+  ```
+  $ kubectl get deployment
+  ```
+- The deployment automatically creates a **`ReplicaSet`**. 
+- The replicasets ultimately creates **`PODs`**. 
+- To see the all objects at once
+  ```
+  $ kubectl get all
+  ```
+
+
+## Services
+<!--curl 은 사용자 상호작용없이 작동하도록 설계된 서버에서 다른 서버로 데이터를 전송하기 위한 명령줄 유틸리티-->
+
+- **curl**
+    - Client URL (cURL, pronounced “curl”) is a command line tool that enables data exchange between a device and a server through a terminal.
+
+- Service Type
+    - `NodePort` : Exposes the Service on each Node's IP at a static port
+    - One of its use case is to listen to a port on the node and forward request on that port to a port on the Pod running the web application.
+    - `ClusterIP` : Exposes the Service on a cluster-internal IP. 
+    - `LoadBalancer` : Exposes the Service externally using a cloud provider's load balancer.
