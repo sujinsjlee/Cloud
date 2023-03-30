@@ -7,7 +7,9 @@
 - [POD](#POD)  
 - [ReplicaSets](#ReplicaSets)  
 - [Deployments](#Deployments)  
-- [Services](#Services)
+- [Services](#Services)  
+- [Namespaces](#Namespaces)  
+- [Imperative vs Declarative](#Imperative-vs-Declarative)
 
 ## Cluster-Architecture
 - **The purpose of Kubernetes** 
@@ -451,7 +453,48 @@ $ kubectl create deployment --help
     - Client URL (cURL, pronounced “curl”) is a command line tool that enables data exchange between a device and a server through a terminal.
 
 - Service Type
-    - `NodePort` : Exposes the Service on each Node's IP at a static port
+
+### NodePort 
+
+![ServiceDefinitionFile](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/srvnp.PNG)
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+ name: myapp-service
+spec:
+ type: NodePort
+ ports:
+ - targetPort: 80
+   port: 80
+   nodePort: 30008
+ selector: # POD labels information from the pod yaml
+   app: myapp
+   type: front-end
+```
+    - The service listens to a port on the node and forward request to the Pods.
+    - In the above picture, a NordPort means 30008
+    - Exposes the Service **on each Node**'s IP at a static port
     - One of its use case is to listen to a port on the node and forward request on that port to a port on the Pod running the web application.
-    - `ClusterIP` : Exposes the Service on a cluster-internal IP. 
-    - `LoadBalancer` : Exposes the Service externally using a cloud provider's load balancer.
+
+ ![NodePort](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/srvnp4.PNG)
+- When Pods are distributed across multiple nodes
+- To summarize, in any case, whether it be a single Pod on a single node, multiple Pods on a single node,or multiple Pods on multiple nodes, the service is created exactly the same without you having to do any additional steps during the service creation.    
+    
+### ClusterIP 
+![ClusterIP](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/srvc1.PNG)
+
+- The pod's IP like 10.244.0.3 in the picture above is not static, it changes when pods are down and new pods are created
+
+- The service creates a virtual IP **inside the cluster** to enable communication between different services, such as a set of frontend servers to a set of backend servers.
+
+- A Kubernetes service can help us group the pods together and provide a single interface to access the pods in a group.
+    - For example, a service created for the backend pods will help group all the backend pods together and provide a single interface for other pods to access this service.The requests are forwarded to **one of the pods under the service randomly.** Similarly, create additional services for Redis and allow the backend podsto access the Redis systems through the service.
+
+### LoadBalancer
+- It **provisions a load balancer** for our application in supported cloud providers.
+
+## Namespaces
+
+## Imperative vs Declarative
+
