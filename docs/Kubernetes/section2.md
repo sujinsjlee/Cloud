@@ -437,6 +437,8 @@ $ kubectl create deployment --help
 - To see the created deployment
   ```
   $ kubectl get deployment
+  $ kubectl get deploy
+  $ k get deploy
   ```
 - The deployment automatically creates a **`ReplicaSet`**. 
 - The replicasets ultimately creates **`PODs`**. 
@@ -457,6 +459,7 @@ $ kubectl create deployment --help
 ### NodePort 
 
 ![ServiceDefinitionFile](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/srvnp.PNG)
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -472,12 +475,15 @@ spec:
    app: myapp
    type: front-end
 ```
-    - The service listens to a port on the node and forward request to the Pods.
-    - In the above picture, a NordPort means 30008
-    - Exposes the Service **on each Node**'s IP at a static port
-    - One of its use case is to listen to a port on the node and forward request on that port to a port on the Pod running the web application.
+
+
+- The service listens to a port on the node and forward request to the Pods.
+- In the above picture, a NordPort means 30008
+- Exposes the Service **on each Node**'s IP at a static port
+- One of its use case is to listen to a port on the node and forward request on that port to a port on the Pod running the web application.
 
  ![NodePort](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/srvnp4.PNG)
+
 - When Pods are distributed across multiple nodes
 - To summarize, in any case, whether it be a single Pod on a single node, multiple Pods on a single node,or multiple Pods on multiple nodes, the service is created exactly the same without you having to do any additional steps during the service creation.    
     
@@ -494,7 +500,54 @@ spec:
 ### LoadBalancer
 - It **provisions a load balancer** for our application in supported cloud providers.
 
+### Practice
+```console
+$ kubectl get service
+$ kubectl get svc
+$ k get svc
+$ k decribe svc [Service-Name]
+```
 ## Namespaces
+- The `default` namespace in kubernetes is automatically created when kubernetes is setup initially.
+- To list the pods in default namespace
+  ```
+  $ kubectl get pods
+  ```
+- To list the pods in another namespace. Use **`kubectl get pods`** command along with the **`--namespace`** flag or argument.
+  ```
+  $ kubectl get pods --namespace=kube-system
+  ```
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  namespace: dev # define namespace
+  labels:
+     app: myapp
+     type: front-end
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+```
+
+### Practice
+```console
+$ kubectl get namespaces
+$ kubectl get ns
+```
+
+```console
+$ k get pods --all-namespaces
+$ k get pods -A
+```
+
+- Create redis POD with finance namespace
+```console
+$ k run redis --image=redis -n=finanace 
+```
 
 ## Imperative vs Declarative
 
