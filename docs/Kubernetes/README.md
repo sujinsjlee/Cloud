@@ -16,3 +16,5 @@
 
 ### Content
 - [Section2 - Core Concept](./section2.md)   
+- [Section3 - Scheduling](./section3.md)   
+
