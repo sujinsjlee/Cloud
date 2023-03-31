@@ -551,3 +551,10 @@ $ k run redis --image=redis -n=finanace
 
 ## Imperative vs Declarative
 
+### Imperative
+- Kubernetes objects can quickly be created, updated, and deleted directly using [imperative commands](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/) built into the kubectl command-line tool.
+
+### Declarative
+- using `kubectl apply`
+- good for reproducible deployments
+- Kubernetes objects can be created, updated, and deleted by storing multiple object configuration files in a directory and using `kubectl apply` to recursively create and update those objects as needed. [This method](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/) retains writes made to live objects without merging the changes back into the object configuration files. `kubectl diff` also gives you a preview of what changes `apply` will make.
