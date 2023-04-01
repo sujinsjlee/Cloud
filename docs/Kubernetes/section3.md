@@ -224,14 +224,6 @@ Examples:
 - When creating YAML file with image, `--image nginx` there should be a space between them, not equal letter.
 
 ```console
-controlplane ~ ➜  kubectl run bee --image=nginx --dry-run=client o yaml > bee.yaml
-
-controlplane ~ ➜  cat bee.yaml 
-pod/bee created (dry run)
-
-controlplane ~ ➜  ?
--bash: ?: command not found
-
 controlplane ~ # kubectl run bee --image nginx --dry-run=client -o yaml > bee.yaml
 
 controlplane ~ # cat bee.yaml 
@@ -256,11 +248,14 @@ status: {}
 
 
 <details>
-    <summary>Remove the taint on controlplane, which currently has the taint effect of NoSchedule.</summary>
+<summary>Remove the taint on controlplane, which currently has the taint effect of NoSchedule.</summary>
 
-    ```
-    kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
-    ```
+- Add **-** at the end of the command
+
+
+```console
+~# kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+```
 </details>
 
 ## Node Selectors 
@@ -282,4 +277,3 @@ status: {}
   $ kubectl label nodes node-1 size=Large
   ```
 
-  
