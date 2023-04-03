@@ -4,7 +4,10 @@
 - [Labels,Selectors and Annotations](#Labels,-Selectors-and-Annotations)  
 - [Taints and Tolerations](#Taints-and-Tolerations)  
 - [Node Selectors](#Node-Selectors)  
-
+- [Node Affinity](#Node-Affinity)  
+- [Resource Requirements and Limits](#Resource-Requirements-and-Limits)  
+- [DaemonSets](#DaemonSets)  
+- [Static Pods](#Static-Pods)  
 
 ## Manual scheduling
 
@@ -277,3 +280,132 @@ status: {}
   $ kubectl label nodes node-1 size=Large
   ```
 
+## Node Affinity
+
+- With `Node Selectors` we cannot provide the advance options like allowing multiple size or excluding specific size.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+ name: myapp-pod
+spec:
+ containers:
+ - name: data-processor
+   image: data-processor
+ affinity:
+   nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: size
+            operator: In
+            values: 
+            - Large
+            - Medium
+```
+
+- The `In` operator ensures that the pod will be placed on a node whose label size has any value in the list of values specified here. In this case, it is just one called `Large` and `Medium`.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+ name: myapp-pod
+spec:
+ containers:
+ - name: data-processor
+   image: data-processor
+ affinity:
+   nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: size
+            operator: NotIn
+            values: 
+            - Small
+```
+
+- Use the node `In` operator to say something like, size `NotIn` small, where node affinity will match the nodes with a size not set to small.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+ name: myapp-pod
+spec:
+ containers:
+ - name: data-processor
+   image: data-processor
+ affinity:
+   nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: size
+            operator: Exists
+```
+
+- The `Exists` operator will simply check if the label size exists on the nodes, and there is no need to add the value section for that as it does not compare the values.
+
+### Node Affinity Types
+![11](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/nats.PNG)  
+![22](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/nats1.PNG)
+
+### Practice
+<details>
+    <summary>How many Labels exist on node node01?</summary>
+    ```
+    kubectl describe node node01
+    ```
+    Look under `Labels` section
+    --- OR ---
+    ```
+    kubectl get node node01 --show-labels
+    ```
+</details>
+
+<details>
+    <summary>Apply a label color=blue to node node01</summary>
+    ```
+    kubectl label node node01 color=blue
+    ```
+</details>
+
+<details>
+    <summary>Create a new deployment named blue with the nginx image and 3 replicas.</summary>
+    ```
+    kubectl create deployment blue --image=nginx --replicas=3
+    ```
+</details>
+
+<details>
+    <summary>Which nodes can the pods for the blue deployment be placed on?</summary>
+
+    Check if master and node01 have any taints on them that will prevent the pods to be scheduled on them. If there are no taints, the pods can be scheduled on either node.
+    ```
+    kubectl describe nodes controlplane | grep -i taints
+    kubectl describe nodes node01 | grep -i taints
+    ```
+</details>
+
+<details>
+    <summary>Set Node Affinity to the deployment to place the pods on node01 only.</summary>
+    Now we edit in place the deployment we created earlier. Remember that we labelled `node01` with `color=blue`? Now we are going to create an affinity to that label, which will "attract" the pods of the deployment to it.
+    ```
+    $ kubectl edit deployment blue
+    ```
+</details>
+
+- **Indentation in VIM**
+  - Type `v` (to enter visual block editing mode)
+  - Move the cursor with the arrow keys (or with h/j/k/l) to highlight the lines you want to indent or unindent.
+  - Then:
+    - Type `>` to indent once (2 spaces).
+    - Type `2>` to indent twice (4 spaces).
+    - Type `3>` to indent thrice (6 spaces).
+
+
+## Resource Requirements and Limits
+## DaemonSets
+## Static Pods
