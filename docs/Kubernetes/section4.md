@@ -15,6 +15,26 @@
 
 ![monitor](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/ca.PNG)
 
+- Kubernetes runs an agent on each node known as the `kubelet`, which is responsible for receiving instructions from the Kubernetes API master server and running pods on the nodes
+- The `kubelet` also contains a sub component known as the **cAdvisor** or Container Advisor. **cAdvisor** is responsible for retrieving performance metrics from pods and exposing them through the kubelet API to make the metrics available for the Metrics Server.
 
+- Clone the metric server from github repo
+  ```
+  $ git clone https://github.com/kubernetes-incubator/metrics-server.git
+  ```
+- Deploy the metric server
+  ```
+  $ kubectl create -f metric-server/deploy/1.8+/
+  ```
+    - This command deploys a set of pods, services, and roles to enable Metrics Server to pull for performance metrics from the nodes in the cluster.
+
+- View the cluster performance
+  ```
+  $ kubectl top node
+  ```
+- View performance metrics of pod
+  ```
+  $ kubectl top pod
+  ```
 
 ## Logging
