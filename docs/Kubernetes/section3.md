@@ -8,6 +8,8 @@
 - [Resource Requirements and Limits](#Resource-Requirements-and-Limits)  
 - [DaemonSets](#DaemonSets)  
 - [Static Pods](#Static-Pods)  
+- [Multiple Schedulers](#Multiple-Schedulers)  
+- [Configuring Scheduler Profiles](#Configuring-Scheduler-Profiles)  
 
 ## Manual scheduling
 
@@ -405,7 +407,165 @@ spec:
     - Type `2>` to indent twice (4 spaces).
     - Type `3>` to indent thrice (6 spaces).
 
+## Taints and Tolerations and Node Affinity
+
+![TTNA](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/tn-na.PNG)
+
+- Taints and Tolerations do not guarantee that the pods will only prefer these nodes
+- The red pods may end up on one of the other nodes that do not have a taint or toleration set.
+- At the same time Node Affinity do not guarantee that other pods are not placed on these nodes.
+
+![combination](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/tn-nsa.png)
+
+- There is a chance that one of the other pods may end up on our nodes.
+- As such, **a combination of taints and tolerations and node affinity rules can be used together to completely dedicate nodes for specific parts**.
 
 ## Resource Requirements and Limits
+> If you know that your application will need more CPU, Memory, Disk capacity, modify the values by specifying them in POD definition or deployment yaml file
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-webapp-color
+  labels:
+    name: simple-webapp-color
+spec:
+ containers:
+ - name: simple-webapp-color
+   image: simple-webapp-color
+   ports:
+    - containerPort:  8080
+   resources: # Specify new value for memory and CPU usage
+     requests:
+      memory: "1Gi" # 1 Gigabyte memory
+      cpu: "1"
+```
+
+- There is a difference between G and Gi
+
+  |||bytes|
+  |---|---|---|   
+  |1G|Gigabyte|1,000,000,000 |   
+  |1M|Megabyte|1,000,000 |  
+  |1K|Kilobyte|1,000 |  
+  |1Gi|Gigabyte|1,073,741,824 |    
+  |1Mi|Megabyte|1,048,576 |  
+  |1Ki|Kilobyte|1,024 |  
+
+### Request & Limit
+<!--Request & Limit
+컨테이너에 적용될 리소스의 양을 정의하는데 쿠버네티스에서는 request와 limit이라는 컨셉을 사용한다.
+
+request는 컨테이너가 생성될때 요청하는 리소스 양이고, limit은 컨테이너가 생성된 후에 실행되다가 리소스가 더 필요한 경우 (CPU가 메모리가 더 필요한 경우) 추가로 더 사용할 수 있는 부분이다.-->
+
+- **Request**
+  - Requests are the minimum guaranteed amount of a resource that is reserved for a container.
+- **Limit**
+  - Kubernetes defines Limits as the maximum amount of a resource to be used by a container. This means that the container can never consume more than the memory amount or CPU amount indicated. 
+
+ 
+- The limits and requests are **set for each container** within the pod.
+
+> So what happens when a pod tries to exceed resources beyond its specified limit?
+
+- In case of **CPU, Kubernetes throttles the CPU** so that it does not go beyond the specified limit.
+- A container cannot use more CPU resources than its limit.
+
+
 ## DaemonSets
+> DaemonSets are like replicasets, as it helps in to deploy multiple instances of pod. But it runs one copy of your pod on each node in your cluster.
+
+
+![demonset](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/ds-uc-kp.PNG)
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet ## kind is set as DaemonSet
+metadata:
+  name: monitoring-daemon
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: monitoring-agent
+  template:
+    metadata:
+     labels:
+       app: monitoring-agent
+    spec:
+      containers:
+      - name: monitoring-agent
+        image: monitoring-agent
+```
+
+### Practice
+
+```console
+~# k get daemonsets -A 
+~# k get ds -A
+~# k describe ds kube-flannel-ds -n kube-system
+```
+
 ## Static Pods
+- **Created by the kubelet**
+- **Deploy Control Plane components as Static Pods**
+
+#### How do you provide a pod definition file to the kubelet without a kube-apiserver?
+- You can configure the kubelet to read the pod definition files from a directory on the server designated to store information about pods.
+
+### Configure Static Pod
+- The designated directory can be any directory on the host and the location of that directory is passed in to the kubelet as an option while running the service.
+  - The option is named as **`--pod-manifest-path`**.
+  
+  ![sp](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/sp.PNG)
+  
+### Another way to configure static pod 
+- Instead of specifying the option directly in the **`kubelet.service`** file, you could provide a path to another config file using the config option, and define the directory path as staticPodPath in the file.
+
+  ![sp1](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/sp1.PNG)
+
+### View the static pods
+- To view the static pods
+  ```
+  $ docker ps
+  ```
+- Since we don't have kube-api, we cannot use `kubectl` command
+
+
+## Multiple Schedulers
+> Your kubernetes cluster can schedule multiple schedulers at the same time.
+
+![ms](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/dask.PNG)
+
+- View scheduler pods
+```yaml
+$ kubectl get pods -n kube-system
+```
+
+## Use the Custom Scheduler
+![sch](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/cs.png)
+
+- Create a pod definition file and add new section called **`schedulerName`** and specify the name of the new scheduler
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: nginx
+  spec:
+    containers:
+    - image: nginx
+      name: nginx
+    schedulerName: my-custom-scheduler ## Add customized schedulerName
+  ```
+
+### Practice
+
+```yaml
+~# kubectl descrive pod [POD NAME] -n kube-systme | grep Image
+``` 
+
+## Configuring Scheduler Profiles
+- 
+- [Scheduling framework](https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/)
