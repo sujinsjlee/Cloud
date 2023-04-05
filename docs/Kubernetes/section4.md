@@ -4,6 +4,9 @@
 - [Managing Application Logs](#Logging)  
 
 ## Monitoring  
+- [www.devopsschool.com/blog/what-is-metrics-server-and-how-to-install-metrics-server/](https://www.devopsschool.com/blog/what-is-metrics-server-and-how-to-install-metrics-server/) 
+![mm](https://www.devopsschool.com/blog/wp-content/uploads/2020/08/metrics-server-cadvisor.jpg)  
+
 ![m](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/mon.PNG)
 - Kubernetes does not come with a full-featured built-in monitoring solution.
 - However, there are a number of open-source solutions available today such as **Metrics Server, Prometheus, the Elastic Stack** and **proprietary solutions like Datadog and Dynatrace.**
@@ -38,3 +41,13 @@
   ```
 
 ## Logging
+
+- To view the logs
+  ```
+  ~# kubectl logs -f <pod-name>
+  ```
+- If there are multiple containers in a pod then you must specify the name of the container explicitly in the command.
+  ```
+  ~# kubectl logs -f <pod-name> <container-name>
+  ~# kubectl logs -f even-simulator-pod event-simulator
+  ```

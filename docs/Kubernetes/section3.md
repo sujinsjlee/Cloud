@@ -567,5 +567,5 @@ $ kubectl get pods -n kube-system
 ``` 
 
 ## Configuring Scheduler Profiles
-- 
+
 - [Scheduling framework](https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/)
