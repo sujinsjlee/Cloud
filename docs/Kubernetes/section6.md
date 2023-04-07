@@ -103,6 +103,7 @@ kubectl: 클러스터와 통신하기 위한 커맨드 라인 유틸리티이다
 - Check version of the cluster
   <details>
   <summary>Answer</summary>
+
   ```console
   ~# k get nodes
     NAME           STATUS   ROLES           AGE   VERSION
@@ -167,7 +168,7 @@ kubectl: 클러스터와 통신하기 위한 커맨드 라인 유틸리티이다
   ```console
   ~# kubeadm upgrade plan 
   ```
-  
+
   </details>
   
 
@@ -266,5 +267,34 @@ kubectl: 클러스터와 통신하기 위한 커맨드 라인 유틸리티이다
 
     - Type exit or logout or enter `CTRL + d` to go back to the controlplane node.
 
-- [Upgrade worker node](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/upgrading-linux-nodes/01)
+- [Upgrade worker node](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/upgrading-linux-nodes)
 
+<!--
+This will upgrade Kubernetes controlplane node.
+
+- kubeadm upgrade apply v1.26.0
+
+This will update the kubelet with the version 1.26.0.
+
+- apt-get install kubelet=1.26.0-00 
+
+On the node01 node, run the following commands:
+If you are on the controlplane node, run ssh node01 to log in to the node01.
+
+This will update the package lists from the software repository.
+
+- apt-get update
+
+This will install the kubeadm version 1.26.0.
+
+- apt-get install kubeadm=1.26.0-00
+
+This will upgrade the node01 configuration.
+
+- kubeadm upgrade node
+
+This will update the kubelet with the version 1.26.0.
+
+- apt-get install kubelet=1.26.0-00 
+
+-->
