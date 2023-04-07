@@ -19,4 +19,5 @@
 - [Section3 - Scheduling](./section3.md)   
 - [Section4 - Logging & Moniotoring](./section4.md)  
 - [Section5 - Application Lifecycle Management](./section5.md)  
+- [Section6 - Cluster Maintenance](./section6.md)  
 

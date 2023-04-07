@@ -296,8 +296,8 @@ In computers, to mount is to make a group of files in a file system structure ac
 
 쿠버네티스 볼륨은 파드의 구성 요소로 컨테이너와 동일하게 파드 스펙에서 정의됩니다. 볼륨은 독립적인 쿠버네티스 리소스가 아니므로 자체적으로 생성, 삭제될 수 없습니다. 볼륨은 파드의 모든 컨테이너에서 사용 가능하며 이 경우 접근하려는 각 컨테이너에서 마운트해야 합니다. 각 컨테이너 파일 시스템의 어느 경로에나 볼륨을 마운트 할 수 있습니다.
 -->
-  - On-disk files in a container are ephemeral, which presents some problems for non-trivial applications when running in containers. `One problem is the loss of files when a container crashes. The kubelet restarts the container but with a clean state.` A second problem occurs when sharing files between containers running together in a Pod.
-  - Kubernetes supports many types of volumes. A Pod can use any number of volume types simultaneously. Ephemeral volume types have a lifetime of a pod, but persistent volumes exist beyond the lifetime of a pod. When a pod ceases to exist, Kubernetes destroys ephemeral volumes; however, Kubernetes does not destroy persistent volumes. For any kind of volume in a given pod, `data is preserved across container restarts.`
+    - On-disk files in a container are ephemeral, which presents some problems for non-trivial applications when running in containers. `One problem is the loss of files when a container crashes. The kubelet restarts the container but with a clean state.` A second problem occurs when sharing files between containers running together in a Pod.
+    - Kubernetes supports many types of volumes. A Pod can use any number of volume types simultaneously. Ephemeral volume types have a lifetime of a pod, but persistent volumes exist beyond the lifetime of a pod. When a pod ceases to exist, Kubernetes destroys ephemeral volumes; however, Kubernetes does not destroy persistent volumes. `For any kind of volume in a given pod, data is preserved across container restarts.`
 
 ## Init Containers 
 [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
