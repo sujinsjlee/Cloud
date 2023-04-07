@@ -133,6 +133,7 @@ kubectl: 클러스터와 통신하기 위한 커맨드 라인 유틸리티이다
     NAME   READY   UP-TO-DATE   AVAILABLE   AGE
     blue   5/5     5            5           9m
   ```
+
   </details>
 
 - What nodes are the pods hosted on?
@@ -162,9 +163,11 @@ kubectl: 클러스터와 통신하기 위한 커맨드 라인 유틸리티이다
 
   <details>
   <summary>Answer</summary>
+
   ```console
   ~# kubeadm upgrade plan 
   ```
+  
   </details>
   
 
