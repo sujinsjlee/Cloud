@@ -512,6 +512,10 @@ spec:
 - **Created by the kubelet**
 - **Deploy Control Plane components as Static Pods**
 
+<!--
+즉, API서버 없이 특정노드에 있는 kubelet에 의해 직접 실행되는 파드를 의미한다. 쉽게 말해, 수동으로 돌리는 파드이다.
+-->
+
 #### How do you provide a pod definition file to the kubelet without a kube-apiserver?
 - You can configure the kubelet to read the pod definition files from a directory on the server designated to store information about pods.
 

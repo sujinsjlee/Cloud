@@ -1,6 +1,7 @@
 # Section 6 - Cluster Maintenance
 - [OS Upgrade](#OS-Upgrade)  
 - [Cluster Upgrade](#Cluster-Upgrade)  
+- [Backup and Restore Methods](#Backup-and-Restore-Methods)  
 
 - **Cluster**
     - A Kubernetes cluster is a set of **node machines** for running containerized applications. If you’re running Kubernetes, you’re running a cluster.
@@ -298,3 +299,176 @@ This will update the kubelet with the version 1.26.0.
 - apt-get install kubelet=1.26.0-00 
 
 -->
+
+## Backup and Restore Methods
+
+
+- `ETCD cluster` : All cluster-related information is stored 
+
+- `Persistent Volumes` : persistent storage
+
+### Backup - ETCD
+
+- **ETCD Cluster** : So information about the cluster itself, the nodes and every other resources created within the cluster, are stored here.
+
+- the etcd cluster is hosted on **the master nodes**.
+
+- **Data Directory**
+  ![dd](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/be.PNG)
+  - While configuring etcd, we specified a location where all the data would be stored, the data directory.
+  - That is the directory that can be configured to be backed up by your backup tool.
+
+- **Restore**
+![res](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/er.PNG)
+
+- [Restore ETCD cluster](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/)
+
+- To restore etcd from the backup at later in time. First stop kube-apiserver service
+  ```
+  $ service kube-apiserver stop
+  ```
+- Run the etcdctl snapshot restore command
+- Update the etcd service
+- Reload system configs
+  ```
+  $ systemctl daemon-reload
+  ```
+- Restart etcd
+  ```
+  $ service etcd restart
+  ```
+
+- Start the kube-apiserver
+  ```
+  $ service kube-apiserver start
+  ```
+
+#### With all etcdctl commands specify the cert,key,cacert and endpoint for authentication.
+
+```
+$ ETCDCTL_API=3 etcdctl \
+  snapshot save /tmp/snapshot.db \
+  --endpoints=https://[127.0.0.1]:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/etcd-server.crt \
+  --key=/etc/kubernetes/pki/etcd/etcd-server.key
+```
+
+
+- if you're using a managed Kubernetes environment, then, at times, you may not even access to the etcd cluster.
+- In that case, backup by querying the Kube API server is probably the better way.
+
+### Practice
+
+- What is the version of ETCD running on the cluster?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k get pods -n kube-system
+  ~# k get pods -A -o wide 
+  ~# k describe pod etcd-controlplane -n kube-system 
+  ```
+  - `kube-system`
+    - The namespace for objects created by the Kubernetes system.
+  </details>
+
+- At what address can you reach the ETCD cluster from the controlplane node
+
+  <details>
+  <summary>Answer</summary>
+  - Should check `--listen-client` part
+
+  ```
+  Command:
+      etcd
+      --listen-client-urls=https://127.0.0.1:2379,https://192.6.73.9:2379
+  ```
+  
+  </details>
+
+
+<!--
+kube-system
+쿠버네티스 시스템에 의해 생성되는 API 오브젝트들을 관리하기 위한 Namespace이다.
+클러스터 레벨의 관리자 영역의 Namespace라고 이해하면 좋다. 
+-->
+
+- Take a snapshot of the ETCD database using the built-in snapshot functionality.
+
+  <details>
+  <summary>Answer</summary>
+  
+  - Check static pod
+  
+  ```
+  $ ls /etc/kubernetes/manifests/
+  etcd.yaml  kube-apiserver.yaml  kube-controller-manager.yaml  kube-scheduler.yaml
+
+  $ ls /etc/kubernetes/pki/etcd/
+  ca.crt  healthcheck-client.crt  peer.crt  server.crt
+  ca.key  healthcheck-client.key  peer.key  server.key
+
+  $ls /var/lib/etcd/
+  member
+
+  $ cat /etc/kubernetes/manifests/etcd.yaml 
+  apiVersion: v1
+  kind: Pod
+  spec:
+    containers:
+    - command:
+      - etcd
+      - --cert-file=/etc/kubernetes/pki/etcd/server.crt
+      - --listen-client-urls=https://127.0.0.1:2379,https://192.6.73.9:2379
+      - --key-file=/etc/kubernetes/pki/etcd/server.key
+      - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+  ```
+
+  - Snapshot 
+    - Store the backup file at location `/opt/snapshot-pre-boot.db`
+
+  ```
+  $ export ETCDCTL_API=3
+  $ etcdctl snapshot save --endpoints=127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  /opt/snapshot-pre-boot.db
+  ```
+  
+  </details>
+
+
+- Luckily we took a backup. Restore the original state of the cluster using the backup file.
+
+  <details>
+  <summary>Answer</summary>
+  
+  ```
+  $ etcdctl snapshot restore --data-dir /var/lib/etcd-from-backup /opt/snapshot-pre-boot.db
+  2023-04-10 00:49:18.427304 I | mvcc: restore compact to 2840
+  2023-04-10 00:49:18.434978 I | etcdserver/membership: added member 8e9e05c52164694d [http://localhost:2380] to cluster cdf818194e3a8c32
+  ```
+
+  - **Change the hostPath**
+
+  ```
+  $ vim /etc/kubernetes/manifests/etcd.yaml 
+  ```
+
+  ```yaml
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/pki/etcd
+      type: DirectoryOrCreate
+    name: etcd-certs
+  - hostPath:
+      path: /var/lib/etcd-from-backup ## Change /var/lib/etcd to backup Path
+      type: DirectoryOrCreate
+    name: etcd-data
+  ```
+
+
+  </details>
