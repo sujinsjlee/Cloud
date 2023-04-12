@@ -4,6 +4,10 @@
 - [TLS](#TLS)  
 - [View Certificates](#View-Certificates)  
 - [Certificates API](#Certificates-API)  
+- [KubeConfig](#KubeConfig)  
+- [API Groups](#API-Groups)  
+- [Authorization](#Authorization)  
+- [Role Based Access Controls](#Role-Based-Access-Controls)  
 
 
 ## Authentification
@@ -297,6 +301,398 @@ kubectl certificate deny [certificate-signing-request-name]
 ```
 kubectl delete csr [CSR NAME]
 ```
+
+## KubeConfig
+
+- `curl` enables data exchange between a device and a server through a terminal.
+
+![curl](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/kc1.PNG)
+
+- Client uses the certificate file and key to query the kubernetes Rest API for a list of pods using curl.
+
+- Also, you can specify the same using `kubectl`
+
+- Typing the above texts everytime is a tedious work, so we can move these information to a configuration file called KubeConfig
+
+```
+$ kubectl get pods --kubeconfig config
+```
+
+### KubeConfig
+
+- [KubeConfig](https://cloud.google.com/anthos/clusters/docs/multi-cloud/aws/concepts/about-kubeconfig)
+  - Kubernetes uses a **YAML file** called `kubeconfig` to store cluster authentication information for `kubectl`. `kubeconfig` contains a list of contexts to which kubectl refers when running commands. **By default, the file is saved at `$HOME/.kube/config`**.
+
+### KubeConfig File
+
+- The kubeconfig file has 3 sections
+  - **Clusters**
+    - Clusters are the various Kubernetes clusters that you need access to.
+    - Development / Prooduction / prod
+  
+  - **Contexts**
+    - Contexts define which user account will be used to access which cluster.
+
+  - **Users**
+    - Admin, Dev User, Prod User
+    - Users may have different priviledges on different clusters
+
+```yaml
+apiVersion: v1
+kind: Config
+current-context: "" ## if there are many clusters, specify the context to use
+
+clusters:
+- name: my-kube-playground
+  cluster:
+    certificate-authority: ca.crt
+    server: https://my-kube-playground:6443
+
+users:
+- name: my-kube-admin
+  user: 
+    client-certificate: admin.crt
+    client-key: admin.key
+
+contexts:
+- name: my-kube-admin
+  user: 
+    client-certificate: admin.crt
+    client-key: admin.key
+```
+
+- To view the current file being used
+  
+  ```
+  $ kubectl config view
+  ```
+- You can specify the kubeconfig file with kubectl config view with "--kubeconfig" flag
+  
+  ```
+  $ kubectl config veiw --kubeconfig=my-custom-config
+  ```
+
+- How do you update your current context? Or change the current context
+  
+  ```
+  $ kubectl config view --kubeconfig=my-custom-config
+  ```
+  
+- kubectl config help
+  ```
+  $ kubectl config -h
+  ```
+
+![Certificates](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/kc11.PNG)
+
+- you may optionally use the certificate authority data field and provide the contents of the certificate itself but not the file as is.
+
+#### K8s Reference Docs
+- https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/
+- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
+
+### Practice
+
+- I would like to use the `dev-user` to access `test-cluster-1.` Set the current context to the right one so I can do that.
+
+  - you can quickly switch between clusters by using the `kubectl config use-context` command.
+
+  <details>
+  <summary>Answer</summary>
+
+  ```yaml
+  ~# cat my-kube-config 
+  apiVersion: v1
+  kind: Config
+
+  clusters:
+  - name: production
+    cluster:
+      certificate-authority: /etc/kubernetes/pki/ca.crt
+      server: https://controlplane:6443
+  - name: development
+    cluster:
+      certificate-authority: /etc/kubernetes/pki/ca.crt
+      server: https://controlplane:6443
+  - name: test-cluster-1
+    cluster:
+      certificate-authority: /etc/kubernetes/pki/ca.crt
+      server: https://controlplane:6443
+
+  contexts:
+  - name: test-user@development
+    context:
+      cluster: development
+      user: test-user
+  - name: research
+    context:
+      cluster: test-cluster-1
+      user: dev-user
+
+  users:
+  - name: test-user
+    user:
+      client-certificate: /etc/kubernetes/pki/users/test-user/test-user.crt
+      client-key: /etc/kubernetes/pki/users/test-user/test-user.key
+  - name: dev-user
+    user:
+      client-certificate: /etc/kubernetes/pki/users/dev-user/developer-user.crt
+      client-key: /etc/kubernetes/pki/users/dev-user/dev-user.key
+
+  current-context: test-user@development
+  preferences: {}
+  ```
+
+  ```
+  ~# kubectl config use-context research --kubeconfig /root/my-kube-config
+  ~# kubectl config use-context [CONTEXT NAME] --kubeconfig [KubeConfig PATH]
+  ```
+
+  </details>
+
+- Make the `my-kube-config` file the default kubeconfig.
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  mv /root/my-kube-config /root/.kube/config 
+  ```
+  
+  </details>
+
+
+## API Groups
+- **API**(Application Programming Interface)
+- - The kubernetes API is grouped into multiple such groups based on thier purpose. Such as one for **`APIs`**, one for **`healthz`**, **`metrics`** and **`logs`** etc.
+
+### API and APIs
+![keyy](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/api10.PNG)
+
+- These APIs are categorized into two;
+  - `/api` : the core group 
+    - Where all the functionality exists
+  - `/apis` : the named group
+    - More organized and going forward all the newer features are going to be made available to these named groups.
+
+
+## Authorization
+
+### Authorization Mechanisms
+- There are different authorization mechanisms supported by kubernetes
+  - Node Authorization
+  - Attribute-based Authorization (ABAC)
+  - **Role-Based Authorization (RBAC)**
+  - Webhook
+  
+
+- **Authorization Modes**
+  ![am](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/mode.PNG)
+  - The mode options can be defined on the `kube-apiserver`
+  - When you have multiple modes configured your request is authorized using each one in the order it is specified.
+  - So, every time a module denies the request it goes to the next one in the chain and as soon as a module approves the request no more checks are done and the user is granted permission.
+
+## Role Based Access Controls
+> RBAC  
+> Role-based access control (RBAC) refers to the idea of assigning permissions to users based on their role within an organization. 
+
+
+### How do we create a role?
+- Each role has 3 sections
+  - apiGroups
+  - resources
+  - verbs
+- create the role with kubectl command
+  ```
+  $ kubectl create -f developer-role.yaml
+  ```
+
+### The next step is to link the user to that role.
+- For this we create another object called **`RoleBinding`**. This role binding object links a user object to a role.
+- create the role binding using kubectl command
+  ```
+  $ kubectl create -f devuser-developer-binding.yaml
+  ```
+- Also note that the roles and role bindings fall under the scope of namespace.
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    name: developer
+  rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["pods"]
+    verbs: ["get", "list", "update", "delete", "create"]
+  - apiGroups: [""]
+    resources: ["ConfigMap"]
+    verbs: ["create"]
+  ```
+
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: devuser-developer-binding
+  subjects:
+  - kind: User
+    name: dev-user # "name" is case sensitive
+    apiGroup: rbac.authorization.k8s.io
+  roleRef:
+    kind: Role
+    name: developer
+    apiGroup: rbac.authorization.k8s.io
+  ```
+
+### View RBAC
+  
+- To list roles
+  ```
+  $ kubectl get roles
+  ```
+- To list rolebindings
+  ```
+  $ kubectl get rolebindings
+  ```
+- To describe role 
+  ```
+  $ kubectl describe role developer
+  ```
+    
+- To describe rolebinding
+  ```
+  $ kubectl describe rolebinding devuser-developer-binding
+  ```
+  
+#### What if you being a user would like to see if you have access to a particular resource in the cluster.
+### Check Access
+
+- You can use the kubectl auth command by `can-i` command
+  ```
+  $ kubectl auth can-i create deployments
+  $ kubectl auth can-i delete nodes
+  ```
+
+  ```
+  $ kubectl auth can-i create deployments --as dev-user
+  $ kubectl auth can-i create pods --as dev-user
+  ```
+
+  ```
+  $ kubectl auth can-i create pods --as dev-user --namespace test
+  ```
+### Resource Names
+- Note on resource names we just saw how you can provide access to users for resources like pods within the namespace.
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    name: developer
+  rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["pods"]
+    verbs: ["get", "update", "create"]
+    resourceNames: ["blue", "orange"] ## Allow blue and orange pod only
+  ```  
+
+### Practice
+
+- Inspect the environment and identify the authorization modes configured on the cluster.
+
+  <details>
+  <summary>Answer</summary>
+
+  - Check the kube-apiserver settings.
+
+  ```console
+  ~# k get pods -n kube-system 
+  NAME                                   READY   STATUS    RESTARTS   AGE
+  coredns-787d4945fb-7j9q9               1/1     Running   0          11m
+  coredns-787d4945fb-sqchs               1/1     Running   0          11m
+  etcd-controlplane                      1/1     Running   0          11m
+  kube-apiserver-controlplane            1/1     Running   0          11m
+  kube-controller-manager-controlplane   1/1     Running   0          11m
+  kube-proxy-94t8s                       1/1     Running   0          11m
+  kube-scheduler-controlplane            1/1     Running   0          11m
+  ```
+  
+  ```console
+  ~# k describe pod kube-apiserver-controlplane -n kube-system | grep authorization
+      --authorization-mode=Node,RBAC
+  ```
+
+  - Another way to figure out is 
+  ```
+  ps -aux | grep authorization
+  ```
+
+  </details>
+
+- How many roles exist in the default namespace?
+  <details>
+  <summary>Answer</summary>
+  
+  ```
+  ~# k get roles
+  ```
+  </details>
+
+- How many roles exist in all namespaces together?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  ~# k get roles -A --no-headers | wc -l
+  ```
+  
+  </details>
+
+- What are the resources the kube-proxy role in the kube-system namespace is given access to?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k describe roles kube-proxy -n kube-system 
+  Name:         kube-proxy
+  Labels:       <none>
+  Annotations:  <none>
+  PolicyRule:
+    Resources   Non-Resource URLs  Resource Names  Verbs
+    ---------   -----------------  --------------  -----
+    configmaps  []                 [kube-proxy]    [get]
+
+  ```
+  
+  </details>
+
+- Which account is the kube-proxy role assigned to?
+
+  <details>
+  <summary>Answer</summary>
+
+  - **Role Binding**
+  
+  ```console
+  ~# k get rolebindings -n kube-system
+  ~# k describe rolebindings kube-proxy -n kube-system
+  ```
+  
+  </details>
+
+- Edit role
+  
+  ```
+  k -as dev-user get pod dark-blue-app -n blue
+  k get roles -n blue
+  k get rolebindings -n blue
+  k desribe role developer -n blue
+  k edit role developer -n blue
+  ```
+
+- https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-role
+
+- https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrolebinding
 
 <!--
 
