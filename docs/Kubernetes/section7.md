@@ -8,7 +8,10 @@
 - [API Groups](#API-Groups)  
 - [Authorization](#Authorization)  
 - [Role Based Access Controls](#Role-Based-Access-Controls)  
-
+- [Cluster Roles and Role Bindings](#Cluster-Roles-and-Role-Bindings)  
+- [Service Accounts](#Service-Accounts)  
+- [Image Security](#Image-Security)  
+- [Security Contexts](#Security-Contexts)  
 
 ## Authentification
 - What are the risks and what measures do you need to take to secure the cluster?
@@ -693,6 +696,249 @@ contexts:
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-role
 
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrolebinding
+
+## Cluster Roles and Role Bindings
+
+- Can you group or isolate **nodes** within a namespace?
+  - No, those are cluster wide or cluster scoped resources. They cannot be associated to any particular namespace.
+
+- But how do we authorize users to cluster-wide resources like nodes or persistent volumes.
+  - That is where you use **cluster roles and cluster role bindings.**
+
+![c](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/cr1.PNG)
+
+#### K8s Reference Docs
+- https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole
+- https://kubernetes.io/docs/reference/access-authn-authz/rbac/#command-line-utilities
+  
+### Practice
+- How many ClusterRoles do you see defined in the cluster?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $ kubectl get clusterroles --no-headers | wc -l
+  ```
+  
+  </details>
+
+- How many ClusterRoleBindings exist on the cluster?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $ kubectl get clusterrolebindings --no-headers | wc -l
+  ```
+  
+  </details>
+
+- Cluster Roles are cluster wide and not part of any namespace
+
+- What user/groups are the `cluster-admin` role bound to?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $ kubectl describe clusterrolebinding cluster-admin
+  ```
+  
+  </details>
+
+
+- What level of permission does the cluster-admin role grant?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $ kubectl describe clusterrole cluster-admin
+  ```
+  
+  </details>
+
+- A new user michelle joined the team. She will be focusing on the nodes in the cluster. Create the required ClusterRoles and ClusterRoleBindings so she gets access to the nodes.
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $ k create clusterrole --help
+  $ k create clusterrole michelle-role --verb=get,list,watch --resource=nodes 
+
+
+  $ k create clusterrolebinding --help
+  $ kubectl create clusterrolebinding michelle-role-binding --clusterrole=cluster-admin --user=michelle
+
+  ## check role in YAML format after creation
+  $ k get clusterrole michelle-role -o yaml
+  ``` 
+  
+  </details>
+
+
+## Service Accounts
+> *NOT PART OF THE CKA*
+
+
+- A service account could be an account used by an application to interact with a Kubernetes cluster.
+
+  - For example, a monitoring application like Prometheus uses a service account to pull the Kubernetes API for performance metrics.
+
+- Kubernetes automatically mounts the default service account if you haven't explicitly specified any.
+
+
+## Image Security
+- you may choose to make a repository private so that it can be accessed using a set of credentials.
+
+- Within Kubernetes, we know that the images are pulled and run by the Docker run time on the worker nodes.
+
+- image:docker.io/nginx/nginx
+  - `docker.io` : Registry
+  - `nginx` : User/Account
+  - `nginx` : Image/Repository
+
+## Private Registry
+![pr](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/prvr1.PNG)
+
+- To login to the registry
+  ```
+  $ docker login private-registry.io
+  ```
+- Run the application using the image available at the private registry
+  ```
+  $ docker run private-registry.io/apps/internal-app
+  ```
+  
+- To pass the credentials to the docker untaged on the worker node for that we first create a secret object with credentials in it.
+  ```
+  $ kubectl create secret docker-registry regcred \
+    --docker-server=private-registry.io \ 
+    --docker-username=registry-user \
+    --docker-password=registry-password \
+    --docker-email=registry-user@org.com
+  ```
+- We then specify the secret inside our pod definition file under the imagePullSecret section 
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: nginx-pod
+  spec:
+    containers:
+    - name: nginx
+      image: private-registry.io/apps/internal-app
+    imagePullSecrets:
+    - name: regcred
+  ```
+
+### Practice
+- We decided to use a modified version of the application from an internal private registry. Update the image of the deployment to use a new image from `myprivateregistry.com:5000`  
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $ k edit deploy web
+  ``` 
+
+  - Update image filed from `nginx:alpine` to `myprivateregistry.com:5000/nginx:alpine`
+
+  ```yaml
+  ...
+  spec:
+    containers:
+    - image : myprivateregistry.com:5000/nginx:alpine
+  ```
+
+  </details>
+
+- Create a secret object with the credentials required to access the registry.
+  <details>
+  <summary>Answer</summary>
+  
+  ```console
+  $ k create secret docker-registry -h
+  
+  Examples:
+  # If you don't already have a .dockercfg file, you can create a dockercfg secret directly by using:
+  kubectl create secret docker-registry my-secret --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
+  ```
+  
+  </details>
+
+- [Pull an Image from a Private Registry](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
+
+  - Create a Pod that uses your Secret
+
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: private-reg
+  spec:
+    containers:
+    - name: private-reg-container
+      image: <your-private-image>
+    imagePullSecrets: ## This field should be udpated to pull images from the private registry
+    - name: regcred
+  ```
+
+## Security Contexts
+- You may choose to configure the security settings at a container level or at a pod level.
+
+- To add security context on the container and a field called **`securityContext`** under the spec section.
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: web-pod
+  spec:
+    securityContext: ###
+      runAsUser: 1000
+    containers:
+    - name: ubuntu
+      image: ubuntu
+      command: ["sleep", "3600"]
+  ```
+
+  
+- To set the same context at the container level, then move the whole section under container section.
+  
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: web-pod
+  spec:
+    containers:
+    - name: ubuntu
+      image: ubuntu
+      command: ["sleep", "3600"]
+      securityContext: ###
+        runAsUser: 1000
+  ```
+
+  
+- To add capabilities use the **`capabilities`** option
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: web-pod
+  spec:
+    containers:
+    - name: ubuntu
+      image: ubuntu
+      command: ["sleep", "3600"]
+      securityContext:
+        runAsUser: 1000
+        capabilities: ###
+          add: ["MAC_ADMIN"]
+  ```
+
 
 <!--
 
