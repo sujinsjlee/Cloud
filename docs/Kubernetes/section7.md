@@ -12,6 +12,7 @@
 - [Service Accounts](#Service-Accounts)  
 - [Image Security](#Image-Security)  
 - [Security Contexts](#Security-Contexts)  
+- [Network Policy](#Network-Policy)  
 
 ## Authentification
 - What are the risks and what measures do you need to take to secure the cluster?
@@ -887,6 +888,9 @@ contexts:
   ```
 
 ## Security Contexts
+
+#### A security context defines privilege and access control settings for a Pod or Container.
+
 - You may choose to configure the security settings at a container level or at a pod level.
 
 - To add security context on the container and a field called **`securityContext`** under the spec section.
@@ -905,7 +909,7 @@ contexts:
   ```
 
   
-- To set the same context at the container level, then move the whole section under container section.
+- To set the same context at the **container level**, then move the whole section under container section.
   
   ```yaml
   apiVersion: v1
@@ -939,14 +943,267 @@ contexts:
           add: ["MAC_ADMIN"]
   ```
 
+### Practice
 
-<!--
+- What is the user used to execute the sleep process within the ubuntu-sleeper pod?
 
   <details>
   <summary>Answer</summary>
 
-  - 
+  ```
+  $ k exec ubuntu-sleeper -- whoami
+  root
+  ```
   
   </details>
 
--->
+- Edit the pod ubuntu-sleeper to run the sleep process with user ID 1010.
+  - [Search Security Context in K8s Documentation](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $  k edit pod ubuntu-sleeper
+  ```
+  
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2023-04-15T16:09:56Z"
+    name: ubuntu-sleeper
+    namespace: default
+    resourceVersion: "871"
+    uid: 123713a1-771f-4e19-8f91-717268200df2
+  spec:
+    containers:
+    - command:
+      - sleep
+      - "4800"
+      image: ubuntu
+      securityConext: ## Add securityContext
+        runAsUser: 1010
+      imagePullPolicy: Always
+      name: ubuntu
+  ```
+
+
+  ```console
+  A copy of your changes has been stored to "/tmp/kubectl-edit-1494743597.yaml"
+  $ k replace --force -f /tmp/kubectl-edit-1494743597.yaml
+  ```
+  
+  </details>
+
+
+- **The security settings that you specify for a Pod apply to all Containers in the Pod.**
+
+- Wit what user are the processes in the `sidecar` container started?
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-pod
+spec:
+  securityContext:
+    runAsUser: 1001 ### it started with 1001 User
+  containers:
+  -  image: ubuntu
+     name: web
+     command: ["sleep", "5000"]
+     securityContext:
+      runAsUser: 1002
+
+  -  image: ubuntu
+     name: sidecar
+     command: ["sleep", "5000"]
+```
+
+- Update pod ubuntu-sleeper to run as Root user and with the SYS_TIME capability.
+
+- Search security context in K8s Documentation and search **capabilities** (NOT capability)
+
+  <details>
+  <summary>Answer</summary>
+
+  ```
+  $  k edit pod ubuntu-sleeper
+  ```
+  
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2023-04-15T16:09:56Z"
+    name: ubuntu-sleeper
+    namespace: default
+    resourceVersion: "871"
+    uid: 123713a1-771f-4e19-8f91-717268200df2
+  spec:
+    containers:
+    - command:
+      - sleep
+      - "4800"
+      image: ubuntu
+      securityConext: 
+        runAsUser: 1010
+        capabilities: ## Add capabilities
+        add: ["SYS_TIME"]
+      imagePullPolicy: Always
+      name: ubuntu
+  ```
+
+
+  ```console
+  A copy of your changes has been stored to "/tmp/kubectl-edit-1494743597.yaml"
+  $ k replace --force -f /tmp/kubectl-edit-1494743597.yaml
+  ```
+  
+  </details>
+
+
+## Network Policy
+
+#### NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network "entities
+
+- Traffic
+  - **ingress traffic** : the incoming traffic from the users
+  - **egress traffic** : the outgoing request to the server
+
+- And network policy is another object in the Kubernetes namespace just like pods, replica sets or services, you link a network policy to one or more pods.
+
+- how do you apply or link a network policy to a pod?
+  - **labels and selectors**
+  - We label the pod and use the same labels on the port selector field in the network policy and then we build our rule.
+
+
+### Create a Network Policy
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+ name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: api-pod
+      namespaceSelector: ## since there is no '-' infront of the namespaceSelector, AND rule applys for the podSelector and namespaceSelector
+        matchLables:
+          name: prod
+    - ipBlock:
+        cidr: 192.168.5.10/32
+    ports:
+    - protocol: TCP
+      port: 3306
+```
+
+- From the DB pod's perspective,
+  - we want to allow incoming traffic from the API pod.
+  - So that is incoming. So that is ingress.
+
+- However, this rule does not mean that the database pod will be able to connect to the API pod or make calls to the API.
+
+-  the database pod tries to make an API call to the API pod, then that would not be allowed because that is now an egress traffic
+
+- The `from` field defines the source of traffic that is allowed to pass through to the database pod.
+
+- The `ports` field defines what port on the database pod is the traffic allowed to go to.
+  - In this case, it's 3306 with the TCP protocol
+
+- The current policy would allow any pod in any namespace with matching labels to reach the database pod.
+  - If you want to allow the pod in the specific namespace, need to add `namespaceSelector` field
+
+- `IP block` allows you to specify a range of IP addresses from which you could allow traffic to hit the database pod.
+
+### Practice
+
+- How many network policies do you see in the environment?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  $ k get networkpolicies
+  $ k get netpol
+  NAME             POD-SELECTOR   AGE
+  payroll-policy   name=payroll   2m34s
+
+  $ k describe networkpolicies payroll-policy 
+  Name:         payroll-policy
+  Namespace:    default
+  Created on:   2023-04-15 13:24:35 -0400 EDT
+  Labels:       <none>
+  Annotations:  <none>
+  Spec:
+    PodSelector:     name=payroll
+    Allowing ingress traffic:
+      To Port: 8080/TCP
+      From:
+        PodSelector: name=internal
+    Not affecting egress traffic
+    Policy Types: Ingress
+  ```
+  
+  </details>  
+
+- Create a network policy
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  $ vi internal-policy.yaml
+  ``` 
+
+  ```yaml
+  apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: test-network-policy
+    namespace: default
+  spec:
+    podSelector:
+      matchLabels:
+        role: db
+    policyTypes:
+      - Ingress
+      - Egress
+    ingress:
+      - from:
+          - ipBlock:
+              cidr: 172.17.0.0/16
+              except:
+                - 172.17.1.0/24
+          - namespaceSelector:
+              matchLabels:
+                project: myproject
+          - podSelector:
+              matchLabels:
+                role: frontend
+        ports:
+          - protocol: TCP
+            port: 6379
+    egress:
+      - to:
+          - ipBlock:
+              cidr: 10.0.0.0/24
+        ports:
+          - protocol: TCP
+            port: 5978
+  ```
+
+  ```console
+  $ k create -f internal-policy.yaml
+  ```
+  
+  </details>
