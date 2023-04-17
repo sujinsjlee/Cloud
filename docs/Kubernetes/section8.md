@@ -216,7 +216,7 @@ $ kubectl delete pvc myclaim
 ### Practice
 
 - Configure a volume to store these logs at /var/log/webapp on the host.
-- https://kubernetes.io/docs/concepts/storage/volumes/
+  - https://kubernetes.io/docs/concepts/storage/volumes/
 
   - Name: webapp
   - Image Name: kodekloud/event-simulator
@@ -250,7 +250,7 @@ $ kubectl delete pvc myclaim
   </details>
 
 - Create a Persistent Volume 
-- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes
+  - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes
 
   <details>
   <summary>Answer</summary>
@@ -316,31 +316,31 @@ $ kubectl delete pvc myclaim
 
 -  Update the webapp pod to use the persistent volume claim as its storage.
 
-  - Replace hostPath configured earlier with the newly created PersistentVolumeClaim.
-  - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes
-    - `persistentVolumeClaim`
+    - Replace hostPath configured earlier with the newly created PersistentVolumeClaim.
+    - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes
+      - `persistentVolumeClaim`
 
-  <details>
-  <summary>Answer</summary>
+      <details>
+      <summary>Answer</summary>
 
-  ```console
-  ~# k edit pod webapp
-  ```
+      ```console
+      ~# k edit pod webapp
+      ```
 
-  - Edit `volumes` with persistentVolumeClaim
+      - Edit `volumes` with persistentVolumeClaim
 
-  ```yaml
-  volumes:
-  - name: log-volume
-    persistentVolumeClaim:
-        claimName: claim-log-1
-  ```
+      ```yaml
+      volumes:
+      - name: log-volume
+        persistentVolumeClaim:
+            claimName: claim-log-1
+      ```
 
-  ```console
-  ~# k replace --force -f /tmp/...
-  ```
-  
-  </details>
+      ```console
+      ~# k replace --force -f /tmp/...
+      ```
+      
+      </details>
 
 - What would happen to the PV if the PVC was destroyed?
   - The PV is note deleted but not available
@@ -363,7 +363,7 @@ $ kubectl delete pvc myclaim
 
 ### Practice
 
-- https://kubernetes.io/docs/concepts/storage/storage-classes/
+> https://kubernetes.io/docs/concepts/storage/storage-classes/
 
 
 - How many StorageClasses exist in the cluster right now?
@@ -446,5 +446,5 @@ $ kubectl delete pvc myclaim
   ```console
   ~# k create -f delayed-volume-sc.yaml
   ``` 
-  
+
   </details>
