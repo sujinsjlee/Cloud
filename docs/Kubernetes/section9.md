@@ -1,7 +1,6 @@
 # Section9 - Networking
 
 - [Prerequisite](#Prerequisite)  
-- [Explore K8s Environment](Explore-K8s-Environment)  
 
 ## Prerequisite
 
