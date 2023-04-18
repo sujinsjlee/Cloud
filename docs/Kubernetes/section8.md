@@ -142,9 +142,9 @@
   ```
 
   -  `accessModes` defines how a volume should be mounted on the hosts, whether in a read-only mode or read/write mode, etc.
-    - ReadOnlyMany
-    - ReadWriteOnce
-    - ReadWriteMany
+      - ReadOnlyMany
+      - ReadWriteOnce
+      - ReadWriteMany
 
   - `capacity`
     - Specify the amount of storage to be reserved for this persistent volume

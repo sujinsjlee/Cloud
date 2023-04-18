@@ -21,5 +21,6 @@
 - [Section5 - Application Lifecycle Management](./section5.md)  
 - [Section6 - Cluster Maintenance](./section6.md)  
 - [Section7 - Security](./section7.md)  
-- [Section8 - Storage](./section8.md)
+- [Section8 - Storage](./section8.md)  
+- [Section9 - Networking](./section9.md)  
 
