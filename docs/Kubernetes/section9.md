@@ -1,6 +1,11 @@
 # Section9 - Networking
 
 - [Prerequisite](#Prerequisite)  
+- [Pod Networking](#Pod-Networking)  
+- [CNI](#CNI)  
+- [IP Address Management](#IPAM)  
+- [Service Networking](#Service-Networking)  
+- [DNS in Kubernetes](#DNS-in-Kubernetes)  
 
 ## Prerequisite
 
@@ -443,6 +448,366 @@ $ netstat -nltp
    That's because `2379` is the port of ETCD to which API server connects to There are multiple concurrent connections so that API server can process multiple etcd operations simultaneously.
 
     `2380` is only for etcd peer-to-peer connectivity when you have multiple controlplane nodes. In this case we don't.
+
+## Pod Networking
+![pod](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/net12.PNG)
+
+> Every POD shoud have an IP Address  
+> Every POD should be able to communicate with every other POD in the same node  
+> Every POD should be able to communicate with every other POD on other nodes without NAT  
+
+
+- *NAT* : Network Address Translation
+    - to map multiple private addresses inside a local network to a public IP address before tranferring the information onto the internet.
+
+## CNI 
+> **Container Networking Interface**
+
+
+- We performed a number of manual steps to get the environment ready with the bridge networks and routing tables. We then wrote a script that can be run for each container that performs the necessary steps required to connect each container to the network, and we executed the script manually.
+
+- So how do we run the script automatically when a Pod is created on Kubernetes?
+    - **CNI** tells Kubernetes that this is how you should call a script as soon as you create a container.
+    - Whenever a container is created, the kubelet looks at the CNI configuration, passed as a command line argument when it was run, and identifies our script's name.
+
+![cni](https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/images/net1.PNG)
+
+- Container Runtime must create network namespace
+- Identify network the container must attach to
+- Conatiner Runtime to invoke Network Plugin (bridge) when container is ADDed
+- Container Runtime to invoke Network Plugin (bridge) when contianer is DELeted
+- JSON format of the Network Configuration
+
+
+## IP Address Management
+> **WeaveWorks**(CNI)  
+
+
+- Instead of our own custom script, we integrated the **Weave plugin**.
+
+- So how do we deploy Weave on a Kubernetes cluster?
+    - Weave and weave peers can be deployed as services or Daemons on each node in the cluster manually or if Kubernetes is set up already then an easier way to do that is to deploy it as pods in the cluster.
+
+
+### Explore CNI - Practice
+
+1. <details>
+    <summary>Inspect the kubelet service and identify the container runtime value is set for Kubernetes.</summary>
+
+    Check kubelet unit file
+
+    ```bash
+    systemctl cat kubelet
+    ```
+
+    Note from the output this line
+
+    ```
+    EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+    ```
+
+    Inspect this file
+
+    ```bash
+    cat /var/lib/kubelet/kubeadm-flags.env
+    ```
+
+    Answer can be found as value of `--container-runtime`
+
+    > REMOTE
+    </details>
+
+2. <details>
+    <summary>What is the path configured with all binaries of CNI supported plugins?</summary>
+
+    This is the standard location for the installation of CNI plugins
+
+    | `/opt/cni/bin`
+
+    </details>
+
+3. <details>
+    <summary>Identify which of the below plugins is not available in the list of available CNI plugins on this host?</summary>
+
+    ```bash
+    ls -l /opt/cni/bin
+    ```
+
+    Find the option from the given answers not in the output opf the above
+
+    > cisco
+    </details>
+
+4. <details>
+    <summary>What is the CNI plugin configured to be used on this kubernetes cluster?</summary>
+
+    From the available options, we need to recognise which of the four is not the name of a container networking provider. Of the three that are, only one of them is present in `/opt/cni/bin`
+
+    > flannel
+    Note that `bridge` is a mechanism for connecting networks together, and not a network _provider_.
+    </details>
+
+5. <details>
+    <summary>What binary executable file will be run by kubelet after a container and its associated namespace are created.</summary>
+
+    Following on from Q4...
+
+    > flannel
+    All the files in `/opt/cni/bin` are binary executables with tasks related to configuring network namespaces. After the network namespace is configured using the other programs, `flannel` implements the network.
+
+    [This is a great article](https://tonylixu.medium.com/k8s-network-cni-introduction-b035d42ad68f) on what the programs in `/opt/cni/bin` are for.
+    </details>
+
+## IPAM
+
+1. <details>
+    <summary>How many Nodes are part of this cluster?</summary>
+
+    ```bash
+    kunbectl get nodes
+    ```
+
+    > 2
+    </details>
+
+2. <details>
+    <summary>What is the Networking Solution used by this cluster?</summary>
+
+    Two ways to do this:
+
+    1.
+        ```bash
+        kubectl get pods -n kube-system
+        ```
+
+    1.
+        ```bash
+        ls -l /opt/cni/bin
+        ```
+
+    In both you see evidence of
+
+    > weave
+    </details>
+
+3. <details>
+    <summary>How many weave agents/peers are deployed in this cluster?</summary>
+
+    ```bash
+    kubectl get pods -n kube-system
+    ```
+
+    > 2
+    </details>
+
+4. <details>
+    <summary>On which nodes are the weave peers present?</summary>
+
+    ```bash
+    kubectl get pods -n kube-system -o wide
+    ```
+
+    > One on every node
+    </details>
+
+5. <details>
+    <summary>Identify the name of the bridge network/interface created by weave on each node.</summary>
+
+    At either host...
+
+    ```bash
+    ip addr list
+    ```
+
+    > weave
+    In actual fact, the network interface is `weave` and the bridge is implemented by `vethwe-datapath@vethwe-bridge` and `vethwe-bridge@vethwe-datapath`
+
+    </details>
+
+6. <details>
+    <summary>What is the POD IP address range configured by weave?</summary>
+
+    Examine output of previous connad for `weave` interface. Note its IP begins with `10.`, so...
+
+    > 10.X.X.X
+    </details>
+
+7. <details>
+    <summary>What is the default gateway configured on the PODs scheduled on node01?</summary>
+
+    Now we can deduce this from the naswer to the previous question. Since we know weave's IP range, its gateway must be on the same network. However we can verify that by starting a pod which is known to contain the `ip` tool.
+
+    Remember this [container image](https://github.com/wbitt/Network-MultiTool). It is extremely useful for debugging cluster networking issues!
+
+    ```bash
+    kubectl run testpod --image=wbitt/network-multitool
+    ```
+
+    Wait for it to be running.
+
+    ```bash
+    kubectl exec -it testpod -- ip route
+    ```
+
+    Note the first line of the output. This is the answer.
+    </details>
+
+## Service Networking
+
+### Practice
+
+1. <details>
+   <summary>What network range are the nodes in the cluster part of?</summary>
+
+   ```
+   kubectl get nodes -o wide
+   ```
+
+   Note the INTERNAL-IP column to derive:
+
+   ```
+   192.20.116.0/24
+   ```
+   </details>
+
+2. <details>
+   <summary>What is the range of IP addresses configured for PODs on this cluster?</summary>
+
+   ```
+   kubectl get pods -A -o wide
+   ```
+
+   From this list, exclude the static control plane pods like `kube-apiserver` as these run on the host network, not the pod network. From the remaining pods we can derive:
+
+   ```
+   10.244.0.0/16
+   ```
+   </details>
+
+3. <details>
+   <summary>What is the IP Range configured for the services within the cluster?</summary>
+
+   ```
+   kubectl get service -A
+   ```
+
+   Note the CLUSTER-IP column to derive:
+
+   ```
+   10.96.0.0/12
+   ```
+   </details>
+
+4. <details>
+   <summary>How many kube-proxy pods are deployed in this cluster?</summary>
+
+   ```
+   kubectl get pod -n kube-system | grep kube-proxy
+   ```
+
+   Count the results
+   </details>
+
+5. <details>
+   <summary>What type of proxy is the kube-proxy configured to use?</summary>
+
+   From the output of the above question, you have two kube-proxy pods, e.g.
+
+   ```
+   controlplane ~ ➜  kubectl get pod -n kube-system | grep kube-proxy
+   kube-proxy-rtr8p                       1/1     Running   0             56m
+   kube-proxy-t7w8f                       1/1     Running   0             56m
+   ```
+
+   Pick either and check its logs. The answer is there.
+
+   ```
+   k logs -n kube-system kube-proxy-rtr8p
+   ```
+   </details>
+
+6. <details>
+   <summary>How does this Kubernetes cluster ensure that a kube-proxy pod runs on all nodes in the cluster?</summary>
+
+   ```
+   kubectl get all -n kube-system
+   ```
+
+   From this, you can see that `kube-proxy` is a `daemonset`
+   </details>
+
+
+
+## DNS in Kubernetes
+
+### Pod DNS Record
+
+- The following DNS resolution:
+
+```
+<POD-IP-ADDRESS>.<namespace-name>.pod.cluster.local
+```
+> Example
+```
+# Pod is located in a default namespace
+10-244-1-10.default.pod.cluster.local
+```
+```
+# To create a namespace
+$ kubectl create ns apps
+# To create a Pod
+$ kubectl run nginx --image=nginx --namespace apps
+# To get the additional information of the Pod in the namespace "apps"
+$ kubectl get po -n apps -owide
+NAME    READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+nginx   1/1     Running   0          99s   10.244.1.3   node01   <none>           <none>
+# To get the dns record of the nginx Pod from the default namespace
+$ kubectl run -it test --image=busybox:1.28 --rm --restart=Never -- nslookup 10-244-1-3.apps.pod.cluster.local
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+Name:      10-244-1-3.apps.pod.cluster.local
+Address 1: 10.244.1.3
+pod "test" deleted
+# Accessing with curl command
+$ kubectl run -it nginx-test --image=nginx --rm --restart=Never -- curl -Is http://10-244-1-3.apps.pod.cluster.local
+HTTP/1.1 200 OK
+Server: nginx/1.19.2
+```
+
+### Service DNS Record
+
+- The following DNS resolution:
+
+```
+<service-name>.<namespace-name>.svc.cluster.local
+```
+> Example
+```
+# Service is located in a default namespace
+web-service.default.svc.cluster.local
+```
+- Pod, Service is located in the `apps` namespace
+```
+# Expose the nginx Pod
+$ kubectl expose pod nginx --name=nginx-service --port 80 --namespace apps
+service/nginx-service exposed
+# Get the nginx-service in the namespace "apps"
+$ kubectl get svc -n apps
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+nginx-service   ClusterIP   10.96.120.174   <none>        80/TCP    6s
+# To get the dns record of the nginx-service from the default namespace
+$ kubectl run -it test --image=busybox:1.28 --rm --restart=Never -- nslookup nginx-service.apps.svc.cluster.local
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+Name:      nginx-service.apps.svc.cluster.local
+Address 1: 10.96.120.174 nginx-service.apps.svc.cluster.local
+pod "test" deleted
+# Accessing with curl command
+$ kubectl run -it nginx-test --image=nginx --rm --restart=Never -- curl -Is http://nginx-service.apps.svc.cluster.local
+HTTP/1.1 200 OK
+Server: nginx/1.19.2
+```
+
 
 <!--
 
