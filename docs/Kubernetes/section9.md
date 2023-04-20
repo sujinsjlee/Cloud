@@ -6,6 +6,8 @@
 - [IP Address Management](#IPAM)  
 - [Service Networking](#Service-Networking)  
 - [DNS in Kubernetes](#DNS-in-Kubernetes)  
+- [Ingress Networking](#Ingress)  
+
 
 ## Prerequisite
 
@@ -807,6 +809,609 @@ $ kubectl run -it nginx-test --image=nginx --rm --restart=Never -- curl -Is http
 HTTP/1.1 200 OK
 Server: nginx/1.19.2
 ```
+
+- Kubernetes deploys a DNS server within the cluster.
+    - The recommended DNS server is CoreDNS
+    - CoreDNS server is deployed in the K8s Cluster in the Kube system namespace in the K8s cluster
+
+### To view the configmap of CoreDNS
+
+```
+$ kubectl get configmap -n kube-system
+NAME                                 DATA   AGE
+coredns                              1      52m
+```
+
+### CoreDNS Configuration File
+
+```
+$ kubectl describe cm coredns -n kube-system
+Corefile:
+---
+.:53 {
+    errors
+    health {       lameduck 5s
+    }
+    ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+       pods insecure
+       fallthrough in-addr.arpa ip6.arpa
+       ttl 30
+    }
+    prometheus :9153
+    forward . /etc/resolv.conf
+    cache 30
+    loop
+    reload
+}
+```
+
+### Practice
+
+- Identify the DNS solution implemented in this cluster.
+
+  <details>
+  <summary>Answer</summary>
+
+    ```console
+    ~# k get pods -n kube-system 
+    NAME                                   READY   STATUS    RESTARTS   AGE
+    coredns-787d4945fb-7qvg8               1/1     Running   0          6m19s
+    coredns-787d4945fb-pj7rh               1/1     Running   0          6m19s
+    etcd-controlplane                      1/1     Running   0          6m35s
+    kube-apiserver-controlplane            1/1     Running   0          6m33s
+    kube-controller-manager-controlplane   1/1     Running   0          6m30s
+    kube-proxy-gv5j5                       1/1     Running   0          6m20s
+    kube-scheduler-controlplane            1/1     Running   0          6m34s
+    ```
+
+  </details>
+
+- What is the name of the service created for accessing CoreDNS?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k get svc -n kube-system 
+  ```
+
+  </details>
+
+- Where is the configuration file located for configuring the CoreDNS service?
+
+  <details>
+  <summary>Answer</summary>
+
+    - It's in containers' `Args > -conf`
+        - Under Arguments > Configfile field
+        - /etc/coredns/Corefile 
+
+    ```console
+    ~# k describe pod coredns-787d4945fb-7qvg8 -n kube-system 
+    Name:                 coredns-787d4945fb-7qvg8
+    Namespace:            kube-system
+    Priority:             2000000000
+    Priority Class Name:  system-cluster-critical
+    Service Account:      coredns
+    Node:                 controlplane/192.27.133.3
+    Start Time:           Wed, 19 Apr 2023 10:29:16 -0400
+    Labels:               k8s-app=kube-dns
+                        pod-template-hash=787d4945fb
+    Annotations:          <none>
+    Status:               Running
+    IP:                   10.244.0.2
+    IPs:
+    IP:           10.244.0.2
+    Controlled By:  ReplicaSet/coredns-787d4945fb
+    Containers:
+    coredns:
+        Container ID:  containerd://ec55f5f1815e630f86fa0bdb4dbde3ee21515ccb838b13da49c5f5a7c971ec35
+        Image:         registry.k8s.io/coredns/coredns:v1.9.3
+        Image ID:      registry.k8s.io/coredns/coredns@sha256:8e352a029d304ca7431c6507b56800636c321cb52289686a581ab70aaa8a2e2a
+        Ports:         53/UDP, 53/TCP, 9153/TCP
+        Host Ports:    0/UDP, 0/TCP, 0/TCP
+        Args:
+          -conf
+          /etc/coredns/Corefile ## config File!
+    ```
+
+  </details>
+
+- What is the name of the ConfigMap object created for Corefile?
+
+  <details>
+  <summary>Answer</summary>
+  
+  - To see the detail info of CoreDNS POD, check the yaml file 
+  
+  ```console
+  ~# k get pod coredns -n kube-system -o yaml
+  ```
+
+  </details>
+
+- What is the root domain/zone configured for this kubernetes cluster?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k get configmap -n kube-system
+  ~# k descrive configmap [coredns NAME] -n kube-system
+  ```
+
+  </details>
+
+
+## Ingress
+
+> An API object that manages external access to the services in a cluster, typically HTTP.  
+> Ingress may provide load balancing, SSL termination and name-based virtual hosting.  
+
+
+- https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+- if you were on a public cloud environment like Google Cloud platform. In that case, instead of creating a service of type node port for your wear application, you could set it to type **load balancer**.
+
+- Your company's business grows and you now have new services for your customers.
+    - You'd like to make your old application accessible my-online-store.com/wear. Your developers developed the new video streaming application as a completely different application as it has nothing to do with the existing one.
+    - However, to share the cluster's resources, you deploy the new application as a separate deployment within the same cluster.
+    - So how do you direct traffic between each of these load balancers based on the URL that the user types in?
+    - You need yet another proxy or load balancer that can redirect traffic based on URLs to the different services.
+    - You need to configure your firewall rules for each new service, and it's expensive as well as for each service, a new cloud-native load balancer needs to be provisioned.
+
+- Wouldn't it be nice if you could manage all of that within the Kubernetes cluster and have all that configuration as just another Kubernetes definition file that lives along with the rest of your application deployment files?
+    - **Ingress** helps your users access your application using a single externally accessible URL that you can configure to route traffic to different services within your cluster based on the URL path.
+
+
+### Ingress controller
+
+### ConfigMap
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-configuration
+```
+
+### Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nginx-ingress
+  template:
+    metadata:
+      labels:
+        name: nginx-ingress
+    spec:
+      serviceAccountName: ingress-serviceaccount
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+            - /nginx-ingress-controller
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration ## ConfigMap
+          env:
+            - name: POD_NAME ## POD Name
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+```
+
+### Service Type - NodePort
+> We then need a service to expose the Ingress controller to the external world, so we create a service of type **NodePort** with the NGINX Ingress label selector to link the service to the deployment.
+
+```yaml
+# service-Nodeport.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+  selector:
+    name: nginx-ingress
+```
+
+- Create a service
+
+```
+$ kubectl create -f service-Nodeport.yaml
+```
+
+- To get the service
+
+```
+$ kubectl get service
+```
+
+### Ingress Resources
+
+> An **Ingress resource** is a set of rules and configurations applied on the Ingress controller.
+
+```yaml
+Ingress-wear.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-wear
+spec:
+     backend:
+        serviceName: wear-service
+        servicePort: 80
+```
+
+- To create the ingress resource
+
+```
+$ kubectl create -f Ingress-wear.yaml
+ingress.extensions/ingress-wear created
+```
+
+- To get the ingress
+    - The new Ingress is now created and routes all incoming traffic directly to the wear service.
+
+```
+$ kubectl get ingress
+NAME           CLASS    HOSTS   ADDRESS   PORTS   AGE
+ingress-wear   <none>   *                 80      18s
+```
+
+### Ingress Resources - Rules
+ 
+- 1 Rule and 2 Paths.
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-wear-watch
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /wear
+        backend:
+          serviceName: wear-service
+          servicePort: 80
+      - path: /watch
+        backend:
+          serviceName: watch-service
+          servicePort: 80
+```
+
+- Describe the earlier created ingress resource
+
+```console
+$ kubectl describe ingress ingress-wear-watch
+Name:             ingress-wear-watch
+Namespace:        default
+Address:
+Default backend:  default-http-backend:80 (<none>)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *
+              /wear    wear-service:80 (<none>)
+              /watch   watch-service:80 (<none>)
+Annotations:  <none>
+Events:
+  Type    Reason  Age   From                      Message
+  ----    ------  ----  ----                      -------
+  Normal  CREATE  23s   nginx-ingress-controller  Ingress default/ingress-wear-watch
+```
+
+- 2 Rules and 1 Path each.
+    - The host field in each rule matches the specified value with the domain name used in the request URL and routes traffic to the appropriate backend.
+
+```yaml
+# Ingress-wear-watch.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-wear-watch
+spec:
+  rules:
+  - host: wear.my-online-store.com
+    http:
+      paths:
+      - backend:
+          serviceName: wear-service
+          servicePort: 80
+  - host: watch.my-online-store.com
+    http:
+      paths:
+      - backend:
+          serviceName: watch-service
+          servicePort: 80
+```
+
+### Practice
+
+- Which namespace is the Ingress Controller deployed in?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k get pods -A
+  ```
+
+  </details>
+
+- What is the name of the ingress Controller Deployment?
+    
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k get deploy -n ingress-nginx
+  ```
+
+  </details>
+
+- Which namespace is the Ingress Resource deployed in?
+
+  <details>
+  <summary>Answer</summary>
+
+  ```console
+  ~# k get ingress -A
+  NAMESPACE   NAME                 CLASS    HOSTS   ADDRESS         PORTS   AGE
+  app-space   ingress-wear-watch   <none>   *       10.105.216.56   80      12m
+  ```
+
+  </details>
+
+- What is the Host configured on the Ingress Resource?
+
+  <details>
+  <summary>Answer</summary>
+
+  - All Hosts (*)
+
+  ```console
+  ~# k get ingress -A
+  NAMESPACE   NAME                 CLASS    HOSTS   ADDRESS         PORTS   AGE
+  app-space   ingress-wear-watch   <none>   *       10.105.216.56   80      12m
+  ```
+
+  </details>
+
+- You are requested to add a new path to your ingress to make the food delivery application available to your customers. Make the new application available at `/eat`.
+
+    <details>
+    <summary>Answer</summary>
+
+    Run the command `kubectl edit ingress --namespace app-space` and add a new Path entry for the new service.
+
+    OR
+
+    ```yaml
+    apiVersion: v1
+    items:
+    - apiVersion: extensions/v1beta1
+        kind: Ingress
+        metadata:
+        annotations: ## annotations 
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        name: ingress-wear-watch
+        namespace: app-space
+        spec:
+        rules:
+        - http:
+            paths:
+            - backend:
+                serviceName: wear-service
+                servicePort: 8080
+                path: /wear
+                pathType: ImplementationSpecific
+            - backend:
+                serviceName: video-service
+                servicePort: 8080
+                path: /stream
+                pathType: ImplementationSpecific
+            - backend:
+                serviceName: food-service
+                servicePort: 8080
+                path: /eat
+                pathType: ImplementationSpecific
+        status:
+        loadBalancer:
+            ingress:
+            - {}
+    kind: List
+    metadata:
+        resourceVersion: ""
+        selfLink: ""
+    ```
+    </details>
+
+- You are requested to make the new application available at `/pay`.
+
+  <details>
+  <summary>Answer</summary>
+
+    ```console
+    ~# k create ingress -h
+    Create an ingress with the specified name.
+
+    Aliases:
+    ingress, ing
+
+    Examples:
+    # Create a single ingress called 'simple' that directs requests to foo.com/bar to svc
+    # svc1:8080 with a tls secret "my-cert"
+    kubectl create ingress simple --rule="foo.com/bar=svc1:8080,tls=my-cert"
+    ```
+
+    ```yaml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+    name: test-ingress
+    namespace: critical-space
+    annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    spec:
+    rules:
+    - http:
+        paths:
+        - path: /pay
+            pathType: Prefix
+            backend:
+            service:
+                name: pay-service
+                port:
+                number: 8282 
+    ```
+
+  </details>
+
+### Practice 2
+
+1. Let us now deploy an Ingress Controller. First, create a namespace called `ingress-nginx`.
+
+    <details>
+    <summary>Answer</summary>
+
+    ```
+    kubectl create namespace ingress-space
+    ```
+    </details>
+
+2. The NGINX Ingress Controller requires a ConfigMap object. Create a ConfigMap object with name `ingress-nginx-controller` in the `ingress-nginx` namespace..
+
+    <details>
+    <summary>Answer</summary>
+
+    ```
+    kubectl create configmap nginx-configuration --namespace ingress-space
+    ```
+    </details>
+
+3. The NGINX Ingress Controller requires two ServiceAccounts. Create both ServiceAccount with name `ingress-nginx` and `ingress-nginx-admission` in the `ingress-nginx` namespace.
+
+    <details>
+    <summary>Answer</summary>
+
+    ```
+    kubectl create serviceaccount ingress-serviceaccount --namespace ingress-space
+    ```
+    </details>
+
+4. We have created the Roles and RoleBindings for the ServiceAccount. Check it out!!
+
+    <details>
+    <summary>Answer</summary>
+
+    ```
+    kubectl get roles,rolebindings --namespace ingress-space
+    ```
+    </details>
+
+5. Let us now create a service to make Ingress available to external users
+
+    <details>
+    <summary>Answer</summary>
+
+    ```console
+    ~# k expose deploy ingress-controller -n ingress-space --name ingress --port=80 --target-port=80 --type NodePort
+    ```
+
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: ingress
+    namespace: ingress-space
+    spec:
+    type: NodePort
+    ports:
+    - port: 80
+        targetPort: 80
+        protocol: TCP
+        nodePort: 30080
+        name: http
+    - port: 443
+        targetPort: 443
+        protocol: TCP
+        name: https
+    selector:
+        name: nginx-ingress
+    ```
+    </details>
+
+7. Create the ingress resource to make application available at `/wear` and `/watch` on the Ingress service
+
+    <details>
+    <summary>Answer</summary>
+    
+    ```console
+    ~# k create ingress -h
+    ~# k create ingress ingress-wear-watch -n app-space --rule="..." --rule="..."
+    ```
+
+    ```yaml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+    name: ingress-wear-watch
+    namespace: app-space
+    annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    spec:
+    rules:
+    - http:
+        paths:
+        - path: /wear
+            pathType: Prefix
+            backend:
+            service:
+                name: wear-service
+                port: 
+                number: 8080
+        - path: /watch
+            pathType: Prefix
+            backend:
+            service:
+                name: video-service
+                port:
+                number: 8080
+    ```
+
+    </details>
+
 
 
 <!--
