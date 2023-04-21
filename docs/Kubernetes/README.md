@@ -23,4 +23,6 @@
 - [Section7 - Security](./section7.md)  
 - [Section8 - Storage](./section8.md)  
 - [Section9 - Networking](./section9.md)  
-
+- [Section10 - Design and Install a Kubernetes Cluster](./section10.md)  
+- [Section11 - Install Kubernetes the kubeadm](./section11.md)  
+- [Section13 - Troubleshooting](./section13.md)  

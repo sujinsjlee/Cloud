@@ -1411,18 +1411,3 @@ spec:
     ```
 
     </details>
-
-
-
-<!--
-
-  <details>
-  <summary>Answer</summary>
-
-  ```console
-  ~# 
-  ```
-
-  </details>
-
--->
