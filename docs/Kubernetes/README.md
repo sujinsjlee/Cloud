@@ -26,3 +26,4 @@
 - [Section10 - Design and Install a Kubernetes Cluster](./section10.md)  
 - [Section11 - Install Kubernetes the kubeadm](./section11.md)  
 - [Section13 - Troubleshooting](./section13.md)  
+- [Section15 - Lightning Lab](./section15.md)  
