@@ -27,3 +27,4 @@
 - [Section11 - Install Kubernetes the kubeadm](./section11.md)  
 - [Section13 - Troubleshooting](./section13.md)  
 - [Section15 - Lightning Lab](./section15.md)  
+- [Mock Exam 1](./mock1.md)  
