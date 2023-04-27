@@ -28,3 +28,4 @@
 - [Section13 - Troubleshooting](./section13.md)  
 - [Section15 - Lightning Lab](./section15.md)  
 - [Mock Exam 1](./mock1.md)  
+- [Mock Exam 2](./mock2.md)  
