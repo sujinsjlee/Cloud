@@ -116,6 +116,7 @@
     - [PV](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 
     <details>
+    <summary>Answer</summary>
     
     ```
     vi pvc.yaml
@@ -182,6 +183,7 @@
     - Task: Record the changes for the image upgrade
 
     <details>
+    <summary>Answer</summary>
 
     ```
      k create deploy nginx-deploy --image=nginx:1.16 --replicas=1
@@ -205,7 +207,8 @@
 > [Role Biding - CSR](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
 
 
-    <details>
+   <details>
+   <summary>Answer</summary>
     
     ```
     cd /root/CKA
@@ -214,9 +217,9 @@
     vi csr.yaml
     ```
 
-    - https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest
+   - https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest
 
-    - request is the base64 encoded value of the CSR file content. You can get the content using this command:
+   - request is the base64 encoded value of the CSR file content. You can get the content using this command:
 
 
     ```
@@ -249,50 +252,81 @@
     k create role developer --verb=create,get,list,update,delete --resource=pods -n developement
 
     k get role -n development
-    k  auth --help
+
+    k create rolebinding -h
+    k create rolebinding john-developer --role=developer --user=john -n development
+
+    k get rolebinding -n development
+    k describe rolebinding -n developement
+
+    k auth can-i get pods --namespace-development --as john
     ```
 
-    </details>
+   - https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-rolebinding
 
-7. Run the below command for solution:
+   </details>
+
+7. Create a nginx pod called `nginx-resolver` using image `nginx`, expose it internally with a service called `nginx-resolver-service`. Test that you are able to look up the service and pod names from within the cluster. Use the image: `busybox:1.28` for dns lookup. Record results in `/root/CKA/nginx.svc` and `/root/CKA/nginx.pod`
+
+- Pod: nginx-resolver created
+- Service DNS Resolution recorded correctly
+- Pod DNS resolution recorded correctly
 
     <details>
+    <summary>Answer</summary>
 
     ```
-    kubectl run nginx-resolver --image=nginx
-    kubectl expose pod nginx-resolver --name=nginx-resolver-service --port=80 --target-port=80 --type=ClusterIP
-    kubectl run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup nginx-resolver-service
-    kubectl run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup nginx-resolver-service > /root/CKA/nginx.svc
+    k run nginx-resolver --image=nginx
 
-    Get the IP of the nginx-resolver pod and replace the dots(.) with hyphon(-) which will be used below.
+    # So the NGINX port is 80, so let's specify that.
+    k expose pod nginx-resolver --name=nginx-resolver-service --port=80
 
-    kubectl get pod nginx-resolver -o wide
-    kubectl run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup <P-O-D-I-P.default.pod> > /root/CKA/nginx.pod
+    k run busybox --image=busybox:1.28 -- sleep 4000
+
+    k exec busybox -- nslookup nginx-resolver-service > /root/CKA/nginx.svc
 
     ```
 
+    - https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#a-aaaa-records-1
+        - Pod has a DNS name : 
+        - `172-17-0-3.default.pod.cluster.local`
+
+    ```
+    k get pods -o wide
+    k exec busybox -- nslookup 10-50-192-4.default.pod.cluster.local > /root/CKA/nginx.svc
+    ```
     </details>
 
-8. Run the below command for solution:
+8. Create a static pod on `node01` called `nginx-critical` with image `nginx` and make sure that it is recreated/restarted automatically in case of a failure.
+
+- Use `/etc/kubernetes/manifests` as the Static Pod path for example.
+
+- static pod configured under /etc/kubernetes/manifests ?
+
+- Pod nginx-critical-node01 is up and running
 
     <details>
+    <summary>Answer</summary>
 
     ```
-    kubectl run nginx-critical --image=nginx --dry-run=client -o yaml > static.yaml
+    ssh node01
+
+    kubectl run nginx-critical --image=nginx
+
+    ssh controlplane
+    kubectl run nginx-critical --image=nginx --restart=Always --dry-run=client -o yaml > static.yaml
     
-    cat static.yaml - Copy the contents of this file.
+    ### Copy the contents of this file.
+    cat static.yaml 
 
-    kubectl get nodes -o wide
     ssh node01 
-    OR
-    ssh <IP of node01>
 
-    Check if static-pod directory is present which is /etc/kubernetes/manifests if not then create it.
+    ### Check if static-pod directory is present which is /etc/kubernetes/manifests if not then create it.
     mkdir -p /etc/kubernetes/manifests
 
-    Paste the contents of the file(static.yaml) copied in the first step to file nginx-critical.yaml.
+    ### Paste the contents of the file(static.yaml) copied in the first step to file nginx-critical.yaml.
 
-    Move/copy the nginx-critical.yaml to path /etc/kubernetes/manifests/
+    ### Move/copy the nginx-critical.yaml to path /etc/kubernetes/manifests/
 
     cp nginx-critical.yaml /etc/kubernetes/manifests
 

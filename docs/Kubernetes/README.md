@@ -29,3 +29,4 @@
 - [Section15 - Lightning Lab](./section15.md)  
 - [Mock Exam 1](./mock1.md)  
 - [Mock Exam 2](./mock2.md)  
+- [Mock Exam 3](./mock3.md)  
