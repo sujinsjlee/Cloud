@@ -146,6 +146,7 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
 
   <details>
   <summary>Answer</summary>
+
   - [network policy](https://kubernetes.io/docs/concepts/services-networking/network-policies/#networkpolicy-resource)
 
   ```
@@ -184,18 +185,33 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
      <summary>Answer</summary>
  
      ```
+     k taint -h
+     
+     # Update node 'foo' with a taint with key 'dedicated' and value 'special-user' and effect 'NoSchedule'
+     # If a taint with that key and effect already exists, its value is replaced as specified
+     kubectl taint nodes foo dedicated=special-user:NoSchedule
+
      kubectl taint node node01 env_type=production:NoSchedule
+
      ```
 
      Deploy `dev-redis` pod and to ensure that workloads are not scheduled to this `node01` worker node.
      ```
      kubectl run dev-redis --image=redis:alpine
 
-     kubectl get pods -owide
+     kubectl get pods -o wide
      ```
 
-     Deploy new pod `prod-redis` with toleration to be scheduled on `node01` worker node.
+     Deploy new pod `prod-redis` with **toleration** to be scheduled on `node01` worker node.
+      - https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+
      ```
+     k run prod-redis --image=redis:alpine --dry-run=client -o yaml > prod-redis.yaml
+
+     vi prod-redis.yaml
+     ```
+
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -213,18 +229,21 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
 
      View the pods with short details: 
      ```
-     kubectl get pods -owide | grep prod-redis
+     kubectl get pods -o wide | grep prod-redis
      ```
      </details>
  
 7. Create a pod called `hr-pod` in `hr` namespace belonging to the `production` environment and `frontend` tier .
+- image: redis:alpine
+- hr-pod labeled with environment production
+- hr-pod labeled with tier frontend
  
      <details>
      <summary>Answer</summary>
  
      ```
      kubectl create namespace hr
-     kubectl run hr-pod --image=redis:alpine --namespace=hr --labels=environment=production,tier=frontend
+     kubectl run hr-pod --image=redis:alpine -n hr --labels=environment=production,tier=frontend
      ```
      </details>
 
@@ -234,9 +253,11 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
      <summary>Answer</summary>
 
      ```
+     k get nodes --kubeconfig /root/CKA/super.kubeconfig
+
      vi /root/CKA/super.kubeconfig
 
-     Change the 2379 port to 6443 and run the below command to verify
+     ## Change the port to 6443 and run the below command to verify
      
      kubectl cluster-info --kubeconfig=/root/CKA/super.kubeconfig     
      ```
@@ -247,8 +268,27 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
      <details>
      <summary>Answer</summary>
      
+     - So, the kube controller manager is run as a static pod because you can see the control plane appended to the end of it. So, the manifest file for that is under etc/kubernetes/manifests
+
      ```
-     sed -i 's/kube-contro1ler-manager/kube-controller-manager/g' kube-controller-manager.yaml
+     k get deploy
+     k scale deployment nginx-deploy --replicas=3
+     k get deploy
+
+     k describe nginx-deploy
+
+     ### So we know that the deployment or any kind of controllers are managed by the kube controller manager.
+     ### So take a look at pod system
+
+     k describe pod kube-contro1ler-manager-controlplane -n kube-system
+
+     ls /etc/kubernetes/manifests
+     vi /etc/kubernetes/manifests/kube-controller-manager.yaml
+     
+     ### Search typo "contro1~" and fix it
+
+     k get pods -n kube-system
+     k get deploy
      ```
      </details>
 
