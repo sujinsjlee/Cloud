@@ -19,6 +19,7 @@
     <summary>Answer</summary>
 
     ```
+    kubectl run messaging --image=redis:alpine --labels="tier=msg"
     kubectl run messaging --image=redis:alpine --labels=tier=msg
     ```
 
@@ -31,6 +32,7 @@
     <summary>Answer</summary>
 
     ```
+    k create namespace apx-x9984574
     kubectl create ns apx-x9984574
     ```
 

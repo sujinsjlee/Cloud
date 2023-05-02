@@ -17,34 +17,33 @@
 
 ```
 # replace <node-to-drain> with the name of your node you are draining
-kubectl drain <node-to-drain> --ignore-daemonsets
+kubectl drain controlplane --ignore-daemonsets
 
 # Determine which version to upgrade to
 apt update
 apt-cache madison kubeadm
 
 
-# replace x in 1.26.x-00 with the latest patch version
+# UPDATE kubeadm
 apt-mark unhold kubeadm && \
 apt-get update && apt-get install -y kubeadm=1.26.0-00 && \
 apt-mark hold kubeadm
 
 kubeadm version
-kubeadm upgrade plan v1.26.0
+kubeadm upgrade plan
 kubeadm upgrade apply v1.26.0
 
-# replace x in 1.26.x-00 with the latest patch version
+# UPDATE kubelet kubectl
 apt-mark unhold kubelet kubectl && \
 apt-get update && apt-get install -y kubelet=1.26.0-00 kubectl=1.26.0-00 && \
 apt-mark hold kubelet kubectl
 
 # Restart the kubelet:
-
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
 # replace <node-to-uncordon> with the name of your node
-kubectl uncordon <node-to-uncordon>
+kubectl uncordon controlplane
 ```
 
 - Before draining node01, we need to remove the taint from the controlplane node.
@@ -64,19 +63,19 @@ root@controlplane:~# kubectl describe node controlplane | grep -i taint
 
 ```
 # replace <node-to-drain> with the name of your node you are draining
-kubectl drain <node-to-drain> --ignore-daemonsets
+kubectl drain node01 --ignore-daemonsets
 
 
 ssh node01
 
-# replace x in 1.26.x-00 with the latest patch version
+# UPDATE kubeadm
 apt-mark unhold kubeadm && \
 apt-get update && apt-get install -y kubeadm=1.26.0-00 && \
 apt-mark hold kubeadm
 
 kubeadm version
 
-# replace x in 1.26.x-00 with the latest patch version
+# UPDATE kubelet kubectl
 apt-mark unhold kubelet kubectl && \
 apt-get update && apt-get install -y kubelet=1.26.0-00 kubectl=1.26.0-00 && \
 apt-mark hold kubelet kubectl
@@ -88,7 +87,7 @@ sudo systemctl restart kubelet
 exit
 
 # replace <node-to-uncordon> with the name of your node
-kubectl uncordon <node-to-uncordon>
+kubectl uncordon node01
 ```
 
 ```
@@ -127,7 +126,7 @@ kubectl -n admin2406 get deployment -o custom-columns=DEPLOYMENT:.metadata.name,
 
 - [Command line tool - sorting list object](https://kubernetes.io/docs/reference/kubectl/overview/#sorting-list-objects)
 
-- [Command line tool - custom columns](https://kubernetes.io/docs/reference/kubectl/overview/#custom-columns)
+- [Command line tool - custom-columns](https://kubernetes.io/docs/reference/kubectl/overview/#custom-columns)
 
 ## Quiz3
 - A kubeconfig file called `admin.kubeconfig` has been created in `/root/CKA`. There is something wrong with the configuration. Troubleshoot and fix it.
@@ -153,7 +152,7 @@ kube-apiserver에 붙기 위해서는 6443 port를 사용해야함.
 ```
 vi /root/CKA/admin.kubeconfig
 
-# change server port from 4380 to 6443
+# change server port from 4380 to **6443**
 ```
 
 - [Ports and Protocols - Control Plane port 6443](https://kubernetes.io/docs/reference/networking/ports-and-protocols/)
@@ -202,12 +201,9 @@ controlplane ~ ➜  k get pv -n alpha
 NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
 alpha-pv   1Gi        RWO            Retain           Available           slow                    28m
 
-controlplane ~ ➜  k get pvc -n alpha 
-NAME          STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-alpha-claim   Pending                                      slow-storage   28m
 ```
 
-- Edit pvc - **should write NAMESPACE**
+- Edit pvc : **should write NAMESPACE**
 
 ```yaml
 apiVersion: v1
@@ -239,7 +235,7 @@ kubectl get pv -n alpha
 kubectl describe pv alpha-pv -n alpha
 
 (결과)
-slow storageclass를 사용.
+slow storageclass를 사용 + pvc (alpha/mysql-alpha-pvc)
 -->
 
 
@@ -260,6 +256,7 @@ ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
   --cacert=<trusted-ca-file> --cert=<cert-file> --key=<key-file> \
   snapshot save <backup-file-location>
 
+## where trusted-ca-file, cert-file and key-file can be obtained from the description of the etcd Pod.
 
 ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
@@ -278,7 +275,7 @@ The container should mount a `read-only` secret volume called `secret-volume` at
 > Answer
 
 ```
-k run secret-1401 -n admin1402 --image=busybox --dry-run=client -o yaml > pod1.yaml
+k run secret-1401 -n admin1401 --image=busybox --dry-run=client -o yaml --command -- sleep 4800 > pod.yaml
 vi pod1.yaml
 ```
 
