@@ -67,6 +67,7 @@
     k expose pod -h
 
     kubectl expose pod messaging --port=6379 --name messaging-service
+    k expose pod messaging --port=6379 --name=messaging-service
 
     k get svc
     ```
@@ -81,6 +82,8 @@
 
     ```
     kubectl create deployment hr-web-app --image=kodekloud/webapp-color --replicas=2
+
+    k create deploy hr-web-app --image=kodekloud/webapp-color --replicas=2
     ```
 
     </details>
@@ -113,7 +116,8 @@
     <summary>Answer</summary>
 
     ```
-    kubectl run temp-bus --image=redis:alpine -n finance
+    k create namespace temp-bus
+    kubectl run finance --image=redis:alpine -n temp-bus
     ```
     </details>
 
@@ -143,11 +147,9 @@
     <summary>Answer</summary>
 
     ```
-    k expose deploy hr-web-app --name=hr-web-app-service --port=8080 --type=NodePort
-
-    k expose deploy hr-web-app --port=8080 --name=hr-web-app-service --type=NodePort
-
-    kubectl expose deployment hr-web-app --type=NodePort --port=8080 --name=hr-web-app-service --dry-run=client -o yaml > hr-web-app-service.yaml
+    k get deploy
+   
+    k expose deploy hr-web-app --type=NodePort --port=8080 --name=hr-web-app-service --dry-run=client -o yaml > hr-web-app-service.yaml
 
     k get svc
 
@@ -161,14 +163,19 @@
 
 11. Use JSON PATH query to retrieve the `osImages` of all the nodes and store it in a file `/opt/outputs/nodes_os_x43kj56.txt`.
 
-- https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+- [jsonpath](https://kubernetes.io/docs/reference/kubectl/jsonpath/)
 
     <details>
     <summary>Answer</summary>
 
     ``` 
-    kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}' > /opt/outputs/nodes_os_x43kj56.txt
+    kubectl get nodes -o=jsonpath='{.items[*].status.nodeInfo.osImage}' > /opt/outputs/nodes_os_x43kj56.txt
     ```
+
+    <!-- %키를 누르면 지금 커서가 위치하는 곳에 있는 괄호와 짝이 맞는 괄호를 찾아줍니다.-->
+    - In vi **%** key
+        - To jump to a matching opening or closing parenthesis, square bracket or a curly brace: `([{}])`
+
     </details>
 
 12. Create a Persistent Volume with the given specification.
@@ -177,7 +184,7 @@
 - Access modes: ReadWriteMany
 - Host Path: /pv/data-analytics
 
-- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes
+- [pv](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes)
 
 
     <details>
