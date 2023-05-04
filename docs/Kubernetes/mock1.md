@@ -110,14 +110,14 @@
     ```
     </details>
 
-8. Run below command to create a pod in namespace `finance`:
+8. Run below command to create a pod in namespace `finance` named `temp-bus` with the image `redis:alpine.`:
 
     <details>
     <summary>Answer</summary>
 
     ```
-    k create namespace temp-bus
-    kubectl run finance --image=redis:alpine -n temp-bus
+    k create namespace finance
+    kubectl run temp-bus --image=redis:alpine -n finance
     ```
     </details>
 

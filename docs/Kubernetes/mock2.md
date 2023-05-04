@@ -4,15 +4,16 @@
 
 1. Take a backup of the etcd cluster and save it to `/opt/etcd-backup.db`
 
-- [etcd - backup](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster)  
+- [etcd - Backing up the etcd cluster](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster)  
 
     <details>
     <summary>Answer</summary>
 
+    - etcd cluster is located at **/etc/kubernetes/manifests/etcd.yaml**
+    - kubernetes keep manifest of static pods in the `/etc/kubernetes/manifests` folder. etcd.yaml
+
     ```
     cat /etc/kubernetes/manifests/etcd.yaml | grep file
-
-    ETCDCTL_API=3 etcdctl snapshot save --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --endpoints=127.0.0.1:2379 /opt/etcd-backup.db
 
     ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
     --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
@@ -37,7 +38,6 @@
     k run redis-storage --image=redis:alpine --dry-run=client -o yaml > redis-storage.yaml
     ```
 
-
     ```yaml
     apiVersion: v1
     kind: Pod
@@ -49,16 +49,17 @@
     spec:
     containers:
     - image: redis:alpine
-        name: redis-storage    
+        name: redis-storage
         resources: {}
         volumeMounts:
         - mountPath: /data/redis
-        name: cache-volume  ### Should be matched with volumes' name
-    dnsPolicy: ClusterFirst
-    restartPolicy: Always
+        name: cache-volume ### Should be matched with volumes' name
     volumes:
     - name: cache-volume
-        emptyDir: {} ### !!!
+        emptyDir:
+        sizeLimit: 100Mi
+    dnsPolicy: ClusterFirst
+    restartPolicy: Always
     status: {}
     ```
 
@@ -74,6 +75,7 @@
     - Pod: super-user-pod
     - Container Image: busybox:1.28
     - SYS_TIME capabilities for the conatiner?
+
     - [Cheat Sheet - sleep](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)  
     - [security capability - SYS_TIME](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
 
@@ -92,17 +94,23 @@
     kind: Pod
     metadata:
     creationTimestamp: null
+    labels:
+        run: super-user-pod
     name: super-user-pod
     spec:
     containers:
-    - image: busybox:1.28
-        name: super-user-pod
-        args:
+    - command:
         - sleep
         - "4800"
+        image: busybox:1.28
+        name: super-user-pod
         securityContext:
         capabilities:
             add: ["SYS_TIME"]
+        resources: {}
+    dnsPolicy: ClusterFirst
+    restartPolicy: Always
+    status: {}
     ```
 
     ```
@@ -113,7 +121,7 @@
 4. A pod definition file is created at `/root/CKA/use-pv`.yaml. Make use of this manifest file and mount the persistent volume called `pv-1`. Ensure the pod is running and the PV is bound.
     - mountPath: `/data`
     - persistentVolumeClaim Name: `my-pvc`
-    - [PV](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+    - [PV - PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 
     <details>
     <summary>Answer</summary>
@@ -142,7 +150,7 @@
     vi /root/CKA/use-pv
     ```
 
-    - [Claim as Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes)  
+    - [Claims As Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes)  
 
 
     ```yaml
@@ -157,19 +165,21 @@
     containers:
     - image: nginx
         name: use-pv
+        resources: {}
         volumeMounts:
         - mountPath: "/data"
-            name: pv-1
-        resources: {}
+            name: mypd
     volumes:
-    - name: pv-1
+        - name: mypd
         persistentVolumeClaim:
-        claimName: my-pvc
+            claimName: my-pvc
     dnsPolicy: ClusterFirst
     restartPolicy: Always
     status: {}
     ```
 
+    - **After the file update!! MUST CREATE/APPLY changes of the yaml file**
+    
     ```
     k create -f /root/CKA/use-pv.yaml
     ```
@@ -189,8 +199,14 @@
      k create deploy nginx-deploy --image=nginx:1.16 --replicas=1
     ```
 
-    - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+    ```
+    k edit deploy nginx-deploy
 
+    # Update 1.16 to 1.17
+    ```
+
+    - Another way
+        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
     ```
     k set image -h
     k set image deployment/nginx-deploy nginx=nginx:1.17
@@ -209,20 +225,14 @@
 
    <details>
    <summary>Answer</summary>
-    
-    ```
-    cd /root/CKA
-    cat john.csr
 
-    vi csr.yaml
-    ```
-
-   - https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest
+   - [Role Binding > CSR > Create a CertificateSigningRequest](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest)
 
    - request is the base64 encoded value of the CSR file content. You can get the content using this command:
 
-
     ```
+    cd /root/CKA
+    vi csr.yaml
     cat john.csr | base64 | tr -d "\n"
     ```
 
@@ -230,28 +240,34 @@
     apiVersion: certificates.k8s.io/v1
     kind: CertificateSigningRequest
     metadata:
-    name: john-developer
+      name: john-developer
     spec:
-    signerName: kubernetes.io/kube-apiserver-client
-    request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbTlvYmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUt2Um1tQ0h2ZjBrTHNldlF3aWVKSzcrVVdRck04ZGtkdzkyYUJTdG1uUVNhMGFPCjV3c3cwbVZyNkNjcEJFRmVreHk5NUVydkgyTHhqQTNiSHVsTVVub2ZkUU9rbjYra1NNY2o3TzdWYlBld2k2OEIKa3JoM2prRFNuZGFvV1NPWXBKOFg1WUZ5c2ZvNUpxby82YU92czFGcEc3bm5SMG1JYWpySTlNVVFEdTVncGw4bgpjakY0TG4vQ3NEb3o3QXNadEgwcVpwc0dXYVpURTBKOWNrQmswZWhiV2tMeDJUK3pEYzlmaDVIMjZsSE4zbHM4CktiSlRuSnY3WDFsNndCeTN5WUFUSXRNclpUR28wZ2c1QS9uREZ4SXdHcXNlMTdLZDRaa1k3RDJIZ3R4UytkMEMKMTNBeHNVdzQyWVZ6ZzhkYXJzVGRMZzcxQ2NaanRxdS9YSmlyQmxVQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ1VKTnNMelBKczB2czlGTTVpUzJ0akMyaVYvdXptcmwxTGNUTStsbXpSODNsS09uL0NoMTZlClNLNHplRlFtbGF0c0hCOGZBU2ZhQnRaOUJ2UnVlMUZnbHk1b2VuTk5LaW9FMnc3TUx1a0oyODBWRWFxUjN2SSsKNzRiNnduNkhYclJsYVhaM25VMTFQVTlsT3RBSGxQeDNYVWpCVk5QaGhlUlBmR3p3TTRselZuQW5mNm96bEtxSgpvT3RORStlZ2FYWDdvc3BvZmdWZWVqc25Yd0RjZ05pSFFTbDgzSkljUCtjOVBHMDJtNyt0NmpJU3VoRllTVjZtCmlqblNucHBKZWhFUGxPMkFNcmJzU0VpaFB1N294Wm9iZDFtdWF4bWtVa0NoSzZLeGV0RjVEdWhRMi80NEMvSDIKOWk1bnpMMlRST3RndGRJZjAveUF5N05COHlOY3FPR0QKLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
-    usages:
-    - digital signature
-    - key encipherment
-    - client auth
-    groups:
-    - system:authenticated
+      request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbTlvYmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUt2Um1tQ0h2ZjBrTHNldlF3aWVKSzcrVVdRck04ZGtkdzkyYUJTdG1uUVNhMGFPCjV3c3cwbVZyNkNjcEJFRmVreHk5NUVydkgyTHhqQTNiSHVsTVVub2ZkUU9rbjYra1NNY2o3TzdWYlBld2k2OEIKa3JoM2prRFNuZGFvV1NPWXBKOFg1WUZ5c2ZvNUpxby82YU92czFGcEc3bm5SMG1JYWpySTlNVVFEdTVncGw4bgpjakY0TG4vQ3NEb3o3QXNadEgwcVpwc0dXYVpURTBKOWNrQmswZWhiV2tMeDJUK3pEYzlmaDVIMjZsSE4zbHM4CktiSlRuSnY3WDFsNndCeTN5WUFUSXRNclpUR28wZ2c1QS9uREZ4SXdHcXNlMTdLZDRaa1k3RDJIZ3R4UytkMEMKMTNBeHNVdzQyWVZ6ZzhkYXJzVGRMZzcxQ2NaanRxdS9YSmlyQmxVQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ1VKTnNMelBKczB2czlGTTVpUzJ0akMyaVYvdXptcmwxTGNUTStsbXpSODNsS09uL0NoMTZlClNLNHplRlFtbGF0c0hCOGZBU2ZhQnRaOUJ2UnVlMUZnbHk1b2VuTk5LaW9FMnc3TUx1a0oyODBWRWFxUjN2SSsKNzRiNnduNkhYclJsYVhaM25VMTFQVTlsT3RBSGxQeDNYVWpCVk5QaGhlUlBmR3p3TTRselZuQW5mNm96bEtxSgpvT3RORStlZ2FYWDdvc3BvZmdWZWVqc25Yd0RjZ05pSFFTbDgzSkljUCtjOVBHMDJtNyt0NmpJU3VoRllTVjZtCmlqblNucHBKZWhFUGxPMkFNcmJzU0VpaFB1N294Wm9iZDFtdWF4bWtVa0NoSzZLeGV0RjVEdWhRMi80NEMvSDIKOWk1bnpMMlRST3RndGRJZjAveUF5N05COHlOY3FPR0QKLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+      usages:
+      - client auth
     ```
     
+    - CREATE AND **APPROVE CSR**
+
     ```
     k create -f csr.yaml
     k get csr
     k certificate approve john-developer
     k get csr
-
+    ```
+    
+    - Create role
+    ```
     k create role -h
     k create role developer --verb=create,get,list,update,delete --resource=pods -n developement
 
     k get role -n development
+    ```
+
+    - Role Binding
+    
+    ```
+    k auth can-i get pods --namespace=development --as john 
 
     k create rolebinding -h
     k create rolebinding john-developer --role=developer --user=john -n development
@@ -259,10 +275,8 @@
     k get rolebinding -n development
     k describe rolebinding -n developement
 
-    k auth can-i get pods --namespace-development --as john
+    k auth can-i get pods --namespace=development --as john
     ```
-
-   - https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-rolebinding
 
    </details>
 
@@ -277,23 +291,33 @@
 
     ```
     k run nginx-resolver --image=nginx
-
-    # So the NGINX port is 80, so let's specify that.
-    k expose pod nginx-resolver --name=nginx-resolver-service --port=80
-
-    k run busybox --image=busybox:1.28 -- sleep 4000
-
-    k exec busybox -- nslookup nginx-resolver-service > /root/CKA/nginx.svc
-
     ```
 
-    - https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#a-aaaa-records-1
+    - NGINX port is 80, so let's specify that.
+
+    ```
+    k expose pod nginx-resolver --name=nginx-resolver-service --port=80
+    ```
+
+    - `-it` gives an interactive terminal to allow you to run commands within the pod
+    - `--rm` will automatically perform cleanup of the pod once it's job is completed
+    
+    - **Before recore the results in .svc, must run the command first and then move the resulrts in .svc**
+
+    ```
+    kubectl run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup nginx-resolver-service
+    
+    kubectl run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup nginx-resolver-service > /root/CKA/nginx.svc
+    ```
+
+    - [DNS > Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#a-aaaa-records-1)
         - Pod has a DNS name : 
         - `172-17-0-3.default.pod.cluster.local`
 
     ```
     k get pods -o wide
-    k exec busybox -- nslookup 10-50-192-4.default.pod.cluster.local > /root/CKA/nginx.svc
+
+    k run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup 10-244-192-1.default.pod.cluster.local > /root/CKA/nginx.pod 
     ```
     </details>
 
@@ -309,30 +333,21 @@
     <summary>Answer</summary>
 
     ```
+    kubectl run nginx-critical --image=nginx --dry-run=client -o yaml > static.yaml
+    ```
+    
+    - Copy the contents of this file or use `scp` command to transfer this file from controlplane to node01 node.
+
+    ```
+    scp static.yaml node01:/root/
+
+    k get nodes -o wide
     ssh node01
 
-    kubectl run nginx-critical --image=nginx
+    cp /root/static.yaml /etc/kubernetes/manifests/
 
     ssh controlplane
-    kubectl run nginx-critical --image=nginx --restart=Always --dry-run=client -o yaml > static.yaml
-    
-    ### Copy the contents of this file.
-    cat static.yaml 
-
-    ssh node01 
-
-    ### Check if static-pod directory is present which is /etc/kubernetes/manifests if not then create it.
-    mkdir -p /etc/kubernetes/manifests
-
-    ### Paste the contents of the file(static.yaml) copied in the first step to file nginx-critical.yaml.
-
-    ### Move/copy the nginx-critical.yaml to path /etc/kubernetes/manifests/
-
-    cp nginx-critical.yaml /etc/kubernetes/manifests
-
-    Go back to master node
-
-    kubectl get pods 
+    k get pods
     ```
 
     </details>
