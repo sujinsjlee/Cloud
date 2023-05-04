@@ -280,7 +280,9 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
      ```
      kubectl create namespace hr
      kubectl run hr-pod --image=redis:alpine -n hr --labels=environment=production,tier=frontend
+     kubectl run hr-pod --image=redis:alpine --namespace=hr --labels=environment=production,tier=frontend
 
+     # The following is wrong, label should have exact name like "environment" and "tier"
      k run hr-pod --image=redis:alpine -n hr --labels="env=production,tier=frontend"
      ```
      </details>
