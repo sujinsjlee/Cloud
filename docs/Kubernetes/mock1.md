@@ -97,6 +97,8 @@
 
     - The running kubelet periodically scans the configured directory (`/etc/kubernetes/manifests` in our example) for changes and adds/removes Pods as files appear/disappear in this directory.
 
+    - **mv [FILE] [PATH]**
+
     ```
     k run static-busybox --image=busybox --dry-run=client -o yaml --command -- sleep 1000 > static-busybox.yaml
 
@@ -116,7 +118,6 @@
     <summary>Answer</summary>
 
     ```
-    k create namespace finance
     kubectl run temp-bus --image=redis:alpine -n finance
     ```
     </details>
@@ -125,6 +126,9 @@
 
     <details>
     <summary>Answer</summary>
+    - **k logs [POD] [CONTAINTER]**
+    - **k edit [POD]**
+    - **k replace --force -f /temp/...yaml**
 
     ```
     kubectl describe pod orange
@@ -148,8 +152,8 @@
 
     ```
     k get deploy
-   
-    k expose deploy hr-web-app --type=NodePort --port=8080 --name=hr-web-app-service --dry-run=client -o yaml > hr-web-app-service.yaml
+
+    k expose deploy hr-web-app --type=NodePort --port=8080 --name=hr-web-app-service
 
     k get svc
 

@@ -15,6 +15,8 @@
 
 > Answer
 
+- [Kubeadm update](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/)
+
 ```
 # replace <node-to-drain> with the name of your node you are draining
 kubectl drain controlplane --ignore-daemonsets
@@ -64,8 +66,11 @@ root@controlplane:~# kubectl describe node controlplane | grep -i taint
 ```
 # replace <node-to-drain> with the name of your node you are draining
 kubectl drain node01 --ignore-daemonsets
+```
 
-
+- To upgrade worker node, **NEED TO SSH to new node**
+- [Upgrading Linux nodes](https://v1-26.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/upgrading-linux-nodes/)
+```
 ssh node01
 
 # UPDATE kubeadm
@@ -73,7 +78,7 @@ apt-mark unhold kubeadm && \
 apt-get update && apt-get install -y kubeadm=1.26.0-00 && \
 apt-mark hold kubeadm
 
-kubeadm version
+sudo kubeadm upgrade node
 
 # UPDATE kubelet kubectl
 apt-mark unhold kubelet kubectl && \
@@ -115,6 +120,7 @@ Write the result to the file `/opt/admin2406_data.`
 
 > Answer
 
+- **sorting list > custom-columns > --sort-by**
 
 ```
 kubectl get deployment -n admin2406
@@ -132,6 +138,9 @@ kubectl -n admin2406 get deployment -o custom-columns=DEPLOYMENT:.metadata.name,
 - A kubeconfig file called `admin.kubeconfig` has been created in `/root/CKA`. There is something wrong with the configuration. Troubleshoot and fix it.
 
 > Answer
+
+- **conrtolplane port : 6443**
+  - https://kubernetes.io/docs/reference/networking/ports-and-protocols/#control-plane
 
 <!--
 cat /root/CKA/admin.kubeconfig
@@ -247,6 +256,9 @@ slow storageclass를 사용 + pvc (alpha/mysql-alpha-pvc)
 
 > Answer
 
+- [Backup ETCD - Shapshot using etcdctl options](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#snapshot-using-etcdctl-options)
+
+- **k get all -n kube-system**
 
 ```
 k get all -n kube-system
@@ -263,8 +275,6 @@ ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
   snapshot save /opt/etcd-backup.db
 ```
 
-- [Backup ETCD - Shapshot using etcdctl options](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#snapshot-using-etcdctl-options)
-
 
 ## Quiz7
 
@@ -275,7 +285,7 @@ The container should mount a `read-only` secret volume called `secret-volume` at
 > Answer
 
 ```
-k run secret-1401 -n admin1401 --image=busybox --dry-run=client -o yaml --command -- sleep 4800 > pod.yaml
+k run secret-1401 -n admin1401 --image=busybox --dry-run=client -o yaml --command -- sleep 4800 > pod1.yaml
 vi pod1.yaml
 ```
 

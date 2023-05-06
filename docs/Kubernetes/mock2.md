@@ -11,7 +11,7 @@
 
     - etcd cluster is located at **/etc/kubernetes/manifests/etcd.yaml**
     - kubernetes keep manifest of static pods in the `/etc/kubernetes/manifests` folder. etcd.yaml
-
+    
     ```
     cat /etc/kubernetes/manifests/etcd.yaml | grep file
 
@@ -147,7 +147,7 @@
 
     ```
     k create -f pvc.yaml
-    vi /root/CKA/use-pv
+    vi /root/CKA/use-pv.yaml
     ```
 
     - [Claims As Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes)  
@@ -205,13 +205,6 @@
     # Update 1.16 to 1.17
     ```
 
-    - Another way
-        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
-    ```
-    k set image -h
-    k set image deployment/nginx-deploy nginx=nginx:1.17
-    ```
-
     </details>
 
 6. Create a new user called `john`. Grant him access to the cluster. John should have permission to `create, list, get, update and delete pods` in the `development` namespace . The private key exists in the location: `/root/CKA/john.key` and csr at `/root/CKA/john.csr`.
@@ -226,7 +219,7 @@
    <details>
    <summary>Answer</summary>
 
-   - [Role Binding > CSR > Create a CertificateSigningRequest](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest)
+   - [CSR > Create a CertificateSigningRequest](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#create-certificatessigningrequest)
 
    - request is the base64 encoded value of the CSR file content. You can get the content using this command:
 
@@ -257,7 +250,7 @@
         k get csr
         ```
         
-        - Create role
+        - **Create role**
 
         ```
         k create role -h
@@ -295,7 +288,7 @@
     k run nginx-resolver --image=nginx
     ```
 
-    - NGINX port is 80, so let's specify that.
+    - **NGINX port is 80**, so let's specify that.
 
     ```
     k expose pod nginx-resolver --name=nginx-resolver-service --port=80
