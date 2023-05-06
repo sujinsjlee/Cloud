@@ -24,11 +24,12 @@ Next, create a pod called `pvviewer` with the image: `redis` and serviceAccount:
      kubectl create clusterrole pvviewer-role --resource=persistentvolumes --verb=list
      ```
      
-     - Create ClusterRoleBinding
-      - **error: serviceaccount must be <namespace>:<name>**
-      - default:pvviewer
-      - When clusterRoleBinding 
-        - **Should add serviceaccount option**
+     - Create ClusterRoleBinding  
+       - **error: serviceaccount must be <namespace>:<name>**  
+       - default:pvviewer  
+       - When clusterRoleBinding   
+          - **Should add serviceaccount option**  
+          
      ```
      k create clusterrolebinding -h
      kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --serviceaccount=default:pvviewer
