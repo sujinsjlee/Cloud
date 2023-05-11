@@ -30,3 +30,12 @@
 - [Mock Exam 1](./mock1.md)  
 - [Mock Exam 2](./mock2.md)  
 - [Mock Exam 3](./mock3.md)  
+
+## CKAD
+###### © The Study Content is available as Mumshad Mannambeth's Tutorial Video under the terms of the [Kubernetes Certified Application Developer (CKAD) with Tests](https://www.udemy.com/course/certified-kubernetes-application-developer/)  
+
+### Content
+- [Lightning Lab 1](./ckad_lightning_lab1.md)  
+- [Lightning Lab 2](./ckad_lightning_lab2.md)  
+- [Mock Exam 1](./ckad_mock1.md)  
+- [Mock Exam 2](./ckad_mock2.md)  

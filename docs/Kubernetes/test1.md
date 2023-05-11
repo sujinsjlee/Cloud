@@ -50,7 +50,7 @@
 
 - ClusterRoleBinding
     - k create clusterrolebinding -h
-    - kubectl create clusterrolebinding deployment-clusterrolebinding --clusterrole=deployment-clusterrole --serviceaccount=api-access:cicd-token
+    - kubectl create clusterrolebinding deployment-clusterrolebinding --clusterrole=deployment-clusterrole --serviceaccount=**api-access:cicd-token**
 
 ## 06 : POD creation
 - environment Variable: CERT = "CKA-cert"
@@ -191,7 +191,9 @@
 - 두번째 yaml 참고
 
 - deployment > containers>name **(http로)수정, image(nginx로 ) 수정, ports 추가**
-- service > metadata > name (front-end-svc로)수정, spec밑에 selector위에 type: NodePort 추가, 
+- service > metadata > name (front-end-svc로)수정, 
+- **type:NodePort** search
+    - spec밑에 selector위에 type: NodePort 추가, 
 - selector 아래에 app.kubernetes.io/name: proxy → name: 수정(deployment label과 동일), 
 - 마지막 targetPort (http로) 수정
 
@@ -286,10 +288,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: ingress-nginx
+	namespace: ingress-nginx
   name: app-ingress
   annotations:
-		kubernetes.io/ingress.class: nginx
+		nginx.ingress.kubernetes.io/ingress.class: nginx
 spec:
   rules:
   - http:
@@ -299,6 +301,13 @@ spec:
         backend:
           service:
             name: nginx
+            port:
+              number: 80
+      - path: /app
+        pathType: Prefix
+        backend:
+          service:
+            name: appjs-service
             port:
               number: 80
 ```
@@ -313,6 +322,7 @@ spec:
 
 - kubectl run test-nslookup --image=busybox:1.28 --restart=Never -it --rm --nslookup resolver-service
 - kubectl run test-nslookup --image=busybox:1.28 --restart=Never -it --rm --nslookup resolver-service > /var/CKA2022/nginx.svc
+- k get pods -o wide
 - kubectl run test-nslookup --image=busybox:1.28 --restart=Never -it --rm --nslookup 10-244-1-53.default.pod.cluster.local
 - kubectl run test-nslookup --image=busybox:1.28 --restart=Never -it --rm --nslookup 10-244-1-53.default.pod.cluster.local > /var/CKA2022/nginx.pod
     - **--restart=Never --it --rm**
@@ -320,7 +330,7 @@ spec:
 ## 23 : HostPath Volumne Mount
 - cd /data/cka
 - vi pod-tensorflow.yaml
-- Document “hostpath” 검색 >
+- Document **“hostpath”** 검색 >
 - 첫 번째 문서 Volumes | Kubernetes >
 - 쭉-내려서 warning 두 개 지난 뒤 “hostPath configuration example” 아래 yaml 참고
 
@@ -357,7 +367,7 @@ spec:
 - 첫 번째 문서 Persistent Volumes | Kubernetes >
 - 쭉-내려서 Persistent Volumes 아래 yaml 참고
 
-- vi pv.yaml
+- **vi pv.yaml**
 
 ```yaml
 apiVersion: v1
@@ -377,7 +387,7 @@ spec:
 
 
 ## 25 : PVC
-- vi pvc.yaml
+- **vi pvc.yaml**
 
 ```yaml
 apiVersion: v1
@@ -433,7 +443,7 @@ spec:
 - Interacting with running Pods 아래에 kubectl top pod POD_NAME --sort-by=cpu 코드 참고
 
 - kubectl top pod POD_NAME --sort-by=cpu  
-- kubectl top pod **-l name=overloaded-cpu --sort-by=cpu
+- kubectl top pod **-l name=overloaded-cpu** --sort-by=cpu
 
 - echo 'campus-01' > /var/CKA2023/custom-app-log
 
