@@ -380,7 +380,7 @@ k set serviceaccount deploy app-a restricservice -n production
 ```
 
 ### NO19 <!--완똑-->
-- Limits the memory to half the maximum memory constraint set for the crayfah name space. (이게 좀 당황스러웠던 조건)
+- Limits the memory to half the maximum memory constraint set for the crayfah name space. <!--(이게 좀 당황스러웠던 조건)-->
 - https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
 ### NO20
@@ -399,8 +399,9 @@ k rollout status deploy app -n kdpd00202
 
 ### NO22 <!--완똑-->
 
-- 아 이거 틀렸을 것같은데
+<!--- 아 이거 틀렸을 것같은데
 - web-access=true 이렇게 안하고 web=true 이렇게씀 ㅠㅠ
+-->
 
 ```
 k label pod newpod -n ckad web-access=true
@@ -415,7 +416,7 @@ k label pod newpod -n ckad db-access=true
 
 ### NO29 <!--완똑-->
 ```
-k rollout status deploy /// -n ///ßß
+k rollout status deploy /// -n ///
 k rollout undo deploy ///
 k rollout history deploy ///
 k get rs -n ///
@@ -431,4 +432,4 @@ securityContext:
 ```
 ### NO31
 - sidecar
-ß
+
