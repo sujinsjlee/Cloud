@@ -1,6 +1,9 @@
 # Cloud 
 > Knowledge for Cloud Engineer
 
+## GCP
+- [GCP](./docs/GCP/README.md)
+
 ## Kubernetes
 - [Kubernetes](./docs/Kubernetes/README.md)  
 
