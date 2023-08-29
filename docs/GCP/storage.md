@@ -52,7 +52,7 @@
 
 - Consider Firestore if you need massive scaling and predictability together with real time query results and offline query support. This storage service provides terabytes of capacity with a maximum unit size of 1 megabyte per entity. Firestore is best for storing, syncing, and querying data for mobile and web apps. 
 
-- Finally, consider using Cloud Bigtable if you need to store a large number of structured objects. Cloud Bigtable doesn’t support SQL queries, nor does it support multi-row transactions. This storage service provides petabytes of capacity with a maximum unit size of 10 megabytes per cell and 100 megabytes per row. Bigtable is best for analytical data with heavy read and write events, like AdTech, financial, or IoT data. 
+- Finally, consider using Cloud Bigtable if you need to store a large number of structured objects. Cloud Bigtable doesn’t support SQL queries, nor does it support multi-row transactions. This storage service provides petabytes of capacity with  a maximum unit size of 10 megabytes per cell and 100 megabytes per row. Bigtable is best for analytical data with heavy read and write events, like AdTech, financial, or IoT data. 
 
 ## BigQuery
 
