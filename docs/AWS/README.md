@@ -1,5 +1,6 @@
-### AWS Solutions Architect Associate
+### AWS
 
+* [Cloud Practitioner](./cp.md)    
 * [EC2](./ec2.md)  
 * [IAM](./iam.md)  
 * [EC2 Instance Storage - EBS, EFS](./ec2_storage.md)  

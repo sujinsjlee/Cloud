@@ -4,6 +4,12 @@
 ## GCP
 - [GCP](./docs/GCP/README.md)
 
+## MS Azure
+- [Azure](./docs/Azure/README.md)
+
+## AWS
+- [AWS](./docs/AWS/README.md)  
+
 ## Kubernetes
 - [Kubernetes](./docs/Kubernetes/README.md)  
 
@@ -24,8 +30,3 @@
 
     - And last but not least, you can always refer to the language spec. It is good source of truth: 
         - [Go spec](https://golang.org/ref/spec)
-
-## AWS
-- [AWS](./docs/AWS/README.md)  
-
-
