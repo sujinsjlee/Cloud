@@ -299,4 +299,349 @@ D. Configure an external TCP proxy load balancer.
 A
 
 Google recommends using an HTTP(S) load balancer for terminating SSL sessions and load-balancing traffic to an instance group serving a public web application over HTTPS.
+
+Q41
+
+You have 32 GB of data in a single file that you need to upload to a Nearline Storage bucket. The WAN connection you are using is rated at 1 Gbps, and you are the only one on the connection. You want to use as much of the rated 1 Gbps as possible to transfer the file rapidly. How should you upload the file?
+A. Use the GCP Console to transfer the file instead of gsutil.
+B. Enable parallel composite uploads using gsutil on the file transfer.
+C. Decrease the TCP window size on the machine initiating the transfer.
+D. Change the storage class of the bucket from Nearline to Multi-Regional.
+
+B
+
+Correct answer is B as the bandwidth is good and its a single file, gsutil parallel composite uploads can be used to split the large file and upload in parallel.Refer GCP documentation
+
+Q47
+You want to configure 10 Compute Engine instances for availability when maintenance occurs. Your requirements state that these instances should attempt to automatically restart if they crash. Also, the instances should be highly available including during system maintenance. What should you do?
+A. Create an instance template for the instances. Set the 'Automatic Restart' to on. Set the 'On-host maintenance' to Migrate VM instance. Add the instance template to an instance group.
+B. Create an instance template for the instances. Set 'Automatic Restart' to off. Set 'On-host maintenance' to Terminate VM instances. Add the instance template to an instance group.
+C. Create an instance group for the instances. Set the 'Autohealing' health check to healthy (HTTP).
+D. Create an instance group for the instance. Verify that the 'Advanced creation options' setting for 'do not retry machine creation' is set to off.
+
+A
+
+Q48
+C. Set Content-Type metadata to application/pdf on the PDF file objects.
+
+
+Q49
+You have a virtual machine that is currently configured with 2 vCPUs and 4 GB of memory. It is running out of memory. You want to upgrade the virtual machine to have 8 GB of memory. What should you do?
+A. Rely on live migration to move the workload to a machine with more memory.
+B. Use gcloud to add metadata to the VM. Set the key to required-memory-size and the value to 8 GB.
+C. Stop the VM, change the machine type to n1-standard-8, and start the VM.
+D. Stop the VM, increase the memory to 8 GB, and start the VM.
+
+D
+
+n1-standard-8은 8GB 메모리가 아니라 8개의 CPU 사용을 의미함
+
+VM 인스턴스를 중지하지 않고 메모리 증설은 불가함
+
+Q50
+You have production and test workloads that you want to deploy on Compute Engine. Production VMs need to be in a different subnet than the test VMs. All the
+VMs must be able to reach each other over Internal IP without creating additional routes. You need to set up VPC and the 2 subnets. Which configuration meets these requirements?
+A. Create a single custom VPC with 2 subnets. Create each subnet in a different region and with a different CIDR range.
+B. Create a single custom VPC with 2 subnets. Create each subnet in the same region and with the same CIDR range.
+C. Create 2 custom VPCs, each with a single subnet. Create each subnet in a different region and with a different CIDR range.
+D. Create 2 custom VPCs, each with a single subnet. Create each subnet in the same region and with the same CIDR range.
+
+A
+동일한 지역에서 같은 CIDR IP 범위를 가질 수 없기 때문에 B는 답이 아님
+
+서브넷의 기본 및 보조 범위는 할당 된 범위, 동일한 네트워크에 있는 
+
+다른 서브넷의 기본 또는 보조 범위와 겹칠 수 없음. 
+
+또한, VPC는 본질적으로 글로벌이며, 서브넷은 지역적이지만 전 세계적으로 연결됨
+
+그래서 서로 다른 서브넷에 대해 1개의 VPC와 서로 다른 CIDR을 만드는 것이 목적으로 충분함
+
+
+Q52
+Your company has a Google Cloud Platform project that uses BigQuery for data warehousing. Your data science team changes frequently and has few members.
+You need to allow members of this team to perform queries. You want to follow Google-recommended practices. What should you do?
+A. 1. Create an IAM entry for each data scientist's user account. 2. Assign the BigQuery jobUser role to the group.
+B. 1. Create an IAM entry for each data scientist's user account. 2. Assign the BigQuery dataViewer user role to the group.
+C. 1. Create a dedicated Google group in Cloud Identity. 2. Add each data scientist's user account to the group. 3. Assign the BigQuery jobUser role to the group.
+D. 1. Create a dedicated Google group in Cloud Identity. 2. Add each data scientist's user account to the group. 3. Assign the BigQuery dataViewer user role to the group.
+
+C
+
+dataViewer는 사용자가 뷰에서 쿼리를 수행하고 데이터를 가져올 수 없어 B, D는 오답
+
+Q53
+A. 1. Create an ingress firewall rule with the following settings: ג€¢ Targets: all instances ג€¢ Source filter: IP ranges (with the range set to 10.0.2.0/24) ג€¢ Protocols: allow all 2. Create an ingress firewall rule with the following settings: ג€¢ Targets: all instances ג€¢ Source filter: IP ranges (with the range set to 10.0.1.0/24) ג€¢ Protocols: allow all
+B. 1. Create an ingress firewall rule with the following settings: ג€¢ Targets: all instances with tier #2 service account ג€¢ Source filter: all instances with tier #1 service account ג€¢ Protocols: allow TCP:8080 2. Create an ingress firewall rule with the following settings: ג€¢ Targets: all instances with tier #3 service account ג€¢ Source filter: all instances with tier #2 service account ג€¢ Protocols: allow TCP: 8080
+C. 1. Create an ingress firewall rule with the following settings: ג€¢ Targets: all instances with tier #2 service account ג€¢ Source filter: all instances with tier #1 service account ג€¢ Protocols: allow all 2. Create an ingress firewall rule with the following settings: ג€¢ Targets: all instances with tier #3 service account ג€¢ Source filter: all instances with tier #2 service account ג€¢ Protocols: allow all
+D. 1. Create an egress firewall rule with the following settings: ג€¢ Targets: all instances ג€¢ Source filter: IP ranges (with the range set to 10.0.2.0/24) ג€¢ Protocols: allow TCP: 8080 2. Create an egress firewall rule with the following settings: ג€¢ Targets: all instances ג€¢ Source filter: IP ranges (with the range set to 10.0.1.0/24) ג€¢ Protocols: allow TCP: 8080
+
+B
+
+This question is designed to waste your time during the exam by making you read all those long answers. Remember that part of exam technique is not about knowing the product at all, but understanding multiple choice questions.
+
+For example when two answers are very similar to each other, this can increase the likelihood that the correct answer is one of those two.
+
+In this case it's an easy process of elimination as all answers are similar, we just need to filter out the wrong ones (and whacking the wrong answer in an exam is sometimes the best way to find the right one).
+
+Two answers mention port 8080, and two mention all ports. Obviously we just need port 8080, so we can immediately eliminate those two questions that want all ports open. That gives us a 50/50 chance of getting this question right.
+
+Of the remaining answers, one says "ingress" and the other "egress". We know that by default egress is permitted and ingress is not, so that makes "b" the only surviving choice.
+
+Q54
+You are given a project with a single Virtual Private Cloud (VPC) and a single subnetwork in the us-central1 region. There is a Compute Engine instance hosting an application in this subnetwork. You need to deploy a new instance in the same project in the europe-west1 region. This new instance needs access to the application. You want to follow Google-recommended practices. What should you do?
+A. 1. Create a subnetwork in the same VPC, in europe-west1. 2. Create the new instance in the new subnetwork and use the first instance's private address as the endpoint.
+B. 1. Create a VPC and a subnetwork in europe-west1. 2. Expose the application with an internal load balancer. 3. Create the new instance in the new subnetwork and use the load balancer's address as the endpoint.
+C. 1. Create a subnetwork in the same VPC, in europe-west1. 2. Use Cloud VPN to connect the two subnetworks. 3. Create the new instance in the new subnetwork and use the first instance's private address as the endpoint.
+D. 1. Create a VPC and a subnetwork in europe-west1. 2. Peer the 2 VPCs. 3. Create the new instance in the new subnetwork and use the first instance's private address as the endpoint.
+
+A
+
+ANSWER A is the correct answer because it follows Google's recommended practices of using a single VPC per project and creating a new subnetwork in the same VPC in the europe-west1 region. This allows the new instance to communicate with the existing instance using its private IP address as the endpoint.
+ANSWER D is incorrect because VPC peering only works between VPCs in the same region, so it would not be possible to peer the existing VPC in us-central1 with a new VPC in europe-west1.
+
+Q56
+
+You have a website hosted on App Engine standard environment. You want 1% of your users to see a new test version of the website. You want to minimize complexity. What should you do?
+A. Deploy the new version in the same application and use the --migrate option.
+B. Deploy the new version in the same application and use the --splits option to give a weight of 99 to the current version and a weight of 1 to the new version.
+C. Create a new App Engine application in the same project. Deploy the new version in that application. Use the App Engine library to proxy 1% of the requests to the new version.
+D. Create a new App Engine application in the same project. Deploy the new version in that application. Configure your network load balancer to send 1% of the traffic to that new application.
+
+B
+
+--splits는 각 버전으로 이동해야 하는 트래픽 비율을 설명하는 키-값 쌍임
+
+분할된 값이 함께 더해져 가중치로 사용됨
+
+Q59
+You are the organization and billing administrator for your company. The engineering team has the Project Creator role on the organization. You do not want the engineering team to be able to link projects to the billing account. Only the finance team should be able to link a project to a billing account, but they should not be able to make any other changes to projects. What should you do?
+A. Assign the finance team only the Billing Account User role on the billing account.
+B. Assign the engineering team only the Billing Account User role on the billing account.
+C. Assign the finance team the Billing Account User role on the billing account and the Project Billing Manager role on the organization.
+D. Assign the engineering team the Billing Account User role on the billing account and the Project Billing Manager role on the organization.
+
+you can't link project to billing accounts without Project billing manager.
+C is Correct
+
+
+Q60
+You have an application running in Google Kubernetes Engine (GKE) with cluster autoscaling enabled. The application exposes a TCP endpoint. There are several replicas of this application. You have a Compute Engine instance in the same region, but in another Virtual Private Cloud (VPC), called gce-network, that has no overlapping IP ranges with the first VPC. This instance needs to connect to the application on GKE. You want to minimize effort. What should you do?
+A. 1. In GKE, create a Service of type LoadBalancer that uses the application's Pods as backend. 2. Set the service's externalTrafficPolicy to Cluster. 3. Configure the Compute Engine instance to use the address of the load balancer that has been created.
+B. 1. In GKE, create a Service of type NodePort that uses the application's Pods as backend. 2. Create a Compute Engine instance called proxy with 2 network interfaces, one in each VPC. 3. Use iptables on this instance to forward traffic from gce-network to the GKE nodes. 4. Configure the Compute Engine instance to use the address of proxy in gce-network as endpoint.
+C. 1. In GKE, create a Service of type LoadBalancer that uses the application's Pods as backend. 2. Add an annotation to this service: cloud.google.com/load-balancer-type: Internal 3. Peer the two VPCs together. 4. Configure the Compute Engine instance to use the address of the load balancer that has been created.
+D. 1. In GKE, create a Service of type LoadBalancer that uses the application's Pods as backend. 2. Add a Cloud Armor Security Policy to the load balancer that whitelists the internal IPs of the MIG's instances. 3. Configure the Compute Engine instance to use the address of the load balancer that has been created.
+
+C
+둘 다 다른 VPC에 있기 때문에 VPC 피어링이 필요하며
+
+A는 최소한의 노력이지만, 애플리케이션을 인터넷에 노출해야 되므로 추천하지 않는 방식
+
+Q62
+You want to run a single caching HTTP reverse proxy on GCP for a latency-sensitive website. This specific reverse proxy consumes almost no CPU. You want to have a 30-GB in-memory cache, and need an additional 2 GB of memory for the rest of the processes. You want to minimize cost. How should you run this reverse proxy?
+A. Create a Cloud Memorystore for Redis instance with 32-GB capacity.
+B. Run it on Compute Engine, and choose a custom instance type with 6 vCPUs and 32 GB of memory.
+C. Package it in a container image, and run it on Kubernetes Engine, using n1-standard-32 instances as nodes.
+D. Run it on Compute Engine, choose the instance type n1-standard-1, and add an SSD persistent disk of 32 GB.
+
+A
+
+ANSWER A is the most cost-effective solution for running a caching HTTP reverse proxy on GCP. Cloud Memorystore for Redis is a managed service that provides an in-memory cache for your applications. It offers a high throughput and low latency access to the Redis protocol. Cloud Memorystore offers an SLA of 99.9% availability and automatic failover for Redis instances. In this case, a 32-GB Redis instance is sufficient to accommodate the 30-GB cache and the additional 2 GB of memory required for the rest of the processes. This solution is highly scalable and allows you to increase the size of the Redis instance as your needs grow.
+
+Answer D is wrong
+This option involves using a general-purpose Compute Engine instance type with a relatively small amount of memory (n1-standard-1).
+Adding an SSD persistent disk of 32 GB can be more expensive compared to using Cloud Memorystore for Redis.
+While it's possible to achieve the desired configuration with Compute Engine, it might be overprovisioned in terms of CPU resources (n1-standard-1 has 1 vCPU).
+
+Q63
+
+You are hosting an application on bare-metal servers in your own data center. The application needs access to Cloud Storage. However, security policies prevent the servers hosting the application from having public IP addresses or access to the internet. You want to follow Google-recommended practices to provide the application with access to Cloud Storage. What should you do?
+A. 1. Use nslookup to get the IP address for storage.googleapis.com. 2. Negotiate with the security team to be able to give a public IP address to the servers. 3. Only allow egress traffic from those servers to the IP addresses for storage.googleapis.com.
+B. 1. Using Cloud VPN, create a VPN tunnel to a Virtual Private Cloud (VPC) in Google Cloud. 2. In this VPC, create a Compute Engine instance and install the Squid proxy server on this instance. 3. Configure your servers to use that instance as a proxy to access Cloud Storage.
+C. 1. Use Migrate for Compute Engine (formerly known as Velostrata) to migrate those servers to Compute Engine. 2. Create an internal load balancer (ILB) that uses storage.googleapis.com as backend. 3. Configure your new instances to use this ILB as proxy.
+D. 1. Using Cloud VPN or Interconnect, create a tunnel to a VPC in Google Cloud. 2. Use Cloud Router to create a custom route advertisement for 199.36.153.4/30. Announce that network to your on-premises network through the VPN tunnel. 3. In your on-premises network, configure your DNS server to resolve *.googleapis.com as a CNAME to restricted.googleapis.com.
+
+D
+
+Google Cloud Interconnect is a service that provides a dedicated and high-bandwidth connection between your on-premises network and Google Cloud.
+
+Here's the rationale for choosing Option D:
+
+Secure Connection with VPN/Interconnect: By using Cloud VPN or Interconnect, you establish a secure connection between your on-premises network and a Virtual Private Cloud (VPC) in Google Cloud. This ensures encrypted communication between your on-premises servers and Google Cloud.
+
+Custom Route Advertisement: Cloud Router allows you to create custom route advertisements. By advertising a specific network (199.36.153.4/30), you can control the routing of traffic from your on-premises network to Google Cloud.
+
+DNS Resolution: By configuring your DNS server to resolve *.googleapis.com as a CNAME to restricted.googleapis.com, you effectively redirect DNS requests for Cloud Storage to a restricted domain. This helps in adhering to security policies that prevent direct access to storage.googleapis.com.
+
+Options A, B, and C are less suitable for the described scenario:
+
+Option A: Giving public IP addresses to servers would violate the security policy. Restricting egress traffic to specific IP addresses may be challenging due to the dynamic nature of Google Cloud services.
+
+Option B: While using a proxy is a common practice, it introduces an additional layer and may not be necessary in this scenario. It might also add complexity and latency to the data access.
+
+Option C: Migrating servers to Compute Engine and using an internal load balancer for Cloud Storage access is a significant change that might not be necessary and could involve more complexity than needed.
+
+Q64
+You want to deploy an application on Cloud Run that processes messages from a Cloud Pub/Sub topic. You want to follow Google-recommended practices. What should you do?
+A. 1. Create a Cloud Function that uses a Cloud Pub/Sub trigger on that topic. 2. Call your application on Cloud Run from the Cloud Function for every message.
+B. 1. Grant the Pub/Sub Subscriber role to the service account used by Cloud Run. 2. Create a Cloud Pub/Sub subscription for that topic. 3. Make your application pull messages from that subscription.
+C. 1. Create a service account. 2. Give the Cloud Run Invoker role to that service account for your Cloud Run application. 3. Create a Cloud Pub/Sub subscription that uses that service account and uses your Cloud Run application as the push endpoint.
+D. 1. Deploy your application on Cloud Run on GKE with the connectivity set to Internal. 2. Create a Cloud Pub/Sub subscription for that topic. 3. In the same Google Kubernetes Engine cluster as your application, deploy a container that takes the messages and sends them to your application.
+
+C
+
+Q65
+You need to deploy an application, which is packaged in a container image, in a new project. The application exposes an HTTP endpoint and receives very few requests per day. You want to minimize costs. What should you do?
+A. Deploy the container on Cloud Run.
+B. Deploy the container on Cloud Run on GKE.
+C. Deploy the container on App Engine Flexible.
+D. Deploy the container on GKE with cluster autoscaling and horizontal pod autoscaling enabled.
+
+A
+
+CloudRun 서비스는 HTTP 엔드 포인트를 노출하며, 하루에 거의 요청이 없기 때문에 GKE까지는 필요 없음
+또한, CloudRun은 트래픽에 따라 즉시 0에서 자동으로 확장 및 축소되며
+사용하는 정확한 리소스에 대해서만 비용을 청구함
+
+A, as it does not include the infra services and its cheaper
+
+Cloud Run
+Cloud Run is a fully managed compute platform provided by Google Cloud that automatically scales your containerized applications. It is designed to abstract away the underlying infrastructure and allows developers to focus on building and deploying applications without managing the infrastructure.
+
+Q66
+
+Your company has an existing GCP organization with hundreds of projects and a billing account. Your company recently acquired another company that also has hundreds of projects and its own billing account. You would like to consolidate all GCP costs of both GCP organizations onto a single invoice. You would like to consolidate all costs as of tomorrow. What should you do?
+A. Link the acquired company's projects to your company's billing account.
+B. Configure the acquired company's billing account and your company's billing account to export the billing data into the same BigQuery dataset.
+C. Migrate the acquired company's projects into your company's GCP organization. Link the migrated projects to your company's billing account.
+D. Create a new GCP organization and a new billing account. Migrate the acquired company's projects and your company's projects into the new GCP organization and link the projects to the new billing account.
+
+A
+
+A is correct because linking all projects of the acquired organization to the main organization’s billing account will generate a single bill for all projects.
+D is incorrect because there is no need to create a new organization for this.
+
+Q67
+
+You built an application on Google Cloud that uses Cloud Spanner. Your support team needs to monitor the environment but should not have access to table data.
+You need a streamlined solution to grant the correct permissions to your support team, and you want to follow Google-recommended practices. What should you do?
+A. Add the support team group to the roles/monitoring.viewer role
+B. Add the support team group to the roles/spanner.databaseUser role.
+C. Add the support team group to the roles/spanner.databaseReader role.
+D. Add the support team group to the roles/stackdriver.accounts.viewer role.
+
+A
+
+Q68
+For analysis purposes, you need to send all the logs from all of your Compute Engine instances to a BigQuery dataset called platform-logs. You have already installed the Cloud Logging agent on all the instances. You want to minimize cost. What should you do?
+A. 1. Give the BigQuery Data Editor role on the platform-logs dataset to the service accounts used by your instances. 2. Update your instances' metadata to add the following value: logs-destination: bq://platform-logs.
+B. 1. In Cloud Logging, create a logs export with a Cloud Pub/Sub topic called logs as a sink. 2. Create a Cloud Function that is triggered by messages in the logs topic. 3. Configure that Cloud Function to drop logs that are not from Compute Engine and to insert Compute Engine logs in the platform-logs dataset.
+C. 1. In Cloud Logging, create a filter to view only Compute Engine logs. 2. Click Create Export. 3. Choose BigQuery as Sink Service, and the platform-logs dataset as Sink Destination.
+D. 1. Create a Cloud Function that has the BigQuery User role on the platform-logs dataset. 2. Configure this Cloud Function to create a BigQuery Job that executes this query: INSERT INTO dataset.platform-logs (timestamp, log) SELECT timestamp, log FROM compute.logs WHERE timestamp > DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) 3. Use Cloud Scheduler to trigger this Cloud Function once a day.
+
+C
+
+Q69
+You are using Deployment Manager to create a Google Kubernetes Engine cluster. Using the same Deployment Manager deployment, you also want to create a
+DaemonSet in the kube-system namespace of the cluster. You want a solution that uses the fewest possible services. What should you do?
+A. Add the cluster's API as a new Type Provider in Deployment Manager, and use the new type to create the DaemonSet.
+B. Use the Deployment Manager Runtime Configurator to create a new Config resource that contains the DaemonSet definition.
+C. With Deployment Manager, create a Compute Engine instance with a startup script that uses kubectl to create the DaemonSet.
+D. In the cluster's definition in Deployment Manager, add a metadata that has kube-system as key and the DaemonSet manifest as value.
+
+A
+
+Q70
+You are building an application that will run in your data center. The application will use Google Cloud Platform (GCP) services like AutoML. You created a service account that has appropriate access to AutoML. You need to enable authentication to the APIs from your on-premises environment. What should you do?
+A. Use service account credentials in your on-premises application.
+B. Use gcloud to create a key file for the service account that has appropriate permissions.
+C. Set up direct interconnect between your data center and Google Cloud Platform to enable authentication for your on-premises applications.
+D. Go to the IAM & admin console, grant a user account permissions similar to the service account permissions, and use this user account for authentication from your data center.
+
+A
+
+B resolve the requirement, and yes, C is a prerequisite for B, but only C doesn't solve the scenery.
+
+Q73
+You are setting up a Windows VM on Compute Engine and want to make sure you can log in to the VM via RDP. What should you do?
+A. After the VM has been created, use your Google Account credentials to log in into the VM.
+B. After the VM has been created, use gcloud compute reset-windows-password to retrieve the login credentials for the VM.
+C. When creating the VM, add metadata to the instance using 'windows-password' as the key and a password as the value.
+D. After the VM has been created, download the JSON private key for the default Compute Engine service account. Use the credentials in the JSON file to log in to the VM.
+
+B
+
+VM 생성 후 gcloud compute reset-windows-password를 사용하여
+
+VM의 로그인 사용자 인증 정보를 검색
+
+사용자가 윈도우 가상 머신 인스턴스의 비밀번호를 재 설정하고 검색할 수 있으며
+
+윈도우 계정이 없는 경우 이 명령을 사용하면 계정이 생성되고 해당 새 계정의 암호가 반환됨
+
+Q74
+You want to configure an SSH connection to a single Compute Engine instance for users in the dev1 group. This instance is the only resource in this particular
+Google Cloud Platform project that the dev1 users should be able to connect to. What should you do?
+A. Set metadata to enable-oslogin=true for the instance. Grant the dev1 group the compute.osLogin role. Direct them to use the Cloud Shell to ssh to that instance.
+B. Set metadata to enable-oslogin=true for the instance. Set the service account to no service account for that instance. Direct them to use the Cloud Shell to ssh to that instance.
+C. Enable block project wide keys for the instance. Generate an SSH key for each user in the dev1 group. Distribute the keys to dev1 users and direct them to use their third-party tools to connect.
+D. Enable block project wide keys for the instance. Generate an SSH key and associate the key with that instance. Distribute the key to dev1 users and direct them to use their third-party tools to connect.
+
+A
+
+개인 키를 배포하거나 다른 사람을 위해 SSH 키를 생성하면 안 되므로 C, D는 오답
+
+B는 인스턴스에 SSH가 필요한 개발 그룹과 관련이 없는 서비스 계정에 대한 부분이라 오답
+
+
+Q75
+You need to produce a list of the enabled Google Cloud Platform APIs for a GCP project using the gcloud command line in the Cloud Shell. The project name is my-project. What should you do?
+A. Run gcloud projects list to get the project ID, and then run gcloud services list --project <project ID>.
+B. Run gcloud init to set the current project to my-project, and then run gcloud services list --available.
+C. Run gcloud info to view the account value, and then run gcloud services list --account <Account>.
+D. Run gcloud projects describe <project ID> to verify the project value, and then run gcloud services list --available.
+
+A
+
+For those, who have doubts:
+
+`gcloud services list --available` returns not only the enabled services in the project but also services that CAN be enabled. Therefore, option B is incorrect.
+
+Q78
+You are using Google Kubernetes Engine with autoscaling enabled to host a new application. You want to expose this new application to the public, using HTTPS on a public IP address. What should you do?
+A. Create a Kubernetes Service of type NodePort for your application, and a Kubernetes Ingress to expose this Service via a Cloud Load Balancer.
+B. Create a Kubernetes Service of type ClusterIP for your application. Configure the public DNS name of your application using the IP of this Service.
+C. Create a Kubernetes Service of type NodePort to expose the application on port 443 of each node of the Kubernetes cluster. Configure the public DNS name of your application with the IP of every node of the cluster to achieve load-balancing.
+D. Create a HAProxy pod in the cluster to load-balance the traffic to all the pods of the application. Forward the public traffic to HAProxy with an iptable rule. Configure the DNS name of your application using the public IP of the node HAProxy is running on.
+
+A
+
+HAProxy is HTTP only, doesnt support HTTPS, so you can reject option D
+Cluster IP - is an internal IP, you cannot expose public externally. reject option B
+
+out of option A and C
+C, port 443 is https but public DNS is not going to give you a load balancing
+A is the right choice,
+kubernets ingress exposes HTTPS
+
+Q81
+You are operating a Google Kubernetes Engine (GKE) cluster for your company where different teams can run non-production workloads. Your Machine Learning
+(ML) team needs access to Nvidia Tesla P100 GPUs to train their models. You want to minimize effort and cost. What should you do?
+A. Ask your ML team to add the ג€accelerator: gpuג€ annotation to their pod specification.
+B. Recreate all the nodes of the GKE cluster to enable GPUs on all of them.
+C. Create your own Kubernetes cluster on top of Compute Engine with nodes that have GPUs. Dedicate this cluster to your ML team.
+D. Add a new, GPU-enabled, node pool to the GKE cluster. Ask your ML team to add the cloud.google.com/gke -accelerator: nvidia-tesla-p100 nodeSelector to their pod specification.
+
+D
+
+Q82
+Your VMs are running in a subnet that has a subnet mask of 255.255.255.240. The current subnet has no more free IP addresses and you require an additional
+10 IP addresses for new VMs. The existing and new VMs should all be able to reach each other without additional routes. What should you do?
+A. Use gcloud to expand the IP range of the current subnet.
+B. Delete the subnet, and recreate it using a wider range of IP addresses.
+C. Create a new project. Use Shared VPC to share the current network with the new project.
+D. Create a new subnet with the same starting IP but a wider range to overwrite the current subnet.
+
+A
+
 -->
