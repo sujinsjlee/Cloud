@@ -644,4 +644,234 @@ D. Create a new subnet with the same starting IP but a wider range to overwrite 
 
 A
 
+Q84
+A. Create two configurations using gcloud config. Write a script that sets configurations as active, individually. For each configuration, use gcloud compute instances list to get a list of compute resources.
+
+Q85
+You have a large 5-TB AVRO file stored in a Cloud Storage bucket. Your analysts are proficient only in SQL and need access to the data stored in this file. You want to find a cost-effective way to complete their request as soon as possible. What should you do?
+A. Load data in Cloud Datastore and run a SQL query against it.
+B. Create a BigQuery table and load data in BigQuery. Run a SQL query on this table and drop this table after you complete your request.
+C. Create external tables in BigQuery that point to Cloud Storage buckets and run a SQL query on these external tables to complete your request.
+D. Create a Hadoop cluster and copy the AVRO file to NDFS by compressing it. Load the file in a hive table and provide access to your analysts so that they can run SQL queries.
+C
+
+Q87
+You deployed an LDAP server on Compute Engine that is reachable via TLS through port 636 using UDP. You want to make sure it is reachable by clients over that port. What should you do?
+A. Add the network tag allow-udp-636 to the VM instance running the LDAP server.
+B. Create a route called allow-udp-636 and set the next hop to be the VM instance running the LDAP server.
+C. Add a network tag of your choice to the instance. Create a firewall rule to allow ingress on UDP port 636 for that network tag.
+D. Add a network tag of your choice to the instance running the LDAP server. Create a firewall rule to allow egress on UDP port 636 for that network tag.
+
+C
+
+*allow ingress*
+
+LDAP stands for Lightweight Directory Access Protocol. It is a protocol used for accessing and maintaining distributed directory information services over an Internet Protocol (IP) network. LDAP is often used as a standard way for clients to search and update information in a directory service, which is a hierarchical and distributed database that stores information about users, groups, and other resources in a network.
+
+
+Q90
+You want to configure a solution for archiving data in a Cloud Storage bucket. The solution must be cost-effective. Data with multiple versions should be archived after 30 days. Previous versions are accessed once a month for reporting. This archive data is also occasionally updated at month-end. What should you do?
+A. Add a bucket lifecycle rule that archives data with newer versions after 30 days to Coldline Storage.
+B. Add a bucket lifecycle rule that archives data with newer versions after 30 days to Nearline Storage.
+C. Add a bucket lifecycle rule that archives data from regional storage after 30 days to Coldline Storage.
+D. Add a bucket lifecycle rule that archives data from regional storage after 30 days to Nearline Storage.
+
+B
+
+Nearline has min storage of 30 days, while Coldline has 90 days.
+
+Q92
+You want to select and configure a solution for storing and archiving data on Google Cloud Platform. You need to support compliance objectives for data from one geographic location. This data is archived after 30 days and needs to be accessed annually. What should you do?
+A. Select Multi-Regional Storage. Add a bucket lifecycle rule that archives data after 30 days to Coldline Storage.
+B. Select Multi-Regional Storage. Add a bucket lifecycle rule that archives data after 30 days to Nearline Storage.
+C. Select Regional Storage. Add a bucket lifecycle rule that archives data after 30 days to Nearline Storage.
+D. Select Regional Storage. Add a bucket lifecycle rule that archives data after 30 days to Coldline Storage.
+
+D
+
+The main thing here is how often the data is retrieved. The question is saying that data needs to be accessed annually - i.e. once a year. Therefore, you should choose Coldline Storage, as it implies less frequent access than Nearline. (Archival Storage would fit even better but there's no such option)
+
+From the link you provided:
+
+"Nearline Storage is ideal for data you plan to read or modify on average once per month or less."
+
+and
+
+"Coldline Storage is ideal for data you plan to read or modify at most once a quarter. "
+
+Q93
+Your company uses BigQuery for data warehousing. Over time, many different business units in your company have created 1000+ datasets across hundreds of projects. Your CIO wants you to examine all datasets to find tables that contain an employee_ssn column. You want to minimize effort in performing this task.
+What should you do?
+A. Go to Data Catalog and search for employee_ssn in the search box.
+B. Write a shell script that uses the bq command line tool to loop through all the projects in your organization.
+C. Write a script that loops through all the projects in your organization and runs a query on INFORMATION_SCHEMA.COLUMNS view to find the employee_ssn column.
+D. Write a Cloud Dataflow job that loops through all the projects in your organization and runs a query on INFORMATION_SCHEMA.COLUMNS view to find employee_ssn column.
+
+A
+
+Data Catalog lets you search and tag entries such as BigQuery tables with metadata. Some examples of metadata that you can use for tagging include public and private tags, data stewards, and rich text overview.
+
+Q94
+You create a Deployment with 2 replicas in a Google Kubernetes Engine cluster that has a single preemptible node pool. After a few minutes, you use kubectl to examine the status of your Pod and observe that one of them is still in Pending status:
+
+What is the most likely cause?
+A. The pending Pod's resource requests are too large to fit on a single node of the cluster.
+B. Too many Pods are already running in the cluster, and there are not enough resources left to schedule the pending Pod.
+C. The node pool is configured with a service account that does not have permission to pull the container image used by the pending Pod.
+D. The pending Pod was originally scheduled on a node that has been preempted between the creation of the Deployment and your verification of the Pods' status. It is currently being rescheduled on a new node.
+D
+
+When one of the nodes from the node pool is down because its a preemtible, all of their pods go down and the kube controller (which is an element running on control plance ) reallocates the pods to other nodes from their node pools and then those pods rill show as running (if the nodes accomplish the resource quotas) .
+So basically what happend here is that we just did a kubectl get pods command inthe mid time where one of the nodes from the node pool went down and the cluster tried to reposition the pods into other nodes
+
+Q96
+Your company implemented BigQuery as an enterprise data warehouse. Users from multiple business units run queries on this data warehouse. However, you notice that query costs for BigQuery are very high, and you need to control costs. Which two methods should you use? (Choose two.)
+A. Split the users from business units to multiple projects.
+B. Apply a user- or project-level custom query quota for BigQuery data warehouse.
+C. Create separate copies of your BigQuery data warehouse for each business unit.
+D. Split your BigQuery data warehouse into multiple data warehouses for each business unit.
+E. Change your BigQuery query model from on-demand to flat rate. Apply the appropriate number of slots to each Project.
+
+BE
+
+Q97
+You are building a product on top of Google Kubernetes Engine (GKE). You have a single GKE cluster. For each of your customers, a Pod is running in that cluster, and your customers can run arbitrary code inside their Pod. You want to maximize the isolation between your customers' Pods. What should you do?
+A. Use Binary Authorization and whitelist only the container images used by your customers' Pods.
+B. Use the Container Analysis API to detect vulnerabilities in the containers used by your customers' Pods.
+C. Create a GKE node pool with a sandbox type configured to gvisor. Add the parameter runtimeClassName: gvisor to the specification of your customers' Pods.
+D. Use the cos_containerd image for your GKE nodes. Add a nodeSelector with the value cloud.google.com/gke-os-distribution: cos_containerd to the specification of your customers' Pods.
+C
+
+gVisor is the way to isolate. 
+
+Q98
+C. Change the primary key to not have monotonically increasing values.
+
+Q101
+You need to host an application on a Compute Engine instance in a project shared with other teams. You want to prevent the other teams from accidentally causing downtime on that application. Which feature should you use?
+A. Use a Shielded VM.
+B. Use a Preemptible VM.
+C. Use a sole-tenant node.
+D. Enable deletion protection on the instance.
+
+D
+실수를 방지하기 위해서는 인스턴스에 deleteProtection 속성을 설정하여 삭제되지 않도록 해야 함
+
+
+Q102
+
+Your organization needs to grant users access to query datasets in BigQuery but prevent them from accidentally deleting the datasets. You want a solution that follows Google-recommended practices. What should you do?
+A. Add users to roles/bigquery user role only, instead of roles/bigquery dataOwner.
+B. Add users to roles/bigquery dataEditor role only, instead of roles/bigquery dataOwner.
+C. Create a custom role by removing delete permissions, and add users to that role only.
+D. Create a custom role by removing delete permissions. Add users to the group, and then add the group to the custom role.
+
+D
+
+
+Q103
+You have a developer laptop with the Cloud SDK installed on Ubuntu. The Cloud SDK was installed from the Google Cloud Ubuntu package repository. You want to test your application locally on your laptop with Cloud Datastore. What should you do?
+A. Export Cloud Datastore data using gcloud datastore export.
+B. Create a Cloud Datastore index using gcloud datastore indexes create.
+C. Install the google-cloud-sdk-datastore-emulator component using the apt get install command.
+D. Install the cloud-datastore-emulator component using the gcloud components install command.
+
+D
+
+Q104
+Your company set up a complex organizational structure on Google Cloud. The structure includes hundreds of folders and projects. Only a few team members should be able to view the hierarchical structure. You need to assign minimum permissions to these team members, and you want to follow Google-recommended practices. What should you do?
+A. Add the users to roles/browser role.
+B. Add the users to roles/iam.roleViewer role.
+C. Add the users to a group, and add this group to roles/browser.
+D. Add the users to a group, and add this group to roles/iam.roleViewer role.
+
+C
+
+Browser - Read access to browse the hierarchy for a project, including the folder, organization, and allow policy
+
+hierarchical : Browser
+
+
+Q105
+Your company has a single sign-on (SSO) identity provider that supports Security Assertion Markup Language (SAML) integration with service providers. Your company has users in Cloud Identity. You would like users to authenticate using your company's SSO provider. What should you do?
+A. In Cloud Identity, set up SSO with Google as an identity provider to access custom SAML apps.
+B. In Cloud Identity, set up SSO with a third-party identity provider with Google as a service provider.
+C. Obtain OAuth 2.0 credentials, configure the user consent screen, and set up OAuth 2.0 for Mobile & Desktop Apps.
+D. Obtain OAuth 2.0 credentials, configure the user consent screen, and set up OAuth 2.0 for Web Server Applications.
+
+B
+
+Q109
+Your organization has user identities in Active Directory. Your organization wants to use Active Directory as their source of truth for identities. Your organization wants to have full control over the Google accounts used by employees for all Google services, including your Google Cloud Platform (GCP) organization. What should you do?
+A. Use Google Cloud Directory Sync (GCDS) to synchronize users into Cloud Identity.
+B. Use the cloud Identity APIs and write a script to synchronize users to Cloud Identity.
+C. Export users from Active Directory as a CSV and import them to Cloud Identity via the Admin Console.
+D. Ask each employee to create a Google account using self signup. Require that each employee use their company email address and password.
+
+A
+GCDS를 사용하면 AD/LDAP 서비스의 사용자, 그룹 및 기타 데이터를
+
+구글 클라우드 도메인 디렉터리로 동기화할 수 있음
+
+Q110
+You have successfully created a development environment in a project for an application. This application uses Compute Engine and Cloud SQL. Now you need to create a production environment for this application. The security team has forbidden the existence of network routes between these 2 environments and has asked you to follow Google-recommended practices. What should you do?
+A. Create a new project, enable the Compute Engine and Cloud SQL APIs in that project, and replicate the setup you have created in the development environment.
+B. Create a new production subnet in the existing VPC and a new production Cloud SQL instance in your existing project, and deploy your application using those resources.
+C. Create a new project, modify your existing VPC to be a Shared VPC, share that VPC with your new project, and replicate the setup you have in the development environment in that new project in the Shared VPC.
+D. Ask the security team to grant you the Project Editor role in an existing production project used by another division of your company. Once they grant you that role, replicate the setup you have in the development environment in that project.
+
+A
+
+모범 사례는 프로덕션 환경의 경우 새로운 프로젝트를 만드는 것
+
+공유 VPC는 보안 팀의 규칙을 위반하는 방식이기 때문에 제외
+
+또한, 프로젝트 설정에서 복제하는 것은 모범 사례가 아님
+
+Q115
+
+You need to reduce GCP service costs for a division of your company using the fewest possible steps. You need to turn off all configured services in an existing
+GCP project. What should you do?
+A. 1. Verify that you are assigned the Project Owners IAM role for this project. 2. Locate the project in the GCP console, click Shut down and then enter the project ID.
+B. 1. Verify that you are assigned the Project Owners IAM role for this project. 2. Switch to the project in the GCP console, locate the resources and delete them.
+C. 1. Verify that you are assigned the Organizational Administrator IAM role for this project. 2. Locate the project in the GCP console, enter the project ID and then click Shut down.
+D. 1. Verify that you are assigned the Organizational Administrators IAM role for this project. 2. Switch to the project in the GCP console, locate the resources and delete them.
+
+A
+
+프로젝트 소유자가 프로젝트를 종료 또는 삭제하는 것이 맞음
+
+Q117
+An employee was terminated, but their access to Google Cloud was not removed until 2 weeks later. You need to find out if this employee accessed any sensitive customer information after their termination. What should you do?
+A. View System Event Logs in Cloud Logging. Search for the user's email as the principal.
+B. View System Event Logs in Cloud Logging. Search for the service account associated with the user.
+C. View Data Access audit logs in Cloud Logging. Search for the user's email as the principal.
+D. View the Admin Activity log in Cloud Logging. Search for the service account associated with the user.
+
+C
+
+Data Access audit logs provide detailed information about accesses to your Google Cloud resources. 
+
+*ACCESS* Audit logs
+
+Q119
+Your company has a large quantity of unstructured data in different file formats. You want to perform ETL transformations on the data. You need to make the data accessible on Google Cloud so it can be processed by a Dataflow job. What should you do?
+A. Upload the data to BigQuery using the bq command line tool.
+B. Upload the data to Cloud Storage using the gsutil command line tool.
+C. Upload the data into Cloud SQL using the import function in the console.
+D. Upload the data into Cloud Spanner using the import function in the console.
+B
+
+Unstructured : Cloud Storage
+
+Q120
+You need to manage multiple Google Cloud projects in the fewest steps possible. You want to configure the Google Cloud SDK command line interface (CLI) so that you can easily manage multiple projects. What should you do?
+A. 1. Create a configuration for each project you need to manage. 2. Activate the appropriate configuration when you work with each of your assigned Google Cloud projects.
+B. 1. Create a configuration for each project you need to manage. 2. Use gcloud init to update the configuration values when you need to work with a non-default project
+C. 1. Use the default configuration for one project you need to manage. 2. Activate the appropriate configuration when you work with each of your assigned Google Cloud projects.
+D. 1. Use the default configuration for one project you need to manage. 2. Use gcloud init to update the configuration values when you need to work with a non-default project.
+A
+
+Cloud SDK comes with a default configuration.
+Multiple configurations. Activate to switch between configurations.
 -->
