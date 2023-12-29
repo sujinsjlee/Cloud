@@ -1435,3 +1435,235 @@ DevOps 팀에서 작업 수행을 위해 모든 프로덕션 서비스에 접근
 프로덕션 프로젝트 레벨에 해당하는 C가 정답
 
 -->
+
+<!--
+
+[Associate Cloud Engineer Sample Questions]
+
+Question 2
+ 
+You are managing your company’s first Google Cloud project. Project leads, developers, and internal testers will participate in the project, which includes sensitive information. You need to ensure that only specific members of the development team have access to sensitive information. You want to assign the appropriate Identity and Access Management (IAM) roles that also require the least amount of maintenance. What should you do?
+A. Assign a basic role to each user.
+B. Create groups. Assign a basic role to each group, and then assign users to groups.
+C. Create groups. Assign a Custom role to each group, including those who should have access to sensitive data. Assign users to groups.
+D. Create groups. Assign an IAM Predefined role to each group as required, including those who should have access to sensitive data. Assign users to groups.
+
+
+Correct answer
+D
+C is not correct because creating and maintaining Custom roles will require more maintenance than using Predefined roles.
+D is correct because Predefined roles are fine-grained enough to set permissions for specific roles requiring sensitive data access. This solution also uses groups, which is the recommended practice for managing permissions for individual roles.
+
+
+Question 4
+ 
+Your application needs to process a significant rate of transactions. The rate of transactions exceeds the processing capabilities of a single virtual machine (VM). You want to spread transactions across multiple servers in real time and in the most cost-effective manner. What should you do?
+A. Send transactions to BigQuery. On the VMs, poll for transactions that do not have the ‘processed’ key, and mark them ‘processed’ when done.
+B. Set up Cloud SQL with a memory cache for speed. On your multiple servers, poll for transactions that do not have the ‘processed’ key, and mark them ‘processed’ when done.
+C. Send transactions to Pub/Sub. Process them in VMs in a managed instance group.
+D. Record transactions in Cloud Bigtable, and poll for new transactions from the VMs.
+
+Correct answer
+C.
+
+Question 5
+ 
+Your team needs to directly connect your on-premises resources to several virtual machines inside a virtual private cloud (VPC). You want to provide your team with fast and secure access to the VMs with minimal maintenance and cost. What should you do?
+A. Set up Cloud Interconnect.
+B. Use Cloud VPN to create a bridge between the VPC and your network.
+C. Assign a public IP address to each VM, and assign a strong password to each one.
+D. Start a Compute Engine VM, install a software router, and create a direct tunnel to each VM.
+
+
+Correct answer
+B
+Feedback
+A is not correct because it is significantly more expensive than other existing solutions.
+B is correct because it agrees with the Google recommended practices.
+C is not correct because it will require a sizable maintenance effort.
+D is not correct because setting up connections for each individual VM requires a significant amount of maintenance.
+
+
+Question 8
+ 
+You have created a Kubernetes deployment on Google Kubernetes Engine (GKE) that has a backend service. You also have pods that run the frontend service. You want to ensure that there is no interruption in communication between your frontend and backend service pods if they are moved or restarted. What should you do?
+A. Create a service that groups your pods in the backend service, and tell your frontend pods to communicate through that service.
+B. Create a DNS entry with a fixed IP address that the frontend service can use to reach the backend service.
+C. Assign static internal IP addresses that the frontend service can use to reach the backend pods.
+D. Assign static external IP addresses that the frontend service can use to reach the backend pods.
+
+
+Correct answer
+A.
+Feedback
+A is correct because Kubernetes service serves the purpose of providing a destination that can be used when the pods are moved or restarted.
+B is not correct because a DNS entry is created by service creation.
+C is not correct because static internal IP addresses do not automatically change when pods are restarted.
+D is not correct because static external IP addresses do not automatically change when pods are restarted, and they take traffic outside of Google networks.
+
+
+Question 9
+ 
+You are responsible for the user-management service for your global company. The service will add, update, delete, and list addresses. Each of these operations is implemented by a Docker container microservice. The processing load can vary from low to very high. You want to deploy the service on Google Cloud for scalability and minimal administration. What should you do?
+A. Deploy your Docker containers into Cloud Run.
+B. Start each Docker container as a managed instance group.
+C. Deploy your Docker containers into Google Kubernetes Engine.
+D. Combine the four microservices into one Docker image, and deploy it to the App Engine instance.
+
+Correct answer
+A
+Feedback
+A is correct because Cloud Run is a managed service that requires minimal administration.
+B is not correct because managed instance groups lack management capabilities to expose their services.
+C is not correct because, although GKE provides scalability, it requires ongoing administration of the cluster.
+D is not correct because it required effort to reimplement the four microservices in one Docker container. You will also lose your microservice architecture.
+
+Cloud Run
+Build applications or websites quickly on a fully managed platform
+Run frontend and backend services, batch jobs, deploy websites and applications, and queue processing workloads without the need to manage infrastructure.
+
+Question 10
+ 
+You provide a service that you need to open to everyone in your partner network.  You have a server and an IP address where the application is located. You do not want to have to change the IP address on your DNS server if your server crashes or is replaced. You also want to avoid downtime and deliver a solution for minimal cost and setup. What should you do?
+A. Create a script that updates the IP address for the domain when the server crashes or is replaced.
+B. Reserve a static internal IP address, and assign it using Cloud DNS.
+C. Reserve a static external IP address, and assign it using Cloud DNS.
+D. Use the Bring Your Own IP (BYOIP) method to use your own IP address.
+
+Correct answer
+C
+Feedback
+A is not correct because updating DNS records could take up to 24 hours and it will cause downtime.
+B is not correct because internal IPs are not routable and cannot be seen on the internet.
+C is correct because external IPs are routable and can be advertised and seen on the internet, and this is also the most cost-effective solution.
+D is not correct because, while it is possible, bringing your own IP address is not as cost effective as Google Cloud DNS.
+
+Question 11
+ 
+Your team is building the development, test, and production environments for your project deployment in Google Cloud. You need to efficiently deploy and manage these environments and ensure that they are consistent. You want to follow Google-recommended practices. What should you do?
+A. Create a Cloud Shell script that uses gcloud commands to deploy the environments.
+B. Create one Terraform configuration for all environments. Parameterize the differences between environments.
+C. For each environment, create a Terraform configuration. Use them for repeated deployment. Reconcile the templates periodically.
+D. Use the Cloud Foundation Toolkit to create one deployment template that will work for all environments, and deploy with Terraform.
+
+Correct answer
+D
+Feedback
+A is not correct because creating a custom script of gcloud commands that adheres to Google Cloud recommended practices would require substantial development and maintenance effort.
+B is not correct because parameterizing the environment differences is time consuming and error prone.
+C is not correct because it is prone to error and involves significant reconciliation work.
+D is correct because the Cloud Foundation Toolkit (CFT) provides ready-made templates that reflect Google Cloud recommended practices and can be used to automate creation of the environments.
+
+Terraform enables you to define and provision infrastructure resources in a declarative configuration language.
+
+Question 13
+ 
+You are running several related applications on Compute Engine virtual machine (VM) instances. You want to follow Google-recommended practices and expose each application through a DNS name. What should you do?
+A. Use the Compute Engine internal DNS service to assign DNS names to your VM instances, and make the names known to your users.
+B. Assign each VM instance an alias IP address range, and then make the internal DNS names public.
+C. Assign Google Cloud routes to your VM instances, assign DNS names to the routes, and make the DNS names public.
+D. Use Cloud DNS to translate your domain names into your IP addresses.
+
+Correct answer
+D
+
+
+Question 14
+ 
+You are charged with optimizing Google Cloud resource consumption. Specifically, you need to investigate the resource consumption charges and present a summary of your findings. You want to do it in the most efficient way possible. What should you do?
+A. Rename resources to reflect the owner and purpose. Write a Python script to analyze resource consumption.
+B. Attach labels to resources to reflect the owner and purpose. Export Cloud Billing data into BigQuery, and analyze it with Data Studio.
+C. Assign tags to resources to reflect the owner and purpose. Export Cloud Billing data into BigQuery, and analyze it with Data Studio.
+D. Create a script to analyze resource usage based on the project to which the resources belong. In this script, use the IAM accounts and services accounts that control given resources.
+ 
+Correct answer
+B. 
+Feedback
+A is not correct because it requires custom programming and does not follow Google recommended practices and is not the most efficient solution.
+B is correct because it describes Google Recommended practice: labels are attached to resources and these labels are then propagated into billing items.
+C is not correct because tags are no longer created when a label is created for a resource and cannot be used for tracking resources.
+D is not correct because it requires custom programming.
+
+Question 15
+ 
+You are creating an environment for researchers to run ad hoc SQL queries. The researchers work with large quantities of data.  Although they will use the environment for an hour a day on average, the researchers need access to the functional environment at any time during the day. You need to deliver a cost-effective solution. What should you do?
+A. Store the data in Cloud Bigtable, and run SQL queries provided by Bigtable schema.
+B. Store the data in BigQuery, and run SQL queries in BigQuery.
+C. Create a Dataproc cluster, store the data in HDFS storage, and run SQL queries in Spark.
+D. Create a Dataproc cluster, store the data in Cloud Storage, and run SQL queries in Spark.
+
+Correct answer
+B
+Feedback
+B is correct because BigQuery allows for ad hoc queries and is cost effective.
+
+Question 16
+ 
+You are migrating your workload from on-premises deployment to Google Kubernetes Engine (GKE). You want to minimize costs and stay within budget. What should you do?
+A. Configure Autopilot in GKE to monitor node utilization and eliminate idle nodes.
+B. Configure the needed capacity; the sustained use discount will make you stay within budget.
+C. Scale individual nodes up and down with the Horizontal Pod Autoscaler.
+D. Create several nodes using Compute Engine, add them to a managed instance group, and set the group to scale up and down depending on load.
+
+Correct answer
+A
+Feedback
+A is correct because Autopilot is designed to reduce the operational cost of managing clusters and optimize your clusters for production.
+B is not correct because it violates the principle of provisioning on-demand rather than overprovisioning. Although sustained use discount lowers the budget, not using unnecessary resources will keep costs down more.
+
+Question 17
+ 
+Your application allows users to upload pictures. You need to convert each picture to your internal optimized binary format and store it. You want to use the most efficient, cost-effective solution. What should you do?
+A. Store uploaded files in Cloud Bigtable, monitor Bigtable entries, and then run a Cloud Function to convert the files and store them in Bigtable.
+B. Store uploaded files in Firestore, monitor Firestore entries, and then run a Cloud Function to convert the files and store them in Firestore.
+C. Store uploaded files in Filestore, monitor Filestore entries, and then run a Cloud Function to convert the files and store them in Filestore.
+D. Save uploaded files in a Cloud Storage bucket, and monitor the bucket for uploads. Run a Cloud Function to convert the files and to store them in a Cloud Storage bucket.
+
+Correct answer
+D
+
+Question 18
+ 
+You are migrating your on-premises solution to Google Cloud. As a first step, the new cloud solution will need to ingest 100 TB of data. Your daily uploads will be within your current bandwidth limit of 100 Mbps. You want to follow Google-recommended practices for the most cost-effective way to implement the migration. What should you do?
+A. Set up Partner Interconnect for the duration of the first upload.
+B. Obtain a Transfer Appliance, copy the data to it, and ship it to Google.
+C. Set up Dedicated Interconnect for the duration of your first upload, and then drop back to regular bandwidth.
+D. Divide your data between 100 computers, and upload each data portion to a bucket. Then run a script to merge the uploads together.
+
+Correct answer
+B
+
+Question 18
+ 
+You are migrating your on-premises solution to Google Cloud. As a first step, the new cloud solution will need to ingest 100 TB of data. Your daily uploads will be within your current bandwidth limit of 100 Mbps. You want to follow Google-recommended practices for the most cost-effective way to implement the migration. What should you do?
+A. Set up Partner Interconnect for the duration of the first upload.
+B. Obtain a Transfer Appliance, copy the data to it, and ship it to Google.
+C. Set up Dedicated Interconnect for the duration of your first upload, and then drop back to regular bandwidth.
+D. Divide your data between 100 computers, and upload each data portion to a bucket. Then run a script to merge the uploads together.
+
+Correct answer
+B
+Feedback
+A is not correct because Partner Interconnect, although less expensive than Dedicated Interconnect, is still not the most cost effective solution for this migration.
+B is correct because it follows Google recommended practices for these data sizes and is the most cost-effective solution to implement the migration.
+C is not correct because Dedicated Interconnect is not the most cost-effective for this use case.
+D is not correct because it is not the most cost effective solution.
+
+Question 19
+ 
+You are setting up billing for your project. You want to prevent excessive consumption of resources due to an error or malicious attack and prevent billing spikes or surprises. What should you do?
+A. Set up budgets and alerts in your project.
+B. Set up quotas for the resources that your project will be using.
+C. Set up a spending limit on the credit card used in your billing account.
+D. Label all resources according to best practices, regularly export the billing reports, and analyze them with BigQuery.
+
+
+Correct answer
+B
+Feedback
+A is not correct because budgets and alerts will result in notifications, but will not prevent excessive resource consumption.
+B is correct because setting up quotas will prevent resource consumption from exceeding specified limits.
+C is not correct because it will not prevent excessive resource consumption. Instead, your credit card will incur an unpaid balance; you will receive an email about it from Google and will still be liable to pay.
+D is not correct because analyzing the root cause for going over the budget will not prevent overspend.
+
+-->
