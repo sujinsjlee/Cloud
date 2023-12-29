@@ -1,7 +1,5 @@
 # Google Associate Cloud Engineer
 
-- [Sample QnA](https://docs.google.com/forms/d/e/1FAIpQLSfexWKtXT2OSFJ-obA4iT3GmzgiOCGvjrT9OfxilWC1yPtmfQ/viewform)
-
 - [Examtopics](https://www.examtopics.com/exams/google/associate-cloud-engineer/view/)
 <!--
 
@@ -1436,6 +1434,7 @@ DevOps 팀에서 작업 수행을 위해 모든 프로덕션 서비스에 접근
 
 -->
 
+- [Sample QnA](https://docs.google.com/forms/d/e/1FAIpQLSfexWKtXT2OSFJ-obA4iT3GmzgiOCGvjrT9OfxilWC1yPtmfQ/viewform)
 <!--
 
 [Associate Cloud Engineer Sample Questions]
