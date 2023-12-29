@@ -534,10 +534,24 @@ A
 
 Q68
 For analysis purposes, you need to send all the logs from all of your Compute Engine instances to a BigQuery dataset called platform-logs. You have already installed the Cloud Logging agent on all the instances. You want to minimize cost. What should you do?
-A. 1. Give the BigQuery Data Editor role on the platform-logs dataset to the service accounts used by your instances. 2. Update your instances' metadata to add the following value: logs-destination: bq://platform-logs.
-B. 1. In Cloud Logging, create a logs export with a Cloud Pub/Sub topic called logs as a sink. 2. Create a Cloud Function that is triggered by messages in the logs topic. 3. Configure that Cloud Function to drop logs that are not from Compute Engine and to insert Compute Engine logs in the platform-logs dataset.
-C. 1. In Cloud Logging, create a filter to view only Compute Engine logs. 2. Click Create Export. 3. Choose BigQuery as Sink Service, and the platform-logs dataset as Sink Destination.
-D. 1. Create a Cloud Function that has the BigQuery User role on the platform-logs dataset. 2. Configure this Cloud Function to create a BigQuery Job that executes this query: INSERT INTO dataset.platform-logs (timestamp, log) SELECT timestamp, log FROM compute.logs WHERE timestamp > DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) 3. Use Cloud Scheduler to trigger this Cloud Function once a day.
+A. 
+1. Give the BigQuery Data Editor role on the platform-logs dataset to the service accounts used by your instances. 
+2. Update your instances' metadata to add the following value: logs-destination: bq://platform-logs.
+
+B. 
+1. In Cloud Logging, create a logs export with a Cloud Pub/Sub topic called logs as a sink. 
+2. Create a Cloud Function that is triggered by messages in the logs topic. 
+3. Configure that Cloud Function to drop logs that are not from Compute Engine and to insert Compute Engine logs in the platform-logs dataset.
+
+C. 
+1. In Cloud Logging, create a filter to view only Compute Engine logs. 
+2. Click Create Export. 
+3. Choose BigQuery as Sink Service, and the platform-logs dataset as Sink Destination.
+
+D. 
+1. Create a Cloud Function that has the BigQuery User role on the platform-logs dataset. 
+2. Configure this Cloud Function to create a BigQuery Job that executes this query: INSERT INTO dataset.platform-logs (timestamp, log) SELECT timestamp, log FROM compute.logs WHERE timestamp > DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) 
+3. Use Cloud Scheduler to trigger this Cloud Function once a day.
 
 C
 
@@ -551,18 +565,18 @@ D. In the cluster's definition in Deployment Manager, add a metadata that has ku
 
 A
 
-Q70
+Q70 (*)
 You are building an application that will run in your data center. The application will use Google Cloud Platform (GCP) services like AutoML. You created a service account that has appropriate access to AutoML. You need to enable authentication to the APIs from your on-premises environment. What should you do?
 A. Use service account credentials in your on-premises application.
 B. Use gcloud to create a key file for the service account that has appropriate permissions.
 C. Set up direct interconnect between your data center and Google Cloud Platform to enable authentication for your on-premises applications.
 D. Go to the IAM & admin console, grant a user account permissions similar to the service account permissions, and use this user account for authentication from your data center.
 
-A
+B
 
 B resolve the requirement, and yes, C is a prerequisite for B, but only C doesn't solve the scenery.
 
-Q73
+Q73 (*)
 You are setting up a Windows VM on Compute Engine and want to make sure you can log in to the VM via RDP. What should you do?
 A. After the VM has been created, use your Google Account credentials to log in into the VM.
 B. After the VM has been created, use gcloud compute reset-windows-password to retrieve the login credentials for the VM.
@@ -572,11 +586,8 @@ D. After the VM has been created, download the JSON private key for the default 
 B
 
 VM 생성 후 gcloud compute reset-windows-password를 사용하여
-
 VM의 로그인 사용자 인증 정보를 검색
-
 사용자가 윈도우 가상 머신 인스턴스의 비밀번호를 재 설정하고 검색할 수 있으며
-
 윈도우 계정이 없는 경우 이 명령을 사용하면 계정이 생성되고 해당 새 계정의 암호가 반환됨
 
 Q74
@@ -874,4 +885,553 @@ A
 
 Cloud SDK comes with a default configuration.
 Multiple configurations. Activate to switch between configurations.
+
+[[[31~40]]]
+[Q]
+Your managed instance group raised an alert stating that new instance creation has failed to create new instances. You need to maintain the number of running instances specified by the template to be able to process expected application traffic. What should you do?
+
+A. Create an instance template that contains valid syntax which will be used by the instance group. Delete any persistent disks with the same name as instance names.
+
+B. Create an instance template that contains valid syntax that will be used by the instance group. Verify that the instance name and persistent disk name values are not the same in the template.
+
+C. Verify that the instance template being used by the instance group contains valid syntax. Delete any persistent disks with the same name as instance names. Set the disks.autoDelete property to true in the instance template.
+
+D. Delete the current instance template and replace it with a new instance template. Verify that the instance name and persistent disk name values are not the same in the template. Set the disks.autoDelete property to true in the instance template.
+
+D
+
+[Q]
+Your company is moving from an on-premises environment to Google Cloud Platform (GCP). You have multiple development teams that use Cassandra environments as backend databases. They all need a development environment that is isolated from other Cassandra instances. You want to move to GCP quickly and with minimal support effort. What should you do?
+
+A. 1. Build an instruction guide to install Cassandra on GCP. 2. Make the instruction guide accessible to your developers.
+
+B. 1. Advise your developers to go to Cloud Marketplace. 2. Ask the developers to launch a Cassandra image for their development work.
+
+C. 1. Build a Cassandra Compute Engine instance and take a snapshot of it. 2. Use the snapshot to create instances for your developers.
+
+D. 1. Build a Cassandra Compute Engine instance and take a snapshot of it. 2. Upload the snapshot to Cloud Storage and make it accessible to your developers. 3. Build instructions to create a Compute Engine instance from the snapshot so that developers can do it themselves.
+
+정답 : B
+
+최소한의 노력이기 때문에 마켓 플레이스가 엄청 간단함
+A와 D는 오랜 시간이 필요하고, C는 서포트와 노력이 필요함
+
+You have an application that uses Cloud Spanner as a backend database. The application has a very predictable traffic pattern. You want to automatically scale up or down the number of Spanner nodes depending on traffic. What should you do?
+
+A. Create a cron job that runs on a scheduled basis to review stackdriver monitoring metrics, and then resize the Spanner instance accordingly.
+
+B. Create a Stackdriver alerting policy to send an alert to oncall SRE emails when Cloud Spanner CPU exceeds the threshold. SREs would scale resources up or down accordingly.
+
+C. Create a Stackdriver alerting policy to send an alert to Google Cloud Support email when Cloud Spanner CPU exceeds your threshold. Google support would scale resources up or down accordingly.
+
+D. Create a Stackdriver alerting policy to send an alert to webhook when Cloud Spanner CPU is over or under your threshold. Create a Cloud Function that listens to HTTP and resizes Spanner resources accordingly.
+
+
+정답 : D
+
+매우 예측 가능한 패턴이라고 해서 크론 작업이 괜찮을 것 같지만
+역시나 타임 기반 트리거보다는 이벤트 기반 트리거가 낫다고 생각함
+
+[Q]
+I understand the reasoning behind option A, and it's valid to consider periodic scaling based on predictable traffic patterns. However, the question specifically asks for automatic scaling based on traffic, and using a cron job to review monitoring metrics periodically is a more manual and less dynamic approach compared to real-time alerting.
+Your company publishes large files on an Apache web server that runs on a Compute Engine instance. The Apache web server is not the only application running in the project. You want to receive an email when the egress network costs for the server exceed 100 dollars for the current month as measured by Google Cloud
+
+Platform (GCP). What should you do?
+
+A. Set up a budget alert on the project with an amount of 100 dollars, a threshold of 100%, and notification type of "email."
+
+B. Set up a budget alert on the billing account with an amount of 100 dollars, a threshold of 100%, and notification type of "email."
+
+C. Export the billing data to BigQuery. Create a Cloud Function that uses BigQuery to sum the egress network costs of the exported billing data for the Apache web server for the current month and sends an email if it is over 100 dollars. Schedule the Cloud Function using Cloud Scheduler to run hourly.
+
+D. Use the Stackdriver Logging Agent to export the Apache web server logs to Stackdriver Logging. Create a Cloud Function that uses BigQuery to parse the HTTP response log data in Stackdriver for the current month and sends an email if the size of all HTTP responses, multiplied by current GCP egress prices, totals over 100 dollars. Schedule the Cloud Function using Cloud Scheduler to run hourly.
+
+
+
+정답 : C
+
+
+아파치 웹서버가 프로젝트에서 실행되는 유일한 응용 프로그램이 아니기 때문에 A는 오답이며
+B는 틀렸고, D는 복잡함
+
+[Q]
+
+You have an application that receives SSL-encrypted TCP traffic on port 443. Clients for this application are located all over the world. You want to minimize latency for the clients. Which load balancing option should you use?
+
+A. HTTPS Load Balancer
+
+B. Network Load Balancer
+
+C. SSL Proxy Load Balancer
+
+D. Internal TCP/UDP Load Balancer. Add a firewall rule allowing ingress traffic from 0.0.0.0/0 on the target instances.
+
+​
+
+정답 : C
+
+SSL 프록시는 443 포트가 필요함
+
+또한, 페이지 로드 속도를 향상시키고, 웹 서버에서 응답이 빠르며 더 나은 웹 서버 성능을 보장함
+
+
+[Q]
+You have an application on a general-purpose Compute Engine instance that is experiencing excessive disk read throttling on its Zonal SSD Persistent Disk. The application primarily reads large files from disk. The disk size is currently 350 GB. You want to provide the maximum amount of throughput while minimizing costs.
+
+What should you do?
+
+A. Increase the size of the disk to 1 TB.
+
+B. Increase the allocated CPU to the instance.
+
+C. Migrate to use a Local SSD on the instance.
+
+D. Migrate to use a Regional SSD on the instance.
+
+
+
+정답 : C
+
+로컬 SSD에 더 많은 IOPS가 있으며 1TB 영구 영역 디스크보다 비용도 저렴함
+
+[Q]
+Your Dataproc cluster runs in a single Virtual Private Cloud (VPC) network in a single subnet with range 172.16.20.128/25. There are no private IP addresses available in the VPC network. You want to add new VMs to communicate with your cluster using the minimum number of steps. What should you do?
+
+A. Modify the existing subnet range to 172.16.20.0/24.
+
+B. Create a new Secondary IP Range in the VPC and configure the VMs to use that range.
+
+C. Create a new VPC network for the VMs. Enable VPC Peering between the VMs' VPC network and the Dataproc cluster VPC network.
+
+D. Create a new VPC network for the VMs with a subnet of 172.32.0.0/16. Enable VPC network Peering between the Dataproc VPC network and the VMs VPC network. Configure a custom Route exchange.
+
+
+정답 : A
+
+사이트는 C가 정답이라고 하지만 토론을 보면 A와 C가 분분하지만 A가 최소 방법
+
+SUBNET의 IP 범위를 24로 확장하려면 다음과 같음
+
+gcloud compute networks subnets expand-ip-range USBNET --region = REGION --prefix-length=24
+
+참고로 서브넷을 확장할 수는 있지만 축소할 수는 없음
+
+질문은 확장이기 때문에 가능하며 /25는 128개의 IP를 제공하지만, 24로 확장하면 256으로 증가함
+
+[Q]
+You manage an App Engine Service that aggregates and visualizes data from BigQuery. The application is deployed with the default App Engine Service account.
+
+The data that needs to be visualized resides in a different project managed by another team. You do not have access to this project, but you want your application to be able to read data from the BigQuery dataset. What should you do?
+
+A. Ask the other team to grant your default App Engine Service account the role of BigQuery Job User.
+
+B. Ask the other team to grant your default App Engine Service account the role of BigQuery Data Viewer.
+
+C. In Cloud IAM of your project, ensure that the default App Engine service account has the role of BigQuery Data Viewer.
+
+D. In Cloud IAM of your project, grant a newly created service account from the other team the role of BigQuery Job User in your project.
+
+​
+
+정답 : B
+
+액세스에 필요한 리소스는 다른 프로젝트에 있으며
+
+BigQuery 데이터 뷰어 역할에 적절한 설명임
+
+참고로 작업 사용자 역할은 쿼리를 실행할 수 있는 권한은 있으나 
+
+데이터를 읽을 수 있는 권한은 부여하지 않음
+
+[Q]
+You have deployed an application on a single Compute Engine instance. The application writes logs to disk. Users start reporting errors with the application. You want to diagnose the problem. What should you do?
+
+A. Navigate to Cloud Logging and view the application logs.
+
+B. Connect to the instance's serial console and read the application logs.
+
+C. Configure a Health Check on the instance and set a Low Healthy Threshold value.
+
+D. Install and configure the Cloud Logging Agent and view the logs from Cloud Logging.
+​
+
+정답 : A
+
+인스턴스에 있는 앱은 로그/오류를 로깅에 전송하므로 에이전트가 필요 없음
+
+[Q]
+You built an application on your development laptop that uses Google Cloud services. Your application uses Application Default Credentials for authentication and works fine on your development laptop. You want to migrate this application to a Compute Engine virtual machine (VM) and set up authentication using Google- recommended practices and minimal changes. What should you do?
+
+A. Assign appropriate access for Google services to the service account used by the Compute Engine VM.
+
+B. Create a service account with appropriate access for Google services, and configure the application to use this account.
+
+C. Store credentials for service accounts with appropriate access for Google services in a config file, and deploy this config file with your application.
+
+D. Store credentials for your user account with appropriate access for Google services in a config file, and deploy this config file with your application.
+​
+
+정답 : B
+
+수동으로 자격 증명 전달 애플리케이션이 기본 서비스 계정을 제공하는 GCP 환경 외부에서 실행되는 경우 수동으로 계정을 만들어야 함.
+
+[Q]
+You need to create a Compute Engine instance in a new project that doesn't exist yet. What should you do?
+
+A. Using the Cloud SDK, create a new project, enable the Compute Engine API in that project, and then create the instance specifying your new project.
+
+B. Enable the Compute Engine API in the Cloud Console, use the Cloud SDK to create the instance, and then use the """"project flag to specify a new project.
+
+C. Using the Cloud SDK, create the new instance, and use the """"project flag to specify the new project. Answer yes when prompted by Cloud SDK to enable the Compute Engine API.
+
+D. Enable the Compute Engine API in the Cloud Console. Go to the Compute Engine section of the Console to create a new instance, and look for the Create In A New Project option in the creation form.
+
+
+정답 : A
+
+사이트는 B가 정답이라고 하지만 토론을 보면 A가 압도적
+
+프로젝트 생성은 가장 첫 번째 단계이며 VM 생성을 위해 필요한 것은 프로젝트와 Compute API
+
+[Q]
+Your company runs one batch process in an on-premises server that takes around 30 hours to complete. The task runs monthly, can be performed offline, and must be restarted if interrupted. You want to migrate this workload to the cloud while minimizing cost. What should you do?
+
+A. Migrate the workload to a Compute Engine Preemptible VM.
+
+B. Migrate the workload to a Google Kubernetes Engine cluster with Preemptible nodes.
+
+C. Migrate the workload to a Compute Engine VM. Start and stop the instance as needed.
+
+D. Create an Instance Template with Preemptible VMs On. Create a Managed Instance Group from the template and adjust Target CPU Utilization. Migrate the workload.
+
+
+정답 : C
+
+사이트는 B가 정답이라고 하지만, 토론을 보면 C가 많음
+
+중단된 경우 다시 시작해야 돼서 선점형을 진행하지 않는 것으로 판단됨
+
+또한, 선점형은 24시간 미만의 일괄 작업에 적합함
+
+그리고 쿠버네티스 엔진은 비용 효율적인 솔루션이 아님
+
+[Q]
+You have downloaded and installed the gcloud command line interface (CLI) and have authenticated with your Google Account. Most of your Compute Engine instances in your project run in the europe-west1-d zone. You want to avoid having to specify this zone with each CLI command when managing these instances.
+
+What should you do?
+
+A. Set the europe-west1-d zone as the default zone using the gcloud config subcommand.
+
+B. In the Settings page for Compute Engine under Default location, set the zone to europe""west1-d.
+
+C. In the CLI installation directory, create a file called default.conf containing zone=europe""west1""d.
+
+D. Create a Metadata entry on the Compute Engine page with key compute/zone and value europe""west1""d.
+
+
+정답 : A
+
+사이트는 C가 정답이라고 하지만 토론을 보면 A가 압도적
+
+CLI 기반 실행을 찾는 키워드이므로 A가 정답
+
+gcloud config set compute / regoin <ZONE>
+
+[Q]
+The core business of your company is to rent out construction equipment at a large scale. All the equipment that is being rented out has been equipped with multiple sensors that send event information every few seconds. These signals can vary from engine status, distance traveled, fuel level, and more. Customers are billed based on the consumption monitored by these sensors. You expect high throughput "" up to thousands of events per hour per device "" and need to retrieve consistent data based on the time of the event. Storing and retrieving individual signals should be atomic. What should you do?
+
+A. Create a file in Cloud Storage per device and append new data to that file.
+
+B. Create a file in Cloud Filestore per device and append new data to that file.
+
+C. Ingest the data into Datastore. Store data in an entity group based on the device.
+
+D. Ingest the data into Cloud Bigtable. Create a row key based on the event timestamp.
+
+
+정답 : D
+
+사이트는 C가 정답이라고 하지만 D가 압도적
+
+BIG 및 Atomic에 필요한 것은 Cloud Bigtable
+
+Datastore는 완전히 원자성이 아니며 Storage는 이벤트 시간을 기준으로 데이터를 내보낼 수 있는 옵션이 아님, Filestore는 파일 저장소라서 더욱 아님
+
+
+[Q]
+You are asked to set up application performance monitoring on Google Cloud projects A, B, and C as a single pane of glass. You want to monitor CPU, memory, and disk. What should you do?
+
+A. Enable API and then share charts from project A, B, and C.
+
+B. Enable API and then give the metrics.reader role to projects A, B, and C.
+
+C. Enable API and then use default dashboards to view all projects in sequence.
+
+D. Enable API, create a workspace under project A, and then add project B and C.
+
+정답 : D
+
+사이트는 C가 정답이라고 하지만 토론은 C가 압도적
+
+workspace는 여러 프로젝트를 모니터링하는 작업 공간임
+
+[Q]
+You created several resources in multiple Google Cloud projects. All projects are linked to different billing accounts. To better estimate future charges, you want to have a single visual representation of all costs incurred. You want to include new cost data as soon as possible. What should you do?
+
+A. Configure Billing Data Export to BigQuery and visualize the data in Data Studio.
+
+B. Visit the Cost Table page to get a CSV export and visualize it using Data Studio.
+
+C. Fill all resources in the Pricing Calculator to get an estimate of the monthly cost.
+
+D. Use the Reports view in the Cloud Billing Console to view the desired cost information.
+​
+
+정답 : A
+
+서비스 계정을 사용하여 모든 것을 단일 BigQuery로 결합 후 데이터 스튜디오로 푸시 하여 분석
+
+[Q]
+Your company has workloads running on Compute Engine and on-premises. The Google Cloud Virtual Private Cloud (VPC) is connected to your WAN over a
+
+Virtual Private Network (VPN). You need to deploy a new Compute Engine instance and ensure that no public Internet traffic can be routed to it. What should you do?
+
+A. Create the instance without a public IP address.
+
+B. Create the instance with Private Google Access enabled.
+
+C. Create a deny-all egress firewall rule on the VPC network.
+
+D. Create a route on the VPC to route all traffic to the instance over the VPN tunnel.
+
+
+정답 : A
+
+사이트는 B가 답이라고 하지만 토론은 A가 압도적
+
+B는 내부 통신을 허용하지만 공용 트래픽을 제한하지 않음
+
+C는 모두 거부하는 것이 좋지만 송신을 위한 것 (Ingress로 해야 함)
+
+D는 퍼블릭 인터넷 트래픽이 인스턴스에 도달하는 것을 방지하는 문제를 해결하지 못함
+
+[Q]
+Your team maintains the infrastructure for your organization. The current infrastructure requires changes. You need to share your proposed changes with the rest of the team. You want to follow Google's recommended best practices. What should you do?
+
+A. Use Deployment Manager templates to describe the proposed changes and store them in a Cloud Storage bucket.
+
+B. Use Deployment Manager templates to describe the proposed changes and store them in Cloud Source Repositories.
+
+C. Apply the change in a development environment, run gcloud compute instances list, and then save the output in a shared Storage bucket.
+
+D. Apply the change in a development environment, run gcloud compute instances list, and then save the output in Cloud Source Repositories.
+​
+
+정답 : B
+
+요점은 제안된 변경으로 storage bucket은 변경 사항에 대해 주석을 달고 응답하고 변경 사항을 비교할 수 없음
+
+Cloud Depolyment Manager 템플릿도 인프라 코드이며 제안된 모든 변경 사항에 대해 버전 관리에 유효하며 bucket보다는 repositories가 맞음
+
+[Q]
+
+You have a Compute Engine instance hosting an application used between 9 AM and 6 PM on weekdays. You want to back up this instance daily for disaster recovery purposes. You want to keep the backups for 30 days. You want the Google-recommended solution with the least management overhead and the least number of services. What should you do?
+
+A. 1. Update your instances' metadata to add the following value: snapshot""schedule: 0 1 * * * 2. Update your instances' metadata to add the following value: snapshot""retention: 30
+
+B. 1. In the Cloud Console, go to the Compute Engine Disks page and select your instance's disk. 2. In the Snapshot Schedule section, select Create Schedule and configure the following parameters: "" Schedule frequency: Daily "" Start time: 1:00 AM "" 2:00 AM "" Autodelete snapshots after 30 days
+
+C. 1. Create a Cloud Function that creates a snapshot of your instance's disk. 2. Create a Cloud Function that deletes snapshots that are older than 30 days. 3. Use Cloud Scheduler to trigger both Cloud Functions daily at 1:00 AM.
+
+D. 1. Create a bash script in the instance that copies the content of the disk to Cloud Storage. 2. Create a bash script in the instance that deletes data older than 30 days in the backup Cloud Storage bucket. 3. Configure the instance's crontab to execute these scripts daily at 1:00 AM.
+​
+
+정답 : B
+
+콘솔에서 작업하면 사용자 정의 스크립트 및 함수 또는 크론 작업을 생성할 필요가 없으며
+
+스냅샷 기능을 활용하면 유지 보수를 최소화할 수 있음
+
+[Q]
+You have an application that uses Cloud Spanner as a database backend to keep current state information about users. Cloud Bigtable logs all events triggered by users. You export Cloud Spanner data to Cloud Storage during daily backups. One of your analysts asks you to join data from Cloud Spanner and Cloud
+
+Bigtable for specific users. You want to complete this ad hoc request as efficiently as possible. What should you do?
+
+A. Create a dataflow job that copies data from Cloud Bigtable and Cloud Storage for specific users.
+
+B. Create a dataflow job that copies data from Cloud Bigtable and Cloud Spanner for specific users.
+
+C. Create a Cloud Dataproc cluster that runs a Spark job to extract data from Cloud Bigtable and Cloud Storage for specific users.
+
+D. Create two separate BigQuery external tables on Cloud Storage and Cloud Bigtable. Use the BigQuery console to join these tables through user fields, and apply appropriate filters.
+
+​
+
+정답 : D
+
+사이트는 B가 정답이라고 하지만 토론을 보면 D가 압도적
+
+BigQuery는 Cloud Bigtable, Cloud Storage, Google Drive, Cloud SQL에 대해서
+
+직접 데이터 쿼리가 가능함
+
+B의 경우는 대응만 하고 Join 처리에 대한 내용이 없음
+
+[Q]
+You have a batch workload that runs every night and uses a large number of virtual machines (VMs). It is fault-tolerant and can tolerate some of the VMs being terminated. The current cost of VMs is too high. What should you do?
+
+A. Run a test using simulated maintenance events. If the test is successful, use preemptible N1 Standard VMs when running future jobs.
+
+B. Run a test using simulated maintenance events. If the test is successful, use N1 Standard VMs when running future jobs.
+
+C. Run a test using a managed instance group. If the test is successful, use N1 Standard VMs in the managed instance group when running future jobs.
+
+D. Run a test using N1 standard VMs instead of N2. If the test is successful, use N1 Standard VMs when running future jobs.
+
+​
+정답 : A
+
+사이트는 B가 정답이라고 하지만 토론을 보면 A가 압도적
+
+우선 선점형(preemptible) 인스턴스는 일반 인스턴스보다 훨씬 저렴한 가격으로 만들고 실행 가능
+
+선점형 인스턴스는 인스턴스 선점을 견딜 수 있는 내 결함성 애플리케이션에만 권장
+
+[Q]
+Your company runs its Linux workloads on Compute Engine instances. Your company will be working with a new operations partner that does not use Google
+
+Accounts. You need to grant access to the instances to your operations partner so they can maintain the installed tooling. What should you do?
+
+A. Enable Cloud IAP for the Compute Engine instances, and add the operations partner as a Cloud IAP Tunnel User.
+
+B. Tag all the instances with the same network tag. Create a firewall rule in the VPC to grant TCP access on port 22 for traffic from the operations partner to instances with the network tag.
+
+C. Set up Cloud VPN between your Google Cloud VPC and the internal network of the operations partner.
+
+D. Ask the operations partner to generate SSH key pairs, and add the public keys to the VM instances.
+
+​
+정답 : A
+
+사이트는 B가 정답이라고 하지만, 토론을 보면 A가 압도적
+
+IAP를 사용하면 SSH가 외부 ID로 인스턴스를 계산할 수 있으며
+
+IAP를 사용하면 HTTPS로 액세스 되는 애플리케이션에 대한 중앙 인증 계층을 설정할 수 있어
+
+네트워크 수준 방화벽에 의존하는 대신 애플리케이션 수준 액세스 제어 모델 사용 가능
+Cloud Identity-Aware Proxy (IAP) is a security feature provided by Google Cloud Platform (GCP) that allows you to control access to your web applications running on Google Cloud. It provides a layer of security for applications deployed on Google Cloud by verifying the identity of users and controlling their access based on predefined policies.
+
+[Q]
+You have created a code snippet that should be triggered whenever a new file is uploaded to a Cloud Storage bucket. You want to deploy this code snippet. What should you do?
+
+A. Use App Engine and configure Cloud Scheduler to trigger the application using Pub/Sub.
+
+B. Use Cloud Functions and configure the bucket as a trigger resource.
+
+C. Use Google Kubernetes Engine and configure a CronJob to trigger the application using Pub/Sub.
+
+D. Use Dataflow as a batch job, and configure the bucket as a data source.
+
+​
+
+정답 : B
+
+사이트는 A가 정답이라고 하지만 토론을 보면 B가 압도적
+
+Cloud Functions은 Cloud Storage에서 나오는 변경 알림에 응답 가능하며
+
+이런 알림을 객체 생성, 삭제, 보관 및 메타 데이터 업데이트와 같은 버킷 내부의
+
+다양한 이벤트에 대한 응답으로 트리거 되도록 구성할 수 있음
+
+The most appropriate choice for triggering code in response to a new file upload to a Cloud Storage bucket is option B: Use Cloud Functions and configure the bucket as a trigger resource.
+
+Google Cloud Pub/Sub is a messaging service that enables asynchronous communication between independent applications. Its primary purpose is to facilitate the decoupling of components in distributed systems, allowing them to communicate with each other in a scalable and reliable manner.
+
+[Q]
+You have been asked to set up Object Lifecycle Management for objects stored in storage buckets. The objects are written once and accessed frequently for 30 days. After 30 days, the objects are not read again unless there is a special need. The object should be kept for three years, and you need to minimize cost. What should you do?
+
+A. Set up a policy that uses Nearline storage for 30 days and then moves to Archive storage for three years.
+
+B. Set up a policy that uses Standard storage for 30 days and then moves to Archive storage for three years.
+
+C. Set up a policy that uses Nearline storage for 30 days, then moves the Coldline for one year, and then moves to Archive storage for two years.
+
+D. Set up a policy that uses Standard storage for 30 days, then moves to Coldline for one year, and then moves to Archive storage for two years.
+
+​
+​
+
+정답 : B
+자주 액세스 되기 때문에 Nearline 스토리지는 아니라고 생각됨,
+
+특히 Nearline 스토리지는 액 세스 당 지불이 필요함
+
+또한 아카이브 스토리지는 1년에 한번 미만으로 액세스하는 데이터 가장 적합하며
+
+Coldline 스토리지보다 저렴함
+
+[Q]
+You are storing sensitive information in a Cloud Storage bucket. For legal reasons, you need to be able to record all requests that read any of the stored data. You want to make sure you comply with these requirements. What should you do?
+
+A. Enable the Identity Aware Proxy API on the project.
+
+B. Scan the bucker using the Data Loss Prevention API.
+
+C. Allow only a single Service Account access to read the data.
+
+D. Enable Data Access audit logs for the Cloud Storage API.
+
+​
+
+정답 : D
+
+Cloud Audit Log는 두 가지 유형의 로그가 존재함 - 관리자 활동 로그, 데이터 액세스 로그
+
+이걸로 충분히 저장된 데이터를 읽는 모든 요청사항의 기록을 확인할 수 있음
+
+
+
+[Q]
+You are the team lead of a group of 10 developers. You provided each developer with an individual Google Cloud Project that they can use as their personal sandbox to experiment with different Google Cloud solutions. You want to be notified if any of the developers are spending above $500 per month on their sandbox environment. What should you do?
+
+A. Create a single budget for all projects and configure budget alerts on this budget.
+
+B. Create a separate billing account per sandbox project and enable BigQuery billing exports. Create a Data Studio dashboard to plot the spending per billing account.
+
+C. Create a budget per project and configure budget alerts on all of these budgets.
+
+D. Create a single billing account for all sandbox projects and enable BigQuery billing exports. Create a Data Studio dashboard to plot the spending per project.
+
+
+정답 : C
+
+모든 프로젝트에 대해 단일 예산을 만들면 어떤 프로젝트의 개발자가 발생했는지 알 수 없음
+
+프로젝트 당 하나의 예산이 해결 방법
+
+[Q]
+Your company uses a large number of Google Cloud services centralized in a single project. All teams have specific projects for testing and development. The
+
+DevOps team needs access to all of the production services in order to perform their job. You want to prevent Google Cloud product changes from broadening their permissions in the future. You want to follow Google-recommended practices. What should you do?
+
+A. Grant all members of the DevOps team the role of Project Editor on the organization level.
+
+B. Grant all members of the DevOps team the role of Project Editor on the production project.
+
+C. Create a custom role that combines the required permissions. Grant the DevOps team the custom role on the production project.
+
+D. Create a custom role that combines the required permissions. Grant the DevOps team the custom role on the organization level.​
+
+정답 : C
+
+사이트는 A가 정답이라고 하지만 토론은 C가 압도적
+
+DevOps 팀에서 작업 수행을 위해 모든 프로덕션 서비스에 접근이 필요하며
+
+조직 레벨로 사용자 지정 권한을 부여하는 것은 너무 일이 커지기 때문에
+
+프로덕션 프로젝트 레벨에 해당하는 C가 정답
+
 -->
